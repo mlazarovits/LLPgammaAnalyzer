@@ -14,15 +14,20 @@ LFLAGS = -L$(RTLOC)$(RTVRS)/lib
 
 p1=hist_maker_aodsim_test
 p2=hist_maker_aodsim
+pv_time=pv-time-skimmer
 
-all: $(p2) 
-#$(p2) $(p3) $(p6) $(p22)
-# $(p4) $(p5) $(p7)
+alltargets: $(p2) $(pv_time)
+pv-time: $(pv_time)
 
 $(p1): $(p1).cpp
 	$(CC) -o $(p1).obj $(p1).cpp $(CFLAGS) $(INCLUDES) $(LFLAGS) $(LIBS)
 
 $(p2): $(p2).cpp
 	$(CC) -o $(p2).obj $(p2).cpp $(CFLAGS) $(INCLUDES) $(LFLAGS) $(LIBS)
+
+$(pv_time): $(pv_time).C
+	$(CC) $(CFLAGS) -o $(pv_time).x $(pv_time).C $(INCLUDES) $(LFLAGS) $(LIBS)  
 clean:
-	rm *.obj
+	rm -f *.obj
+	rm -f *.x
+	rm -f *.d
