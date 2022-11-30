@@ -24,4 +24,5 @@ $(p1): $(p1).cpp
 
 $(p2): $(p2).cpp
 	$(CC) -o $(p2).obj $(p2).cpp $(CFLAGS) $(INCLUDES) $(LFLAGS) $(LIBS)
-
+clean:
+	rm *.obj
