@@ -46,6 +46,10 @@ subdirlist3 = []
 filelist = []
 theFileList = ''
 
+oFileName = 'fileLists/llpgana_mc_AODSIM_GMSB_v'+args.version+'_Full.txt'
+oFile = open(oFileName,'w')
+print('Making file list from', command)
+print('Writing file list to',oFileName)
 dirls = bashout( command ).splitlines()
 if debug : print( '-------------------------------------------------')
 for line in dirls:
@@ -84,10 +88,10 @@ for subdir2 in subdirlist2:
 	lists = bashout( command+subdir2 ).rstrip().splitlines()
 	for line in lists :
 		if rootfile in line : filelist.append(subdir2+line)
-
+print('Found',len(filelist),'files')
 for thefile in filelist:
-	print( thefile )
-
+	oFile.write(thefile)
+	oFile.write('\n')
 	#filename = 'tmp_'+subdir2.split('/')[1]+'.root '
 	#print( filename )
 	#lists = bashout( "eosls "+mspc+"LLPGamma/"+subdir2 ).rstrip()
