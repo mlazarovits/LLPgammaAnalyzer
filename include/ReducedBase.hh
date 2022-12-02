@@ -1252,6 +1252,7 @@ inline void ReducedBase::Init(TTree *tree)
    fChain->SetBranchAddress("genPhoPz", &genPhoPz, &b_genPhoPz);
    fChain->SetBranchAddress("genPhoPdgId", &genPhoPdgId, &b_genPhoPdgId);
    fChain->SetBranchAddress("genPhoLLP", &genPhoLLP, &b_genPhoLLP);
+/*
    fChain->SetBranchAddress("nOotPhotons", &nOotPhotons, &b_nOotPhotons);
    fChain->SetBranchAddress("ootPhoSeedTOFTime", &ootPhoSeedTOFTime, &b_ootPhoSeedTOFTime);
    fChain->SetBranchAddress("ootPhoCMeanTime", &ootPhoCMeanTime, &b_ootPhoCMeanTime);
@@ -1341,6 +1342,7 @@ inline void ReducedBase::Init(TTree *tree)
    fChain->SetBranchAddress("genOOTPhoPz", &genOOTPhoPz, &b_genOOTPhoPz);
    fChain->SetBranchAddress("genOOTPhoPdgId", &genOOTPhoPdgId, &b_genOOTPhoPdgId);
    fChain->SetBranchAddress("genOOTPhoLLP", &genOOTPhoLLP, &b_genOOTPhoLLP);
+  */
    fChain->SetBranchAddress("nElectrons", &nElectrons, &b_nElectrons);
    fChain->SetBranchAddress("eleSeedTOFTime", &eleSeedTOFTime, &b_eleSeedTOFTime);
    fChain->SetBranchAddress("eleCMeanTime", &eleCMeanTime, &b_eleCMeanTime);
