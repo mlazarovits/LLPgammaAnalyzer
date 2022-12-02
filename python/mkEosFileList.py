@@ -46,7 +46,7 @@ subdirlist3 = []
 filelist = []
 theFileList = ''
 
-oFileName = 'fileLists/llpgana_mc_AODSIM_GMSB_v'+args.version+'_Full.txt'
+oFileName = 'fileLists/llpgana_mc_AODSIM_GMSB_AOD_v'+args.version+'_Full.txt'
 oFile = open(oFileName,'w')
 print('Making file list from', command)
 print('Writing file list to',oFileName)
