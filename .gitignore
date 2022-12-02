@@ -12,4 +12,6 @@ test/oldworkingArea/
 *.log
 *.png
 *.pdf
+*.x
+macros/*.obj
 __*
