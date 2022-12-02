@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import os
+import argparse
 
 def bash( bashCommand ):
 	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -17,30 +18,19 @@ def doCommand( command ):
 	output = os.system( command )
 	return output
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--version','-v',help='version of ntuples to pull',required=True)
+args = parser.parse_args()
+
+
 mspc = '/store/user/jaking/'
 mdis = '/store/user/lpcsusylep/jaking/'
 eosll = 'eos root://cmseos.fnal.gov ls '
 #command = eosll+mspc+'LLPGamma/llpga_GMSB_AOD_v48/'
 #command = eosll+mspc+'A/'
-command = eosll+mdis+'LLPGamma/llpga_GMSB_AOD_v53/'
-#command = eosll+mdis+'LLPGamma/llpga_GJets_AOD_v53/'
-#command = eosll+mspc+'ecalTiming/'
-#command = eosll+mdis+'ecalTiming/EGamma/'
-#command = eosll+mspc+'EGamma/'
+command = eosll+mdis+'LLPGamma/llpga_GMSB_AOD_v'+args.version+'/'
 version = ''
-#version = '_v11_'
-#version = '_noOOTAmp_'
-#version = '_wthOOTAmp_'
 rootfile = '.root'
-#dirselect = 'HTo2LongLivedTo4b'
-#dirselect = '_newRtParams4_v26b_'
-#dirselect = '_newRtParams3_test_v26_'
-#dirselect = 'tt_kurhs_124cc5_cert'
-#dirselect = '22eraC_EGamma_MINIAOD_Run2022C-PromptReco-v1_357328-357331'
-#dirselect = 'noOOTCC_kustc0_EGamma_MINIAOD_Run2022C-PromptReco-v1_357328-357331'
-#dirselect = '22eraC_CCstc0_EGamma_MINIAOD_Run2022C-PromptReco-v1_357328-357331'
-#dirselect = 'noOOTCC_kustc0_EGamma_MINIAOD_Run2022C-PromptReco-v1_357101-357268'
-#dirselect = 'CCstc0_EGamma_MINIAOD_Run2022C-PromptReco-v1_357101-357268'
 dirselect = ''
 
 #debug = True
