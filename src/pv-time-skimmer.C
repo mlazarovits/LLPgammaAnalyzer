@@ -37,11 +37,17 @@ int main(int argc, char* argv[]){
 
 	//initialize chain with make class
 	ReducedBase* base = new ReducedBase(ch);	
+	//init histograms
+	vector<TH1D*> hists;
 	//loop through events
 	int nEntries = ch->GetEntries();
 	for(int i = 0; i < nEntries; i++){
 		if (i % 100000 == 0) cout << "Processed " << i << " of " << nEntries << endl;
-			
+		base->GetEntry(i);
+		
+		
+
+
 	}
 
 
