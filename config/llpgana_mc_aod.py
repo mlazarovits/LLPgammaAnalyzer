@@ -1350,13 +1350,13 @@ process.source = cms.Source("PoolSource",
 ## How many events to process
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))#ST
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))#TT
+#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))#TT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))#LT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500))#US
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(12500))#VS
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#SM
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100000))#MS
-#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#MD
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#MD
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500000))#LG
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#FL
 
@@ -1385,7 +1385,6 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    pfcandidates = cms.InputTag("particleFlow"),
    particleflow = cms.InputTag("particleFlow",""),	
    pfcanphomap = cms.InputTag("particleFlow","photons"),
-   pfcanootphomap = cms.InputTag("particleFlow","photons"),
    pfcanelemap = cms.InputTag("particleFlow","electrons"),
    ## rho
    #rho = cms.InputTag("fixedGridRhoFastjetAll"), #fixedGridRhoAll
@@ -1410,8 +1409,6 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    #gedPhotons = cms.InputTag("gedPhotons"),
    gedPhotons = cms.InputTag("photons"),
    phoCBIDLooseMap = cms.InputTag("PhotonIDProd", "PhotonCutBasedIDLooseEM"), 
-   #ootPhotons = cms.InputTag("slimmedOOTPhotons"),
-   ootPhotons = cms.InputTag("ootPhotons"),
    ## ecal recHits
    #recHitsEB = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
    #recHitsEE = cms.InputTag("reducedEgamma", "reducedEERecHits"),
