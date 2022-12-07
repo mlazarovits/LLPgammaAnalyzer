@@ -48,7 +48,7 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	pfcandTag(iConfig.getParameter<edm::InputTag>("pfcandidates")),
     pfCanTag(iConfig.getParameter<edm::InputTag>("particleflow")),
 	pfCanPhoMapTag(iConfig.getParameter<edm::InputTag>("pfcanphomap")),
-    pfCanOOTPhoMapTag(iConfig.getParameter<edm::InputTag>("pfcanootphomap")),
+    //pfCanOOTPhoMapTag(iConfig.getParameter<edm::InputTag>("pfcanootphomap")),
     pfCanEleMapTag(iConfig.getParameter<edm::InputTag>("pfcanelemap")),
 	
 	// vertices
@@ -1599,7 +1599,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
    	std::vector<reco::CaloCluster> 	fbclusts;
     std::vector<EcalRecHit> 		frechits;
     std::vector<reco::Photon> 		fphotons;
-    std::vector<reco::Photon> 		footphotons;
     std::vector<reco::GsfElectron> 	felectrons;
     std::vector<reco::CaloJet> 		fcalojets;
 	std::vector<reco::Muon> 		fmuons;
@@ -1678,7 +1677,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	}//<<>>for( const auto photon : *gedPhotons_ )
 
-    for( const auto ootphoton : *ootPhotons_ ){ footphotons.push_back(ootphoton); }
     for( const auto electron : *electrons_ ){ felectrons.push_back(electron); }
 
 	// !!!!!!!  collect gen particles
@@ -2284,242 +2282,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	//-------------------------------------------------------------------------------------------------------
 
-    nOotPhotons = 0;
-    ootPhoSeedTOFTime.clear();
-    ootPhoCMeanTime.clear();
-    ootPhoSc3dEx.clear();
-    ootPhoSc3dEy.clear();
-    ootPhoSc3dEz.clear();
-    ootPhoSc3dEv.clear();
-    ootPhoSc3dEslope.clear();
-    ootPhoSc3dEchisp.clear();
-    ootPhoSc2dEx.clear();
-    ootPhoSc2dEy.clear();
-    ootPhoSc2dEv.clear();
-    ootPhoSc2dEslope.clear();
-    ootPhoSc2dEchisp.clear();
-    ootPhoPt.clear();
-    ootPhoEnergy.clear();
-    ootPhoPhi.clear();
-    ootPhoEta.clear();
-    ootPhoPx.clear();
-    ootPhoPy.clear();
-    ootPhoPz.clear();
-    ootPhoRhIds.clear();
-
-    ootPhoIsPFPhoton.clear();
-    ootPhoIsStdPhoton.clear();
-    ootPhoHasConTracks.clear();
-    ootPhoIsPixelSeed.clear();
-    ootPhoIsPhoton.clear();
-    ootPhoIsEB.clear();
-    ootPhoIsEE.clear();
-    ootPhoIsEBGap.clear();
-    ootPhoIsEBEtaGap.clear();
-    ootPhoIsEBPhiGap.clear();
-    ootPhoIsEEGap.clear();
-    ootPhoIsEERingGap.clear();
-    ootPhoIsEEDeeGap.clear();
-    ootPhoIsEBEEGap.clear();
-
-    ootPhoHadOverEM.clear();
-    ootPhoHadD1OverEM.clear();
-    ootPhoHadD2OverEM.clear();
-    ootPhoHadOverEMVaid.clear();
-    ootPhohadTowOverEM.clear();
-    ootPhohadTowD10OverEM.clear();
-    ootPhohadTowD20OverEM.clear();
-    ootPhohadTowOverEMValid.clear();
-    ootPhoE1x5.clear();
-    ootPhoE2x5.clear();
-    ootPhoE3x3.clear();
-    ootPhoE5x5.clear();
-    ootPhoMaxEnergyXtal.clear();
-    ootPhoSigmaEtaEta.clear();
-    ootPhoSigmaIEtaIEta.clear();
-
-    ootPhoR1x5.clear();
-    ootPhoR2x5.clear();
-    ootPhoR9.clear();
-    ootPhoFull5x5_e1x5.clear();
-    ootPhoFull5x5_e2x5.clear();
-    ootPhoFull5x5_e3x3.clear();
-    ootPhoFull5x5_e5x5.clear();
-    ootPhoFull5x5_maxEnergyXtal.clear();
-    ootPhoFull5x5_sigmaEtaEta.clear();
-    ootPhoFull5x5_sigmaIEtaIEta.clear();
-    ootPhoFull5x5_r1x5.clear();
-    ootPhoFull5x5_r2x5.clear();
-    ootPhoFull5x5_r9.clear();
-    ootPhoNSatXtals.clear();
-    ootPhoIsSeedSat.clear();
-
-    ootPhoMipChi2.clear();
-    ootPhoMipTotEnergy.clear();
-    ootPhoMipSlope.clear();
-    ootPhoMipInter.clear();
-    ootPhoMipNHitCone.clear();
-    ootPhoMipIsHalo.clear();
-
-    ootPhoEcalRHSumEtConeDR04.clear();
-    ootPhoHcalTwrSumEtConeDR04.clear();
-    ootPhoHcalDepth1TowerSumEtConeDR04.clear();
-    ootPhoCalDepth2TowerSumEtConeDR04.clear();
-    ootPhoHcalTowerSumEtBcConeDR04.clear();
-    ootPhoHcalDepth1TowerSumEtBcConeDR04.clear();
-    ootPhoHcalDepth2TowerSumEtBcConeDR04.clear();
-    ootPhoTrkSumPtSolidConeDR04.clear();
-    ootPhoTrkSumPtHollowConeDR04.clear();
-    ootPhoNTrkSolidConeDR04.clear();
-    ootPhoNTrkHollowConeDR04.clear();
-
-    genOOTPhoPt.clear();
-    genOOTPhoEnergy.clear();
-    genOOTPhoPhi.clear();
-    genOOTPhoEta.clear();
-    genOOTPhoPx.clear();
-    genOOTPhoPy.clear();
-    genOOTPhoPz.clear();
-    genOOTPhoPdgId.clear();
-    genOOTPhoLlp.clear();
-
-    int iOOTPhos(0);
-	scGroup jetOOTPhSCGroup;
-    if( DEBUG ) std::cout << "Processing ootPhotons" << std::endl;
-    for( const auto ootphoton : footphotons ){
-
-        ootPhoPt.push_back(ootphoton.pt());
-        ootPhoEnergy.push_back(ootphoton.energy());
-        ootPhoPhi.push_back(ootphoton.phi());
-        ootPhoEta.push_back(ootphoton.eta());
-        ootPhoPx.push_back(ootphoton.px());
-        ootPhoPy.push_back(ootphoton.py());
-        ootPhoPz.push_back(ootphoton.pz());
-
-        ootPhoIsPFPhoton.push_back(ootphoton.isPFlowPhoton()) ;
-        ootPhoIsStdPhoton.push_back(ootphoton.isStandardPhoton());
-        ootPhoHasConTracks.push_back(ootphoton.hasConversionTracks());
-        ootPhoIsPixelSeed.push_back(ootphoton.hasPixelSeed());
-        ootPhoIsPhoton.push_back(ootphoton.isPhoton());
-        ootPhoIsEB.push_back(ootphoton.isEB());
-        ootPhoIsEE.push_back(ootphoton.isEE());
-        ootPhoIsEBGap.push_back(ootphoton.isEBGap());
-        ootPhoIsEBEtaGap.push_back(ootphoton.isEBEtaGap());
-        ootPhoIsEBPhiGap.push_back(ootphoton.isEBPhiGap());
-        ootPhoIsEEGap.push_back(ootphoton.isEEGap());
-        ootPhoIsEERingGap.push_back(ootphoton.isEERingGap());
-        ootPhoIsEEDeeGap.push_back(ootphoton.isEEDeeGap());
-        ootPhoIsEBEEGap.push_back(ootphoton.isEBEEGap());
-
-        ootPhoHadOverEM.push_back(ootphoton.hadronicOverEm());
-        ootPhoHadD1OverEM.push_back(ootphoton.hadronicDepth1OverEm() );
-        ootPhoHadD2OverEM.push_back(ootphoton.hadronicDepth2OverEm() );
-        ootPhoHadOverEMVaid.push_back(ootphoton.hadronicOverEmValid());
-        ootPhohadTowOverEM.push_back(ootphoton.hadTowOverEm());
-        ootPhohadTowD10OverEM.push_back(ootphoton.hadTowDepth1OverEm());
-        ootPhohadTowD20OverEM.push_back(ootphoton.hadTowDepth2OverEm() );
-        ootPhohadTowOverEMValid.push_back(ootphoton.hadTowOverEmValid());
-        ootPhoE1x5.push_back(ootphoton.e1x5());
-        ootPhoE2x5.push_back(ootphoton.e2x5());
-        ootPhoE3x3.push_back(ootphoton.e3x3());
-        ootPhoE5x5.push_back(ootphoton.e5x5());
-        ootPhoMaxEnergyXtal.push_back(ootphoton.maxEnergyXtal());
-        ootPhoSigmaEtaEta.push_back(ootphoton.sigmaEtaEta() );
-        ootPhoSigmaIEtaIEta.push_back(ootphoton.sigmaIetaIeta() );
-
-        ootPhoR1x5.push_back(ootphoton.r1x5());
-        ootPhoR2x5.push_back(ootphoton.r2x5());
-        ootPhoR9.push_back(ootphoton.r9());
-        ootPhoFull5x5_e1x5.push_back(ootphoton.full5x5_e1x5());
-        ootPhoFull5x5_e2x5.push_back(ootphoton.full5x5_e2x5());
-        ootPhoFull5x5_e3x3.push_back(ootphoton.full5x5_e3x3());
-        ootPhoFull5x5_e5x5.push_back(ootphoton.full5x5_e5x5());
-        ootPhoFull5x5_maxEnergyXtal.push_back(ootphoton.full5x5_maxEnergyXtal());
-        ootPhoFull5x5_sigmaEtaEta.push_back(ootphoton.full5x5_sigmaEtaEta());
-        ootPhoFull5x5_sigmaIEtaIEta.push_back(ootphoton.full5x5_sigmaIetaIeta());
-        //ootPhoFull5x5_r1x5.push_back(ootphoton.full5x5_r1x5());
-        //ootPhoFull5x5_r2x5.push_back(ootphoton.full5x5_r2x5());
-        ootPhoFull5x5_r9.push_back(ootphoton.full5x5_r9());
-
-        ootPhoNSatXtals.push_back(ootphoton.nSaturatedXtals());
-        ootPhoIsSeedSat.push_back(ootphoton.isSeedSaturated());
-
-        ootPhoMipChi2.push_back(ootphoton.mipChi2());
-        ootPhoMipTotEnergy.push_back(ootphoton.mipTotEnergy());
-        ootPhoMipSlope.push_back(ootphoton.mipSlope());
-        ootPhoMipInter.push_back(ootphoton.mipIntercept());
-
-        ootPhoMipNHitCone.push_back(ootphoton.mipNhitCone());
-        ootPhoMipIsHalo.push_back(ootphoton.mipIsHalo());
-
-        ootPhoEcalRHSumEtConeDR04.push_back(ootphoton.ecalRecHitSumEtConeDR04());
-        ootPhoHcalTwrSumEtConeDR04.push_back(ootphoton.hcalTowerSumEtConeDR04());
-        ootPhoHcalDepth1TowerSumEtConeDR04.push_back(ootphoton.hcalDepth1TowerSumEtConeDR04());
-        ootPhoCalDepth2TowerSumEtConeDR04.push_back(ootphoton.hcalDepth2TowerSumEtConeDR04());
-        ootPhoHcalTowerSumEtBcConeDR04.push_back(ootphoton.hcalTowerSumEtBcConeDR04() );
-        ootPhoHcalDepth1TowerSumEtBcConeDR04.push_back(ootphoton.hcalDepth1TowerSumEtBcConeDR04());
-        ootPhoHcalDepth2TowerSumEtBcConeDR04.push_back(ootphoton.hcalDepth2TowerSumEtBcConeDR04());
-        ootPhoTrkSumPtSolidConeDR04.push_back(ootphoton.trkSumPtSolidConeDR04());
-        ootPhoTrkSumPtHollowConeDR04.push_back(ootphoton.trkSumPtHollowConeDR04());
-        ootPhoNTrkSolidConeDR04.push_back(ootphoton.nTrkSolidConeDR04());
-        ootPhoNTrkHollowConeDR04.push_back(ootphoton.nTrkHollowConeDR04());
-
-        iOOTPhos++;
-
-		if( DEBUG ) std::cout << " --- Proccesssing : " << ootphoton  << std::endl;
-        const auto &ootphosc = ootphoton.superCluster().isNonnull() ? ootphoton.superCluster() : ootphoton.parentSuperCluster();
-        const auto ootscptr = ootphosc.get();
-        scGroup ootPhoSCGroup{*ootscptr};
-        //auto ootPhoRhGroup = getRHGroup( ootPhoSCGroup, 2.0, hist1d[140], hist1d[141], hist1d[142] );
-        auto ootPhoRhGroup = getRHGroup( ootPhoSCGroup, 0.0 );//bcMinEnergy );
-        auto ootPhoRhIdsGroup = getRhGrpIDs( ootPhoRhGroup );
-        ootPhoRhIds.push_back(ootPhoRhIdsGroup);
-        if( DEBUG ) std::cout << " -- ootPhotons : " << ootscptr << " #: " << ootPhoRhGroup.size() << std::endl;
-        if( ootPhoRhGroup.size() < minObjRHcnt ){
-            ootPhoCMeanTime.push_back( -29.75 );
-            ootPhoSeedTOFTime.push_back( -29.75 );
-            ootPhoSc3dEx.push_back(0.0);
-            ootPhoSc3dEy.push_back(0.0);
-            ootPhoSc3dEz.push_back(0.0);
-            ootPhoSc3dEv.push_back(0.0);
-            ootPhoSc3dEslope.push_back(0.0);
-            ootPhoSc3dEchisp.push_back(0.0);
-            ootPhoSc2dEx.push_back(0.0);
-            ootPhoSc2dEy.push_back(0.0);
-            ootPhoSc2dEv.push_back(0.0);
-            ootPhoSc2dEslope.push_back(0.0);
-            ootPhoSc2dEchisp.push_back(0.0);
-			if( DEBUG ) std::cout << " - Photon 2d/3d: below min RH cnt" << std::endl;
-            continue;
-        }//<<>>if( ootPhoRhGroup.size() < minRHcnt ) ***** IF ootPhoRhGroup.size() > minRHcnt BELOW THIS POINT IN LOOP *****
-        auto tofTimes = getLeadTofRhTime( ootPhoRhGroup, vtxX, vtxY, vtxZ );
-        auto timeStats = getTimeDistStats( tofTimes, ootPhoRhGroup );
-        auto seedTOFTime = getSeedTofTime( *ootscptr, vtxX, vtxY, vtxZ );
-        //auto ootPhoLeadTOFTime =  getLeadTofTime( ootPhoRhGroup, vtxX, vtxY, vtxZ );
-        auto ootPhoSCEigen3D = getRhGrpEigen_ieipt( tofTimes, ootPhoRhGroup );
-        auto ootPhoSCEigen2D = getRhGrpEigen_sph( tofTimes, ootPhoRhGroup );
-
-        ootPhoSc3dEx.push_back(ootPhoSCEigen3D[0]);
-        ootPhoSc3dEy.push_back(ootPhoSCEigen3D[1]);
-        ootPhoSc3dEz.push_back(ootPhoSCEigen3D[2]);
-        ootPhoSc3dEv.push_back(ootPhoSCEigen3D[3]);
-        ootPhoSc3dEslope.push_back(ootPhoSCEigen3D[4]);
-        ootPhoSc3dEchisp.push_back(ootPhoSCEigen3D[5]);
-
-        ootPhoSc2dEx.push_back(ootPhoSCEigen2D[0]);
-        ootPhoSc2dEy.push_back(ootPhoSCEigen2D[1]);
-        ootPhoSc2dEv.push_back(ootPhoSCEigen2D[2]);
-        ootPhoSc2dEslope.push_back(ootPhoSCEigen2D[3]);
-        ootPhoSc2dEchisp.push_back(ootPhoSCEigen2D[4]);
-
-        ootPhoSeedTOFTime.push_back(seedTOFTime);
-        ootPhoCMeanTime.push_back(timeStats[6]);
-
-        if( DEBUG ) std::cout << " - ootPhoton 2d/3d: " << ootPhoSCEigen2D[0] << " " << ootPhoSCEigen2D[1] << " " << ootPhoSCEigen2D[2] << " " 
-						      << ootPhoSCEigen2D[3] << " " << ootPhoSCEigen2D[4] << " / " << ootPhoSCEigen3D[0] << " " << ootPhoSCEigen3D[1] << " " 
-							  << ootPhoSCEigen3D[2] << " " << ootPhoSCEigen3D[3] << " " << ootPhoSCEigen3D[4] << " " << ootPhoSCEigen3D[5] 
-							  << " time: " << timeStats[6] << std::endl;
-
 
         // GenParticle Info for photon  -------------------------------------------------------------------
         if( DEBUG ) std::cout << "Getting phoGenParton Information" << std::endl;
@@ -2546,7 +2308,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
                 auto eta = genPart.eta();
                 auto phi = genPart.phi();
-                auto dr = std::sqrt(reco::deltaR2(eta, phi, ootphoton.eta(), ootphoton.phi() ));
+                auto dr = std::sqrt(reco::deltaR2(eta, phi, photon.eta(), photon.phi() ));
                 auto isPhoton = std::abs(genPart.pdgId()) == 22;
                 if( ( dr < goodDr ) && isPhoton ){
                     matchfound = true;
@@ -3275,58 +3037,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
-    if( true ) { //---------------------------------- ootPhotons lock ------------------------------------------------
-        int iootph(0);
-        auto ootmatched = false;
-		if( DEBUG ) std::cout << "Proccesssing OOTPhoton :" << std::endl;
-  		for( const auto ootphoton : *ootPhotons_ ){
-
-            if( DEBUG ) std::cout << " --- Proccesssing : " << ootphoton  << std::endl;
-            auto pheta = ootphoton.eta();
-            auto phphi = ootphoton.phi();
-            for( const auto kid : jet.daughterPtrVector() ){
-                auto kidcand = (pfcands_->ptrAt(kid.key())).get();
-                //std::cout << " - Matching : " << pfcand.eta() << " = " << kidcand->eta() << std::endl;
-                auto kdeta = kidcand->eta();
-                auto kdphi = kidcand->phi();
-                auto kdpfdr = std::sqrt(reco::deltaR2(pheta, phphi, kdeta, kdphi ));
-                if( kdpfdr <= 0.001 ){ ootmatched = true; if( DEBUG ) std::cout << " --- Matched : " << kdpfdr << std::endl; }
-            }//<<>>for( const auto kid : jet.daughterPtrVector() )
-
-            if( ootmatched ){
-				if( DEBUG ) std:: cout << " ----- OOT Photon Match !!!! " << std::endl;
-                iootph++;
-                nMatched++;
-                const auto &ootphosc = ootphoton.superCluster().isNonnull() ? ootphoton.superCluster() : ootphoton.parentSuperCluster();
-                const auto scptr = ootphosc.get();
-                jetSCGroup.push_back(*scptr);
-                const auto clusters = ootphosc->clusters();
-                const auto &hitsAndFractions = ootphosc->hitsAndFractions();
-                const auto nrh = hitsAndFractions.size();
-                //std::cout << " -- SC match found with nBClusts: " << nBClusts << " nClusters: "<< clusters.size() << std::endl;
-                //std::cout << " -- SC has nRecHits: " << nrh << std::endl;
-                if( nrh < minRHcnt ) continue;
-                if( nrh != 0 ){
-                    for( const auto &clustptr : clusters ){
-                        if( not clustptr.isAvailable() ) continue;
-                        const auto clust = clustptr.get();
-                        jetBCGroup.push_back(*clust);
-                        //std::cout << " --- Adding cluster " << std::endl;
-                    }//<<>>for( const auto &clustptr : clusters ){
-                }//<<>>if( nrh != 0 ){
-                const auto sce = ootphosc->energy();
-                sum_nrh += nrh;
-                sum_sce += sce;
-                sum_phe += ootphoton.energy();
-
-                ootmatched = false;
-            }//<<>>if( matched )
-
-        }//<<>>for( const auto photon : *ootPhotons_ ) 
-
-	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-    } // ------------ ootPhotons lock ------------------------------------------------------------------		
-
     if( true ) { //---------------------------------- electrons lock ------------------------------------------------
         int iel(0);
         bool ematched = false;
@@ -4003,112 +3713,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("genPhoPdgId", &genPhoPdgId);
     outTree->Branch("genPhoLLP", &genPhoLlp);
 
-    //    uInt                nOotPhotons;
-    //    std::vector<float>  ootPhoSeedTOFTimes, ootPhoCMeanTimes;
-    //    std::vector<float>  ootPhoSc3dEx, ootPhoSc3dEy, ootPhoSc3dEz, ootPhoSc3dEv, ootPhoSc3dEslope, ootPhoSc3dEchisp;
-    //    std::vector<float>  ootPhoSc2dEx, ootPhoSc2dEy, ootPhoSc2dEv, ootPhoSc2dEslope, ootPhoSc2dEchisp;
-    //    std::vector<double> ootPhoPt, ootPhoEnergy, ootPhoPhi, ootPhoEta, ootPhoPx, ootPhoPy, ootPhoPz;
-
-    outTree->Branch("nOotPhotons", &nOotPhotons);
-    outTree->Branch("ootPhoSeedTOFTime", &ootPhoSeedTOFTime);
-    outTree->Branch("ootPhoCMeanTime", &ootPhoCMeanTime);
-    outTree->Branch("ootPhoSc3dEx", &ootPhoSc3dEx);
-    outTree->Branch("ootPhoSc3dEy", &ootPhoSc3dEy);
-    outTree->Branch("ootPhoSc3dEz", &ootPhoSc3dEz);
-    outTree->Branch("ootPhoSc3dEv", &ootPhoSc3dEv);
-    outTree->Branch("ootPhoSc3dEslope", &ootPhoSc3dEslope);
-    outTree->Branch("ootPhoSc3dEchisp", &ootPhoSc3dEchisp);
-    outTree->Branch("ootPhoSc2dEx", &ootPhoSc2dEx);
-    outTree->Branch("ootPhoSc2dEy", &ootPhoSc2dEy);
-    outTree->Branch("ootPhoSc2dEv", &ootPhoSc2dEv);
-    outTree->Branch("ootPhoSc2dEslope", &ootPhoSc2dEslope);
-    outTree->Branch("ootPhoSc2dEchisp", &ootPhoSc2dEchisp);
-    outTree->Branch("ootPhoPt", &ootPhoPt);
-    outTree->Branch("ootPhoEnergy", &ootPhoEnergy);
-    outTree->Branch("ootPhoPhi", &ootPhoPhi);
-    outTree->Branch("ootPhoEta", &ootPhoEta);
-    outTree->Branch("ootPhoPx", &ootPhoPx);
-    outTree->Branch("ootPhoPy", &ootPhoPy);
-    outTree->Branch("ootPhoPz", &ootPhoPz);
-    outTree->Branch("ootPhoRhIds", &ootPhoRhIds);
-
-    outTree->Branch("ootPhoIsPFPhoton", &ootPhoIsPFPhoton);
-    outTree->Branch("ootPhoIsStdPhoton", &ootPhoIsStdPhoton);
-    outTree->Branch("ootPhoHasConTracks", &ootPhoHasConTracks);
-    outTree->Branch("ootPhoIsPixelSeed", &ootPhoIsPixelSeed);
-    outTree->Branch("ootPhoIsPhoton", &ootPhoIsPhoton);
-    outTree->Branch("ootPhoIsEB", &ootPhoIsEB);
-    outTree->Branch("ootPhoIsEE", &ootPhoIsEE);
-    outTree->Branch("ootPhoIsEBGap", &ootPhoIsEBGap);
-    outTree->Branch("ootPhoIsEBEtaGap", &ootPhoIsEBEtaGap);
-    outTree->Branch("ootPhoIsEBPhiGap", &ootPhoIsEBPhiGap);
-    outTree->Branch("ootPhoIsEEGap", &ootPhoIsEEGap);
-    outTree->Branch("ootPhoIsEERingGap", &ootPhoIsEERingGap);
-    outTree->Branch("ootPhoIsEEDeeGap", &ootPhoIsEEDeeGap);
-    outTree->Branch("ootPhoIsEBEEGap", &ootPhoIsEBEEGap);
-
-    outTree->Branch("ootPhoHadOverEM", &ootPhoHadOverEM);
-    outTree->Branch("ootPhoHadD1OverEM", &ootPhoHadD1OverEM);
-    outTree->Branch("ootPhoHadD2OverEM", &ootPhoHadD2OverEM);
-    outTree->Branch("ootPhoHadOverEMVaid", &ootPhoHadOverEMVaid);
-    outTree->Branch("ootPhohadTowOverEM", &ootPhohadTowOverEM);
-    outTree->Branch("ootPhohadTowD10OverEM", &ootPhohadTowD10OverEM);
-    outTree->Branch("ootPhohadTowD20OverEM", &ootPhohadTowD20OverEM);
-    outTree->Branch("ootPhohadTowOverEMValid", &ootPhohadTowOverEMValid);
-    outTree->Branch("ootPhoE1x5", &ootPhoE1x5);
-    outTree->Branch("ootPhoE2x5", &ootPhoE2x5);
-    outTree->Branch("ootPhoE3x3", &ootPhoE3x3);
-    outTree->Branch("ootPhoE5x5", &ootPhoE5x5);
-    outTree->Branch("ootPhoMaxEnergyXtal", &ootPhoMaxEnergyXtal);
-    outTree->Branch("ootPhoSigmaEtaEta", &ootPhoSigmaEtaEta);
-    outTree->Branch("ootPhoSigmaIEtaIEta", &ootPhoSigmaIEtaIEta);
-
-    outTree->Branch("ootPhoR1x5", &ootPhoR1x5);
-    outTree->Branch("ootPhoR2x5", &ootPhoR2x5);
-    outTree->Branch("ootPhoR9", &ootPhoR9);
-    outTree->Branch("ootPhoFull5x5_e1x5", &ootPhoFull5x5_e1x5);
-    outTree->Branch("ootPhoFull5x5_e2x5", &ootPhoFull5x5_e2x5);
-    outTree->Branch("ootPhoFull5x5_e3x3", &ootPhoFull5x5_e3x3);
-    outTree->Branch("ootPhoFull5x5_e5x5", &ootPhoFull5x5_e5x5);
-    outTree->Branch("ootPhoFull5x5_maxEnergyXtal", &ootPhoFull5x5_maxEnergyXtal);
-    outTree->Branch("ootPhoFull5x5_sigmaEtaEta", &ootPhoFull5x5_sigmaEtaEta);
-    outTree->Branch("ootPhoFull5x5_sigmaIEtaIEta", &ootPhoFull5x5_sigmaIEtaIEta);
-    //outTree->Branch("ootPhoFull5x5_r1x5 ", &ootPhoFull5x5_r1x5);
-    //outTree->Branch("ootPhoFull5x5_r2x5 ", &ootPhoFull5x5_r2x5);
-    outTree->Branch("ootPhoFull5x5_r9", &ootPhoFull5x5_r9);
-
-    outTree->Branch("ootPhoNSatXtals", &ootPhoNSatXtals);
-    outTree->Branch("ootPhoIsSeedSat", &ootPhoIsSeedSat);
-
-    outTree->Branch("ootPhoMipChi2", &ootPhoMipChi2);
-    outTree->Branch("ootPhoMipTotEnergy", &ootPhoMipTotEnergy);
-    outTree->Branch("ootPhoMipSlope", &ootPhoMipSlope);
-    outTree->Branch("ootPhoMipInter", &ootPhoMipInter);
-
-    outTree->Branch("ootPhoMipNHitCone", &ootPhoMipNHitCone);
-    outTree->Branch("ootPhoMipIsHalo", &ootPhoMipIsHalo);
-
-    outTree->Branch("ootPhoEcalRHSumEtConeDR04", &ootPhoEcalRHSumEtConeDR04);
-    outTree->Branch("ootPhoHcalTwrSumEtConeDR04", &ootPhoHcalTwrSumEtConeDR04);
-    outTree->Branch("ootPhoHcalDepth1TowerSumEtConeDR04", &ootPhoHcalDepth1TowerSumEtConeDR04);
-    outTree->Branch("ootPhoCalDepth2TowerSumEtConeDR04", &ootPhoCalDepth2TowerSumEtConeDR04);
-    outTree->Branch("ootPhoHcalTowerSumEtBcConeDR04", &ootPhoHcalTowerSumEtBcConeDR04);
-    outTree->Branch("ootPhoHcalDepth1TowerSumEtBcConeDR04", &ootPhoHcalDepth1TowerSumEtBcConeDR04);
-    outTree->Branch("ootPhoHcalDepth2TowerSumEtBcConeDR04", &ootPhoHcalDepth2TowerSumEtBcConeDR04);
-    outTree->Branch("ootPhoTrkSumPtHollowConeDR04", &ootPhoTrkSumPtHollowConeDR04);
-    outTree->Branch("ootPhoTrkSumPtSolidConeDR04", &ootPhoTrkSumPtSolidConeDR04);
-    outTree->Branch("ootPhoNTrkSolidConeDR04", &ootPhoNTrkSolidConeDR04);
-    outTree->Branch("ootPhoNTrkHollowConeDR04", &ootPhoNTrkHollowConeDR04);
-
-    outTree->Branch("genOOTPhoPt", &genOOTPhoPt); 
-    outTree->Branch("genOOTPhoEnergy", &genOOTPhoEnergy); 
-    outTree->Branch("genOOTPhoPhi", &genOOTPhoPhi); 
-    outTree->Branch("genOOTPhoEta", &genOOTPhoEta); 
-    outTree->Branch("genOOTPhoPx", &genOOTPhoPx); 
-    outTree->Branch("genOOTPhoPy", &genOOTPhoPy); 
-    outTree->Branch("genOOTPhoPz", &genOOTPhoPz); 
-    outTree->Branch("genOOTPhoPdgId", &genOOTPhoPdgId); 
-    outTree->Branch("genOOTPhoLLP", &genOOTPhoLlp);
 
     //    uInt                nElectrons;
     //    std::vector<float>  eleSeedTOFTimes, eleCMeanTimes;
