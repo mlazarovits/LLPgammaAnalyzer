@@ -1720,7 +1720,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	}//<<>>for(const auto& genPart : *genParticles_ )
 
     //------------------------------------------------------------------------------------
-    if( DEBUG ) std::cout << "Processing RecHits" << std::endl;
+    std::cout << "Processing RecHits" << std::endl;
 
     auto nRecHitCnt(0);
     nRecHits = 0;
@@ -1750,6 +1750,9 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     rhpedrms12.clear();
     rhpedrms6.clear();
     rhpedrms1.clear();
+
+    
+
 
 
     if( DEBUG ) std::cout << " - enetering RecHit loop" << std::endl;
@@ -2553,7 +2556,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     jetOOTPhMuTime.clear();
     jetEleMuTime.clear();
 
-    //jetDrRhIds.clear();
+    jetDrRhIds.clear();
 	//jetScRhIds.clear();
 
 	jetPHM.clear();
@@ -2596,7 +2599,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     jetDrLeadPhi.clear();
     jetDrLeadEnr.clear();
     
-    sJetDrRHEnergy.clear();
+    jetDrRHEnergy.clear();
     jetDrEMF.clear();
     jetDrRhCnt.clear();
     
@@ -2615,11 +2618,11 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     jetGenTOF.clear();
     
     nJetScMatch.clear();
-    sJetScEnergy.clear();
-    sJetScPhEnergy.clear();
+    jetScEnergy.clear();
+    jetScPhEnergy.clear();
 
 	jetScRhCnt.clear();    
-    sJetScRhEnergy.clear();
+    jetScRhEnergy.clear();
     jetScEMF.clear();
     
     jetImpactAngle.clear();
@@ -2732,14 +2735,14 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	   	if( DEBUG ) std::cout << "Getting jet dR rechit group" << std::endl; 
 		auto jetDrRhGroup = getRHGroup( jet.eta(), jet.phi(), deltaRminJet, minRHenr ); 
-        //auto jetDrRhIdsGroup = getRhGrpIDs( jetDrRhGroup );
-        //jetDrRhIds.push_back(jetDrRhIdsGroup);
+        auto jetDrRhIdsGroup = getRhGrpIDs( jetDrRhGroup );
+        jetDrRhIds.push_back(jetDrRhIdsGroup);
 		auto rhCount = jetDrRhGroup.size();
 
 	   	//std::cout << "rhCount is " << rhCount << std::endl;
 	   	auto sumdrrhe = getRhGrpEnr( jetDrRhGroup );
 		auto dremf = sumdrrhe/jet.energy();
-		sJetDrRHEnergy.push_back(sumdrrhe);
+		jetDrRHEnergy.push_back(sumdrrhe);
 		jetDrEMF.push_back(dremf);
         jetDrRhCnt.push_back(rhCount);
 
@@ -3109,8 +3112,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
 		nJetScMatch.push_back(nMatched);
-		sJetScEnergy.push_back(sum_sce);
-		sJetScPhEnergy.push_back(sum_phe);
+		jetScEnergy.push_back(sum_sce);
+		jetScPhEnergy.push_back(sum_phe);
 
 		if( DEBUG ) std::cout << " -- get jetScRhGroup " << std::endl;
 		auto jetScRhGroup = getRHGroup( jetSCGroup, minRHenr );
@@ -3123,7 +3126,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 		auto sumscrhe = getRhGrpEnr(jetScRhGroup);
 		auto scemf = sumscrhe/jet.energy();
 
-		sJetScRhEnergy.push_back(sumscrhe);
+		jetScRhEnergy.push_back(sumscrhe);
         jetScEMF.push_back(scemf);
 
 		if( jetScRhGroup.size() >= minRHcnt && scemf > minEmf ){
@@ -3486,30 +3489,21 @@ void LLPgammaAnalyzer_AOD::beginJob(){
       	ebeeMapE[it] = fs->make<TH2D>( ste.c_str(), ste.c_str(), 361, -90, 90, 721, 0, 360);
 	}//<<>>for(int it=0; it<nEBEEMaps; it++)
 
-	std::cout << "Histograms Booked" << std::endl;
+	std::cout << "Analyzer making trees" << std::endl;
 
 	// Create output Tree branches -----------------------------
 	//     outTree->Branch("",&);
 
 	// Run, Lumi, Event info
-    //    ulInt               event; // technically unsigned long long in Event.h...
-    //    uInt                run, lumi;
 
 	outTree->Branch("run", &run);
 	outTree->Branch("lumi", &lumi);
 	outTree->Branch("event", &event, "event/l");
 
-    //    int                 nVtx;
-    //    float               vtxX, vtxY, vtxZ;
-
     outTree->Branch("nVtx", &nVtx);
     outTree->Branch("vtxX", &vtxX);
     outTree->Branch("vtxY", &vtxY);
     outTree->Branch("vtxZ", &vtxZ);
-
-    //    uInt                nJets, nGoodDrJets, nGoodScJets, nGoodBcJets, nUnJets;
-    //    float               jetHt;
-    // xxx   uInt                nGoodJetEvents;
 
     outTree->Branch("jetHt", &jetHt);
     outTree->Branch("nJets", &nJets);
@@ -3518,12 +3512,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("nGoodBcJets", &nGoodBcJets);
     outTree->Branch("nUnJets", &nUnJets);
 
-	// Jet info
-    //    std::vector<float>  jetE, jetPt, jetPhi, jetEta;
-	// xxx   std::vector<float>  jetEtaetaMmt, jetPhiphiMnt, jetEtaphiMnt, jetMaxD, jetConPtDis, jetConEtaPhiSprd, jetArea;
-    // xxx   std::vector<uInt>   jetNCarry, jetNConst;
-    //    std::vector<float>  jetNHF, jetNEMF, jetCHF, jetCEMF, jetMUF, jetNHM, jetCHM, jetC, jetPHE, jetPHEF;
-    //    std::vector<float>  jetELE, jetELEF, jetMUE, jetCharge;
 	
 	outTree->Branch("jetE", &jetE);
 	outTree->Branch("jetPt", &jetPt);
@@ -3547,40 +3535,27 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     //outTree->Branch("jetCharge", &jetCharge);
     outTree->Branch("jetID", &jetID);
 
-    //    std::vector<int>    jetID, njetKids, jetKidOfJet, njetSubs, njetRecHits, jetRecHitOfJet;
-    //    std::vector<int>    jetKidPdgID, jetKidCharge, jetKid3Charge, jetPHM, jetELM;
-    //    std::vector<uInt>   jetRecHitId;
-    //    std::vector<bool>   jetKidLLP;
-    //    std::vector<double> jetKidMass, jetKidVx, jetKidVy, jetKidVz;
-    //    std::vector<float>  jetKidE, jetKidPt, jetKidPhi, jetKidEta, jetKidTime, jetKidMedTime;
 
-    //outTree->Branch("jetKidPdgID",&jetKidPdgID);
+    outTree->Branch("jetKidPdgID",&jetKidPdgID);
     //outTree->Branch("jetKidCharge",&jetKidCharge);
     //outTree->Branch("jetKid3Charge",&jetKid3Charge);
     //outTree->Branch("jetPHM",&jetPHM);
     //outTree->Branch("jetELM",&jetELM);
-	//outTree->Branch("jetKidE", &jetKidE);
-	//outTree->Branch("jetKidPt", &jetKidPt);
-	//outTree->Branch("jetKidPhi", &jetKidPhi);
-	//outTree->Branch("jetKidEta", &jetKidEta);
-	//outTree->Branch("jetRecHitId",&jetRecHitId);
+	outTree->Branch("jetKidE", &jetKidE);
+	outTree->Branch("jetKidPt", &jetKidPt);
+	outTree->Branch("jetKidPhi", &jetKidPhi);
+	outTree->Branch("jetKidEta", &jetKidEta);
+	outTree->Branch("jetRecHitId",&jetRecHitId);
 	//outTree->Branch("jetKidLLP",&jetKidLLP);
-	//outTree->Branch("jetKidMass", &jetKidMass);
-	//outTree->Branch("jetKidVx", &jetKidVx);
-	//outTree->Branch("jetKidVy", &jetKidVy);
-	//outTree->Branch("jetKidVz", &jetKidVz);
-	//outTree->Branch("jetKidTime", &jetKidTime);
+	outTree->Branch("jetKidMass", &jetKidMass);
+	outTree->Branch("jetKidVx", &jetKidVx);
+	outTree->Branch("jetKidVy", &jetKidVy);
+	outTree->Branch("jetKidVz", &jetKidVz);
+	outTree->Branch("jetKidTime", &jetKidTime);
 	//outTree->Branch("jetKidMedTime", &jetKidMedTime);
 	//outTree->Branch("njetSubs", &njetSubs);
 
-    // xxx    std::vector<float>  jetPhMuTime, jetOOTPhMuTime, jetEleMuTime;
-
-    //    uInt                nCaloJets;
-    //    std::vector<float>  cljSeedTOFTimes, cljCMeanTimes;
-    //    std::vector<float>  cljBc3dEx, cljBc3dEy, cljBc3dEz, cljBc3dEv, cljBc3dEslope, cljBc3dEchisp;
-    //    std::vector<float>  cljBc2dEx, cljBc2dEy, cljBc2dEv, cljBc2dEslope, cljBc2dEchisp;
-    //    std::vector<double> cljPt, cljEnergy, cljPhi, cljEta, cljPx, cljPy, cljPz;
-
+/*
     outTree->Branch("cljBcCnt", &cljBcCnt);
     outTree->Branch("nCaloJets", &nCaloJets);
     //outTree->Branch("cljRhIds", &cljRhIds);
@@ -3605,12 +3580,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("cljPx", &cljPx);
     outTree->Branch("cljPy", &cljPy);
     outTree->Branch("cljPz", &cljPz);
-
-    //    uInt                nPhotons;
-    //    std::vector<float>  phoSeedTOFTimes, phoCMeanTimes;
-    //    std::vector<float>  phoSc3dEx, phoSc3dEy, phoSc3dEz, phoSc3dEv, phoSc3dEslope, phoSc3dEchisp;
-    //    std::vector<float>  phoSc2dEx, phoSc2dEy, phoSc2dEv, phoSc2dEslope, phoSc2dEchisp;
-    //    std::vector<double> phoPt, phoEnergy, phoPhi, phoEta, phoPx, phoPy, phoPz;
+*/
 
     outTree->Branch("nPhotons", &nPhotons);
     outTree->Branch("phoSeedTOFTime", &phoSeedTOFTime);
@@ -3635,6 +3605,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("phoPz", &phoPz);
     outTree->Branch("phoRhIds", &phoRhIds);
 
+/*
     outTree->Branch("phoIsPFPhoton", &phoIsPFPhoton);
     outTree->Branch("phoIsStdPhoton", &phoIsStdPhoton);
     outTree->Branch("phoHasConTracks", &phoHasConTracks);
@@ -3702,7 +3673,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("phoTrkSumPtHollowConeDR04", &phoTrkSumPtHollowConeDR04);
     outTree->Branch("phoNTrkSolidConeDR04", &phoNTrkSolidConeDR04);
     outTree->Branch("phoNTrkHollowConeDR04", &phoNTrkHollowConeDR04);
-
     outTree->Branch("genPhoPt", &genPhoPt);
     outTree->Branch("genPhoEnergy", &genPhoEnergy);
     outTree->Branch("genPhoPhi", &genPhoPhi);
@@ -3713,16 +3683,12 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("genPhoPdgId", &genPhoPdgId);
     outTree->Branch("genPhoLLP", &genPhoLlp);
 
-
-    //    uInt                nElectrons;
-    //    std::vector<float>  eleSeedTOFTimes, eleCMeanTimes;
-    //    std::vector<float>  eleSc3dEx, eleSc3dEy, eleSc3dEz, eleSc3dEv, eleSc3dEslope, eleSc3dEchisp;
-    //    std::vector<float>  eleSc2dEx, eleSc2dEy, eleSc2dEv, eleSc2dEslope, eleSc2dEchisp;
-    //    std::vector<double> elePt, eleEnergy, elePhi, eleEta, elePx, elePy, elePz;
+*/
 
     outTree->Branch("nElectrons", &nElectrons);
     //outTree->Branch("eleRhIds", &eleRhIds); 
     outTree->Branch("eleSeedTOFTime", &eleSeedTOFTime);
+  /*
     outTree->Branch("eleCMeanTime", &eleCMeanTime);
     outTree->Branch("eleSc3dEx", &eleSc3dEx);
     outTree->Branch("eleSc3dEy", &eleSc3dEy);
@@ -3735,6 +3701,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("eleSc2dEv", &eleSc2dEv);
     outTree->Branch("eleSc2dEslope", &eleSc2dEslope);
     outTree->Branch("eleSc2dEchisp", &eleSc2dEchisp);
+    */
     outTree->Branch("elePt", &elePt);
     outTree->Branch("eleEnergy", &eleEnergy);
     outTree->Branch("elePhi", &elePhi);
@@ -3743,7 +3710,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("elePy", &elePy);
     outTree->Branch("elePz", &elePz);
 
-    //    std::vector<float>  jetSumEPFrac, jetEPEnergy, jetEMEnergy, jetEMEnrFrac, jetEPEnrFrac;
 
     outTree->Branch("jetSumEPFrac", &jetSumEPFrac);
     outTree->Branch("jetEPEnergy", &jetEPEnergy);
@@ -3751,28 +3717,16 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("jetEMEnrFrac", &jetEMEnrFrac);
     outTree->Branch("jetEPEnrFrac", &jetEPEnrFrac);
 
-    //    std::vector<float>  jetDrLeadEta, jetDrLeadPhi, jetDrLeadEnr;
-    //    std::vector<uInt>   jetDrRhCnt;
-    //    std::vector<float>  sJetDrRHEnergy, jetDrEMF;
-
-    //    std::vector<uInt>   nJetScMatch, jetScRhCnt;
-    //    std::vector<float>  sJetScEnergy, sJetScPhEnergy, sJetScRhEnergy, jetScEMF;
-
-    //    std::vector<uInt>   jetBcTimesCnt, jetBcRhCnt, jetBcGrpCnt;
-    //    std::vector<float>  jetBcSumRHEnr, jetBcEMFr;
-
-    //    std::vector<float>  jetMuTime, jetTimeError, jetTimeRMS, jetMedTime, jetCMuTime, jetCMedTime;
-    //    std::vector<float>  jetSCMuTime, jetSCMedTime, jetCSCMuTime, jetCSCMedTime, jetCBCMuTime, jetCBCMedTime;
 
     outTree->Branch("jetDrLeadEta", &jetDrLeadEta);
     outTree->Branch("jetDrLeadPhi", &jetDrLeadPhi);
     outTree->Branch("jetDrLeadEnr", &jetDrLeadEnr);
 
-    outTree->Branch("sJetDrRHEnergy", &sJetDrRHEnergy);
+    outTree->Branch("jetDrRHEnergy", &jetDrRHEnergy);
     outTree->Branch("jetDrEMF", &jetDrEMF);
     outTree->Branch("jetDrRhCnt", &jetDrRhCnt);
-    //outTree->Branch("jetDrRhIds", &jetDrRhIds);
-
+    outTree->Branch("jetDrRhIds", &jetDrRhIds);
+/*
     outTree->Branch("jetBcTimesCnt", &jetBcTimesCnt);
     outTree->Branch("jetBcSumRHEnr", &jetBcSumRHEnr);
     outTree->Branch("jetBcEMFr", &jetBcEMFr);
@@ -3782,26 +3736,25 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("nJetScMatch", &nJetScMatch);
     outTree->Branch("jetScRhCnt", &jetScRhCnt);
     //outTree->Branch("jetScRhIds", &jetScRhIds);
-    outTree->Branch("sJetScEnergy", &sJetScEnergy);
-    outTree->Branch("sJetScPhEnergy", &sJetScPhEnergy);
-    outTree->Branch("sJetScRhEnergy", &sJetScRhEnergy);
+    outTree->Branch("jetScEnergy", &jetScEnergy);
+    outTree->Branch("jetScPhEnergy", &jetScPhEnergy);
+    outTree->Branch("jetScRhEnergy", &jetScRhEnergy);
     outTree->Branch("jetScEMF", &jetScEMF);
-
-    outTree->Branch("jetDRMuTime", &jetMuTime);
-    outTree->Branch("jetDRTimeError", &jetTimeError);
-    outTree->Branch("jetDRTimeRMS", &jetTimeRMS);
-    outTree->Branch("jetDRMedTime", &jetMedTime);
+*/
+    //outTree->Branch("jetDRMuTime", &jetMuTime);
+    //outTree->Branch("jetDRTimeError", &jetTimeError);
+    //outTree->Branch("jetDRTimeRMS", &jetTimeRMS);
+    //outTree->Branch("jetDRMedTime", &jetMedTime);
     outTree->Branch("jetCDRMuTime", &jetCMuTime);
     outTree->Branch("jetCDRMedTime", &jetCMedTime);
+/*
     outTree->Branch("jetSCMuTime", &jetSCMuTime);
     outTree->Branch("jetSCMedTime", &jetSCMedTime);
     outTree->Branch("jetCSCMuTime", &jetCSCMuTime);
     outTree->Branch("jetCSCMedTime", &jetCSCMedTime);
     outTree->Branch("jetCBCMuTime", &jetCBCMuTime);
     outTree->Branch("jetCBCMedTime", &jetCBCMedTime);
-
-    //    std::vector<float>  jetGenImpactAngle, jetGenTime, jetGenPt, jetGenEta, jetGenEnergy, jetGenEMFrac, jetGenDrMatch;
-    //    std::vector<float>  jetGenTimeVar, jetGenTimeLLP, jetGenLLPPurity, jetGenNextBX, jetGenNKids, jetGenTOF;
+*/
 
     outTree->Branch("jetGenImpactAngle", &jetGenImpactAngle);
     outTree->Branch("jetGenTime", &jetGenTime);
@@ -3812,25 +3765,19 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("jetGenDrMatch", &jetGenDrMatch);
     outTree->Branch("jetGenTimeVar", &jetGenTimeVar);
     outTree->Branch("jetGenTimeLLP", &jetGenTimeLLP);
-    outTree->Branch("jetGenLLPPurity", &jetGenLLPPurity);
-    outTree->Branch("jetGenNextBX", &jetGenNextBX);
+    //outTree->Branch("jetGenLLPPurity", &jetGenLLPPurity);
+    //outTree->Branch("jetGenNextBX", &jetGenNextBX);
     outTree->Branch("jetGenNKids", &jetGenNKids);
     outTree->Branch("jetGenTOF", &jetGenTOF);
 
-    //    std::vector<float>  jetImpactAngle;
-    //    std::vector<float>  jetSc3dEx, jetSc3dEy, jetSc3dEz, jetSc3dEv, jetSc3dEslope, jetSc3dEchisp;
-
     outTree->Branch("jetImpactAngle", &jetImpactAngle);
+/*
     outTree->Branch("jetSc3dEx", &jetSc3dEx);
     outTree->Branch("jetSc3dEy", &jetSc3dEy);
     outTree->Branch("jetSc3dEz", &jetSc3dEz);
     outTree->Branch("jetSc3dEv", &jetSc3dEv);
     outTree->Branch("jetSc3dEslope", &jetSc3dEslope);
     outTree->Branch("jetSc3dEchisp", &jetSc3dEchisp);
-
-    //    std::vector<float>  jetSc2dEx, jetSc2dEy, jetSc2dEv, jetSc2dEslope, jetSc2dEchisp;
-    //    std::vector<float>  jetSc2dEslope2, jetSc2dEchisp2, jetSc2dErangle, jetSc2dEnxsum;
-
     outTree->Branch("jetSc2dEx", &jetSc2dEx);
     outTree->Branch("jetSc2dEy", &jetSc2dEy);
     outTree->Branch("jetSc2dEv", &jetSc2dEv);
@@ -3840,16 +3787,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("jetSc2dEchisp2", &jetSc2dEchisp2);
     outTree->Branch("jetSc2dErangle", &jetSc2dErangle);
     outTree->Branch("jetSc2dEnxsum", &jetSc2dEnxsum);
-
-    //    int nRecHits;
-    //    std::vector<float>  rhPosX, rhPosY, rhPosZ, rhPosEta, rhPosPhi;
-    //    std::vector<uInt>   rhID, rhXtalI1, rhXtalI2, rhSubdet;
-    //    std::vector<float>  rhEnergy, rhTime, rhTimeErr, rhTOF;
-    //    std::vector<bool>   rhisOOT, rhisGS6, rhisGS1;
-    //    std::vector<float>  rhadcToGeV;
-	//    std::vector<float>  rhped12, rhped6, rhped1;
-    //    std::vector<float>  rhpedrms12, rhpedrms6, rhpedrms1;
-
+*/
     outTree->Branch("nRecHits", &nRecHits);
     outTree->Branch("rhPosX", &rhPosX);
     outTree->Branch("rhPosY", &rhPosY);
@@ -3861,6 +3799,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("rhTimeErr", &rhTimeErr);
     outTree->Branch("rhTOF", &rhTOF);
     outTree->Branch("rhID", &rhID);
+/*
     outTree->Branch("rhXtalI1", &rhXtalI1);
     outTree->Branch("rhXtalI2", &rhXtalI2);
     outTree->Branch("rhSubdet", &rhSubdet);
@@ -3874,7 +3813,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("rhpedrms12", &rhpedrms12);
     outTree->Branch("rhpedrms6", &rhpedrms6);
     outTree->Branch("rhpedrms1", &rhpedrms1);
-
+*/
     outTree->Branch("metSumEt", &metSumEt);
     outTree->Branch("metPt", &metPt);
     outTree->Branch("metPx", &metPx);
