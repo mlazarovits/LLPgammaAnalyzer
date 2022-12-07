@@ -48,7 +48,7 @@ options.register('processName','TREE',VarParsing.multiplicity.singleton,VarParsi
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v6.root' # adding photon information
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v7.root' # adding ootphoton information
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v8.root' #  added genparticle info for photons, changed genjet to best dr match
-outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v9.root' # modded genpart to match only photons, mom count on genpart collection
+outfilename = 'ntuples/GMSB_MC_AODSIM_100TeV_cTau200to10000cm.root' # modded genpart to match only photons, mom count on genpart collection
 
 options.register('outputFileName',outfilename,VarParsing.multiplicity.singleton,VarParsing.varType.string,'output file name created by cmsRun');
 
