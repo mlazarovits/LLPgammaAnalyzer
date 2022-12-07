@@ -410,11 +410,11 @@ class LLPgammaAnalyzer_AOD : public edm::one::EDAnalyzer<edm::one::SharedResourc
         std::vector<float>  jetSumEPFrac, jetEPEnergy, jetEMEnergy, jetEMEnrFrac, jetEPEnrFrac;
         std::vector<float>  jetDrLeadEta, jetDrLeadPhi, jetDrLeadEnr;
         std::vector<uInt>   jetDrRhCnt;
-        std::vector<float>  sJetDrRHEnergy, jetDrEMF;
+        std::vector<float>  jetDrRHEnergy, jetDrEMF;
         std::vector<rhIdGroup> jetDrRhIds;
 
         std::vector<uInt>   nJetScMatch, jetScRhCnt;
-        std::vector<float>  sJetScEnergy, sJetScPhEnergy, sJetScRhEnergy, jetScEMF;
+        std::vector<float>  jetScEnergy, jetScPhEnergy, jetScRhEnergy, jetScEMF;
         std::vector<rhIdGroup> jetScRhIds;
 
         std::vector<rhIdGroup> jetBcRhIds;

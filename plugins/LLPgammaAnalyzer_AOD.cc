@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "LLPGamma/LLPgammaAnalyzer/plugins/LLPgammaAnalyzer_AOD.hh"
+#include "LLPgammaAnalyzer_AOD.hh"
 using namespace std;
 
 //#define DEBUG true
@@ -1838,7 +1838,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         nRecHitCnt++;
         if( DEBUG ) std::cout << " -- next rechit" << std::endl;
 
-    }//<<>>for (const auto recHit : *recHitsEB_ )   
+    }//<<>>for (const auto recHit : frechits )   
     nRecHits = nRecHitCnt;
 
     //-------------------------------------------------------------------------------------
@@ -2242,7 +2242,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
                 }//<<>>if( jtgjdr <= goodDr )
                 index++;
 
-            }//<<>>for(const auto& genJet : *genJets_ ) 
+            }//<<>>for(const auto& genParticle : *genParticles_ ) 
 
             if( matchedIdx >= 0 ){
 
@@ -2263,7 +2263,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
             }//<<>>if( matchedIdx >= 0 ) 
 
-            if( not matchfound ){ if( DEBUG ) std::cout << " - genpho GenTime : genPho == 0 " << std::endl; } //genPhoTime = -50.0; }
+            if( not matchfound ){ if( DEBUG ) std::cout << " - genpho GenTime : genPho == 0 " << std::endl; }
 
             // load event level vectors for this part with gen info
 			genPhoPt.push_back(genPt);
@@ -2277,7 +2277,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     		genPhoLlp.push_back(genLlp);
 
             if( DEBUG ) std::cout << " ---------------------------------------------------- " << std::endl;
-
         }//<<>>if( hasGenInfo )
 
     }//<<>>for( const auto photon : *gedPhotons_ )
@@ -2286,80 +2285,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	//-------------------------------------------------------------------------------------------------------
 
 
-        // GenParticle Info for photon  -------------------------------------------------------------------
-        if( DEBUG ) std::cout << "Getting phoGenParton Information" << std::endl;
-
-        // set defaults for no match here
-        auto genPt = -1.0;
-        auto genEnergy = -1.0;
-        auto genPhi = 0.0;
-        auto genEta = 0.0;
-        auto genPx = 0.0;
-        auto genPy = 0.0;
-        auto genPz = 0.0;
-        auto genPdgId = 0;
-        auto genLlp = 0;
-    
-        if( hasGenInfo ){
-            if( DEBUG ) std::cout << " -- Pulling pho gen info " << std::endl;
-
-            bool matchfound(false);
-            float goodDr(0.1);
-            int matchedIdx(-1);
-            int index(0);
-            for(const auto& genPart : *genParticles_ ){
-
-                auto eta = genPart.eta();
-                auto phi = genPart.phi();
-                auto dr = std::sqrt(reco::deltaR2(eta, phi, photon.eta(), photon.phi() ));
-                auto isPhoton = std::abs(genPart.pdgId()) == 22;
-                if( ( dr < goodDr ) && isPhoton ){
-                    matchfound = true;
-                    goodDr = dr;
-                    matchedIdx = index;
-                }//<<>>if( jtgjdr <= goodDr )
-                index++;
-
-            }//<<>>for(const auto& genJet : *genJets_ )
-
-            if( matchedIdx >= 0 ){
-
-                auto genPart = (*genParticles_)[matchedIdx];
-                auto isGenLLP = fgenpartllp[matchedIdx];
-                if( DEBUG ) std::cout << " --- pho-GenPart dR match : " << goodDr << std::endl;
- 
-                // set varibles with gen values
-                genPt = genPart.pt();
-                genEnergy = genPart.energy();
-                genPhi = genPart.phi();
-                genEta = genPart.eta();
-                genPx = genPart.px();
-                genPy = genPart.py();
-                genPz = genPart.pz();
-                genPdgId = genPart.pdgId();
-                genLlp = isGenLLP;
-
-            }//<<>>if( matchedIdx >= 0 ) 
- 
-            if( not matchfound ){ if( DEBUG ) std::cout << " - genpho GenTime : genPho == 0 " << std::endl; } //genPhoTime = -50.0; }
-
-            // load event level vectors for this part with gen info
-            genOOTPhoPt.push_back(genPt);
-            genOOTPhoEnergy.push_back(genEnergy);
-            genOOTPhoPhi.push_back(genPhi);
-            genOOTPhoEta.push_back(genEta);
-            genOOTPhoPx.push_back(genPx);
-            genOOTPhoPy.push_back(genPy);
-            genOOTPhoPz.push_back(genPz);
-            genOOTPhoPdgId.push_back(genPdgId);
-            genOOTPhoLlp.push_back(genLlp);
- 
-            if( DEBUG ) std::cout << " ---------------------------------------------------- " << std::endl;
-
-        }//<<>>if( hasGenInfo )
-
-    }//<<>>for( const auto photon : *gedPhotons_ )
-	nOotPhotons = iOOTPhos;
 
 	//------------------------------------------------------------------------------------------
 
@@ -2780,7 +2705,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 		   	//std::cout << "Lead Jet dR RH Group E: " << sc_enr << " eta: " << sc_eta << " phi: " << sc_phi << std::endl;
 
    	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-      	//<<<<if( rhCount >= minRHcnt ){
 
 			//  make jettime varible
 	      	//for( auto t : tofTimes ) hist1d[5]->Fill(t);
@@ -2809,8 +2733,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( jcmutime > -28.9 ) nGoodDrJets++;			
 
 
-   	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-      	//<<<<if( rhCount >= minRHcnt ){
 
 
 		} else { //<<>>if( rhCount > minRHcnt && dremf > minEmf )
@@ -2825,7 +2747,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			
 		}//<<>>if( rhCount > minRHcnt && dremf > minEmf ) : else
 		
-	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
+	//jet end<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
 		// GenJet Info for MC  -------------------------------------------------------------------
 		// ---------------------------------------------------------------------------------------
@@ -2972,7 +2894,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         vector<float> eleEnergy;
         vector<float> eleDr;
 
-    //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
 	if( true ) { //---------------------------------- gedPhotons lock ------------------------------------------------
         int iph(0);
@@ -2997,8 +2918,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			}//<<>>for( const auto kid : jet.daughterPtrVector() )
 
 
-   	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-      	//<<<<for( const auto photon : *gedPhotons_ ){ 
   
 	      	if( pmatched ){
 				if( DEBUG ) std:: cout << " ----- Photon Match !!!! " << std::endl;
@@ -3021,8 +2940,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	         			const auto clust = clustptr.get();
 						jetBCGroup.push_back(*clust);
 						//std::cout << " --- Adding cluster " << std::endl;
-					}//<<>>for( const auto &clustptr : clusters ){
-				}//<<>>if( nrh != 0 ){
+					}//<<>>for( const auto &clustptr : clusters )
+				}//<<>>if( nrh != 0 )
 	         	const auto sce = phosc->energy();
 				sum_nrh += nrh;
 				sum_sce += sce;
@@ -3048,8 +2967,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 			if( DEBUG ) std::cout << " --- Proccesssing : " << electron  << std::endl;
 
-   	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-      	//<<<<for( const auto electron : *electrons_ ){
 
             auto eleeta = electron.eta();
             auto elephi = electron.phi();
@@ -3075,8 +2992,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 					}//<<>>if( scit == *scptr ) 
 				}//<<>>for( const auto scit : jetSCGroup )
 
-    //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-        //<<<<for( const auto electron : *electrons_ ){
 
 				if( not found ){ // in list of SC already found
 					iel++;
@@ -3136,8 +3051,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	 		auto jetSCtofTimes = getLeadTofRhTime( jetScRhGroup, vtxX, vtxY, vtxZ );
 	 		auto jetSCTimeStats = getTimeDistStats( jetSCtofTimes, jetScRhGroup );
 
-			//if( useJetSC ){  //  use for jetSC eigen info
-				//std::cout << " --- get jetSC eigen vectors " << std::endl;
             auto jetSCEigen3D = getRhGrpEigen_ieipt( jetSCtofTimes, jetScRhGroup );
     	    auto jetSCEigen2D = getRhGrpEigen_sph( jetSCtofTimes, jetScRhGroup );
             auto impangle = getATan2( hypo( jet.px(), jet.py()), jet.pz());
@@ -3189,8 +3102,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	            auto bcRhGroup = getRHGroup( bc, bcMinEnergy );
 				if( not isRhGrpEx( bcRhGroup ) ) std::cout << " --- !!!!! bcRhGroup is not exclusive !!! " << std::endl;
 				//int bcRhGroupSize = bcRhGroup.size();
-				//if( bcRhGroupSize < bcMinRHGrpSize ) continue; //std::cout << " ---- bcRhGroup empty : skip " << std::endl; continue; }
-				if( bcRhGroup.size() < bcMinRHGrpSize ) continue; //std::cout << " ---- bcRhGroup empty : skip " << std::endl; continue; }
+				//if( bcRhGroupSize < bcMinRHGrpSize ) continue; //std::cout << " ---- bcRhGroup empty : skip " << std::endl; continue; 
+				if( bcRhGroup.size() < bcMinRHGrpSize ) continue; //std::cout << " ---- bcRhGroup empty : skip " << std::endl; continue; 
 				bcRhGroups.push_back(bcRhGroup);
 				bcEnergies.push_back(bc.energy());
 				uInt it(0); for(auto fbc : unusedfbclusts){if(bc.seed() == fbc.seed()){unusedfbclusts.erase(unusedfbclusts.begin()+it); break;}it++;}
@@ -3226,8 +3139,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 				for(const auto rh : bcRhGroup ) hist2d[49]->Fill(rh.time(), rh.energy());
             }//<<>>for( auto bc : jetBCGroup )
 
-  	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-        //<<<<if( jetScRhGroup.size() >= minRHcnt ){
 
 			if( DEBUG ) std::cout << " -- Get energy and rh count for unused basics clusters" << std::endl;
 			vector<float> fbcRhGrpEnergy;
@@ -3258,9 +3169,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
             	}//<<>>for (const auto recHit : jetDrRhGroup )
 				if( DEBUG ) std::cout << " --- fill BC/T/E ecal map" << std::endl;
 
-    //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-        //<<<<if( jetScRhGroup.size() >= minRHcnt ){
-			//<<<<if( nGoodJetEvents < nEBEEMaps && nJets > 2 )
 
 				for( uInt it = 0; it < bcRhGroups.size(); it++ ){
 					for (const auto recHit : bcRhGroups[it] ){
@@ -3284,8 +3192,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 			}//<<>>if( nGoodJetEvents < nEBEEMaps ? && ... )
 
-   	//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-        //<<<<if( jetScRhGroup.size() >= minRHcnt ){
 				
 			// Fill BC based jet times
 			if( DEBUG ) std::cout << "Fill BC based jet times ------------------" << std::endl;
@@ -3328,8 +3234,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
                		//hist1d[10]->Fill(-29.75);
 			}//<<>>if( nBCTimes == 0 ) : else
 
-    //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-        //<<<<if( jetScRhGroup.size() >= minRHcnt ){
 
 	   	} else { //<<>>if( jetSCGroup.size() >= minRHcnt)
 
