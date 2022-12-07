@@ -19,7 +19,7 @@
 //----------------------------------------  cc file   --------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 
-#include "LLPGamma/LLPgammaAnalyzer/plugins/LLPgammaAnalyzer.hh"
+#include "LLPgammaAnalyzer.hh"
 using namespace std;
 
 //#define DEBUG true
