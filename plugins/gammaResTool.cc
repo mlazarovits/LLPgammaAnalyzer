@@ -19,7 +19,7 @@
 //----------------------------------------  cc file   --------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 
-#include "LLPGamma/LLPgammaAnalyzer/plugins/GammaResTool.hh"
+#include "GammaResTool.hh"
 using namespace std;
 
 //#define DEBUG true
