@@ -1710,7 +1710,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	}//<<>>for(const auto& genPart : *genParticles_ )
 
     //------------------------------------------------------------------------------------
-    std::cout << "Processing RecHits" << std::endl;
+    if( DEBUG )std::cout << "Processing RecHits" << std::endl;
 
     auto nRecHitCnt(0);
     nRecHits = 0;
