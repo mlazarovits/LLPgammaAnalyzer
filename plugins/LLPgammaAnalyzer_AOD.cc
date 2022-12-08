@@ -48,7 +48,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	pfcandTag(iConfig.getParameter<edm::InputTag>("pfcandidates")),
     pfCanTag(iConfig.getParameter<edm::InputTag>("particleflow")),
 	pfCanPhoMapTag(iConfig.getParameter<edm::InputTag>("pfcanphomap")),
-    //pfCanOOTPhoMapTag(iConfig.getParameter<edm::InputTag>("pfcanootphomap")),
     pfCanEleMapTag(iConfig.getParameter<edm::InputTag>("pfcanelemap")),
 	
 	// vertices
@@ -62,7 +61,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 
 	// supercluster
 	superClusterCollectionTag(iConfig.getParameter<edm::InputTag>("superClusters")),
-	ootSuperClusterCollectionTag(iConfig.getParameter<edm::InputTag>("ootSuperClusters")),
 
 	// caloclusters
 	caloClusterTag(iConfig.getParameter<edm::InputTag>("caloClusters")),
@@ -90,8 +88,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	gedPhotonsTag(iConfig.getParameter<edm::InputTag>("gedPhotons")),
     phoCBIDLooseMapTag(iConfig.getParameter<edm::InputTag>("phoCBIDLooseMap")),
 
-	// ootPhotons
-	ootPhotonsTag(iConfig.getParameter<edm::InputTag>("ootPhotons")),
 
 	// pfcand ref
 	//reco2pfTag(iConfig.getParameter<edm::InputTag>("recoToPFMap")),
@@ -126,7 +122,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	// pfcandidates
 	pfCan_token_        		= consumes<std::vector<reco::PFCandidate>>(pfCanTag);
 	pfCanPhotonMap_token_		= consumes<edm::ValueMap<edm::Ptr<reco::PFCandidate>>>(pfCanPhoMapTag);
-    pfCanOOTPhotonMap_token_    = consumes<edm::ValueMap<edm::Ptr<reco::PFCandidate>>>(pfCanOOTPhoMapTag);
     pfCanElectronMap_token_     = consumes<edm::ValueMap<edm::Ptr<reco::PFCandidate>>>(pfCanEleMapTag);
 
 	// pfcandidates view
@@ -143,7 +138,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 
 	// supercluster
 	scToken_             		= consumes<reco::SuperClusterCollection>(superClusterCollectionTag);
-	ootScToken_          		= consumes<reco::SuperClusterCollection>(ootSuperClusterCollectionTag); 
 
 	// caloClusters
 	ccToken_			     	= consumes<std::vector<reco::CaloCluster>>(caloClusterTag);	
@@ -165,7 +159,6 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	// photons
 	gedPhotonsToken_ 			= consumes<std::vector<reco::Photon>>(gedPhotonsTag);
 	phoCBIDLooseMapToken_		= consumes<edm::ValueMap<bool>>(phoCBIDLooseMapTag); 
-	ootPhotonsToken_ 			= consumes<std::vector<reco::Photon>>(ootPhotonsTag);
 
 	// pfref
 	//reco2pf_					= consumes<edm::ValueMap<std::vector<reco::PFCandidateRef>>>(reco2pfTag);
@@ -208,12 +201,12 @@ detIdMap LLPgammaAnalyzer_AOD::SetupDetIDs(){
 	TString pos;
 	auto detIDConfigEB = detIDConfig + "fullinfo_detids_EB.txt";
 	std::ifstream infileEB( detIDConfigEB, std::ios::in);
-	if( DEBUG ) std::cout << "Setting up EB DetIDs with " << &infileEB << std::endl;
+	if( DEBUG ) std::cout << "Setting up EB DetIDs with " << detIDConfigEB << std::endl;
 	while( infileEB >> cmsswId >> dbID >> hashedId >> iphi >> ieta >> absieta >> pos >> Fed >> SM >> TT25 >> iTT >> strip >> Xtal >> phiSM >> etaSM )
     	{ DetIDMap[cmsswId] = {iphi,ieta,TT25,ECAL::EB};}
 	auto detIDConfigEE = detIDConfig + "fullinfo_detids_EE.txt";
 	std::ifstream infileEE( detIDConfigEE, std::ios::in);
-	if( DEBUG ) std::cout << "Setting up EE DetIDs with " << &infileEE << std::endl;
+	if( DEBUG ) std::cout << "Setting up EE DetIDs with " << detIDConfigEE << std::endl;
 	while( infileEE >> cmsswId >> dbID >> hashedId >> side >> ix >> iy >> SC >> iSC >> Fed >> pos >> TTCCU >> strip >> Xtal >> quadrant )
     	{ DetIDMap[cmsswId] = {ix,iy,TTCCU,((side>0) ? ECAL::EP : ECAL::EM )};}
 
@@ -1492,7 +1485,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	iEvent.getByToken(pfcand_token_, pfcands_);
 	iEvent.getByToken(pfCan_token_, pfCans_);
 	iEvent.getByToken(pfCanPhotonMap_token_, pfCanPhotonMap_);
-    iEvent.getByToken(pfCanOOTPhotonMap_token_, pfCanOOTPhotonMap_);
     iEvent.getByToken(pfCanElectronMap_token_, pfCanElectronMap_);
 
     //GEN PARTICLES
@@ -1512,7 +1504,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	// SUPERCLUSTERS
 	iEvent.getByToken(scToken_, superCluster_);  
-	iEvent.getByToken(ootScToken_, ootSuperCluster_);
 
 	// CALOCLUSTERS
 	iEvent.getByToken(ccToken_, caloCluster_);
@@ -1541,7 +1532,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	// PHOTONS
 	iEvent.getByToken(gedPhotonsToken_, gedPhotons_);
     iEvent.getByToken(phoCBIDLooseMapToken_, phoCBIDLooseMap_);
-	iEvent.getByToken(ootPhotonsToken_, ootPhotons_);
 
 	// MUONS
     iEvent.getByToken(muonsToken_, muons_);
@@ -1737,7 +1727,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     rhTime.clear();
     rhTimeErr.clear();
     rhTOF.clear();
-    rhisOOT.clear();
     rhisGS6.clear();
     rhisGS1.clear();
     rhisWeird.clear();
@@ -1755,41 +1744,41 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 
 
-    if( DEBUG ) std::cout << " - enetering RecHit loop" << std::endl;
+    if( DEBUG ) std::cout << " - entering RecHit loop" << std::endl;
     for (const auto recHit : frechits ){
 
-        if( DEBUG ) std::cout << " -- proccesing ID info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing ID info" << std::endl;
         // something in this section is seg faluting after several rechits for crab jobs
         const auto recHitID = getRawID(recHit);
         auto isEB = getIsEB(recHit); // which subdet
         const auto & idinfo = DetIDMap[recHitID];
-	    if( DEBUG ) std::cout << " -- proccesing EBEE info" << std::endl;
-        if( DEBUG ) std::cout << " -- proccesing GEO info" << std::endl;
-        //const auto geometry( isEB ? barrelGeometry : endcapGeometry );
+	    if( DEBUG ) std::cout << " -- processing EBEE info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing GEO info" << std::endl;
         const auto geometry( ( idinfo.ecal == ECAL::EB ) ? barrelGeometry : endcapGeometry );
-        auto recHitPos = geometry->getGeometry(recHit.detid())->getPosition();
-        if( DEBUG ) std::cout << " -- proccesing POSITION info" << std::endl;
+	//if( !geometry->present(recHit.detid()) ) continue; 
+	auto recHitPos = geometry->getGeometry(recHit.detid())->getPosition();
+        if( DEBUG ) std::cout << " -- processing POSITION info" << std::endl;
         const auto rhX = recHitPos.x();
         const auto rhY = recHitPos.y();
         const auto rhZ = recHitPos.z();
-        if( DEBUG ) std::cout << " -- proccesing TOF info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing TOF info" << std::endl;
         const auto d_rh = hypo(rhX,rhY,rhZ);
         const auto d_pv = hypo(rhX-vtxX,rhY-vtxY,rhZ-vtxZ);
         const auto tof = (d_rh-d_pv)/SOL;
-        if( DEBUG ) std::cout << " -- proccesing SWISSCROSS info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing SWISSCROSS info" << std::endl;
         float swisscross(0.0);
         if( isEB ) swisscross = EcalTools::swissCross(recHitID, *recHitsEB_, 0.0, true);
         else swisscross = EcalTools::swissCross(recHitID, *recHitsEE_, 0.0, true);
 
-        if( DEBUG ) std::cout << " -- proccesing LASER info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing LASER info" << std::endl;
         // adcToGeVInfo : http://cmslxr.fnal.gov/source/RecoEcal/EgammaCoreTools/src/EcalClusterLazyTools.cc#0204
         const auto laser = laserH->getLaserCorrection(recHitID,evTime);
         const auto interCalibIter = interCalibMap->find(recHitID);
         const auto interCalib = ((interCalibIter != interCalibMap->end()) ? (*interCalibIter) : - 1.f);
-        if( DEBUG ) std::cout << " -- proccesing ADC info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing ADC info" << std::endl;
         //if ((laser > 0.f) && (interCalib > 0.f) && (adcToGeV > 0.f)) rhadcToGeV[pos] = (laser*interCalib*adcToGeV);
         const float adcToGeV( isEB ? adcToGeVEB : adcToGeVEE );
-        if( DEBUG ) std::cout << " -- proccesing PED info" << std::endl;
+        if( DEBUG ) std::cout << " -- processing PED info" << std::endl;
         // pedestal info
         const auto & pediter = pedestalsH->find(recHitID);
 
@@ -1807,7 +1796,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         rhSubdet.push_back( isEB ? 0 : ( ( idinfo.ecal == ECAL::EP ) ? 1 : 2 ) );
         rhXtalI1.push_back(idinfo.i1);
         rhXtalI2.push_back(idinfo.i2);
-        rhisOOT.push_back(recHit.checkFlag(EcalRecHit::kOutOfTime));
         rhEnergy.push_back(recHit.energy());
         //energyError()
         rhSwCross.push_back(swisscross);
@@ -2478,7 +2466,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	jetCBCMuTime.clear();
 	jetCBCMedTime.clear();
     jetPhMuTime.clear();
-    jetOOTPhMuTime.clear();
     jetEleMuTime.clear();
 
     jetDrRhIds.clear();
@@ -2884,13 +2871,10 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         //auto jetSCTime(-29.25);
 		scGroup jetSCGroup;
         scGroup jetPhSCGroup;
-        scGroup jetOOTPhSCGroup;
         scGroup jetEleSCGroup;
 		bcGroup jetBCGroup;
 		vector<float> phEnergy;
         vector<float> phDr;
-        vector<float> ootPhEnergy;
-        vector<float> ootPhDr;
         vector<float> eleEnergy;
         vector<float> eleDr;
 

@@ -20,17 +20,16 @@ void ReducedBaseSkimmer::SkimJets(){
 	for(int j = 0; j < nJets; j++){
 		//energy, spatial variables
 		//these are vectors
-		double jetE = _base->jetE->at(j);
-		_jetHists[1]->Fill(jetE);
-	//	_jetHists[2]->Fill(_base->jetPt[j]);
-	//	_jetHists[3]->Fill(_base->jetEta[j]);
-	//	_jetHists[4]->Fill(_base->jetPhi[j]);
-	//	//BC variables
-	//	_jetHists[6]->Fill(_base->jetBcTimesCnt[j]); //number of basic cluster (BC) mean times
-	//	_jetHists[7]->Fill(_base->jetBcSumRHEnr[j]); //total BC energy in jet
-	//	_jetHists[8]->Fill(_base->jetBcEMFr[j]); //total BC energy divided by jet energy
-	//	_jetHists[9]->Fill(_base->jetBcRhCnt[j]);
-	//	_jetHists[10]->Fill(_base->jetID[j]);
+		_jetHists[1]->Fill(_base->jetE->at(j));
+		_jetHists[2]->Fill(_base->jetPt->at(j));
+		_jetHists[3]->Fill(_base->jetEta->at(j));
+		_jetHists[4]->Fill(_base->jetPhi->at(j));
+		//BC variables
+		_jetHists[6]->Fill(_base->jetBcTimesCnt->at(j)); //number of basic cluster (BC) mean times
+		_jetHists[7]->Fill(_base->jetBcSumRHEnr->at(j)); //total BC energy in jet
+		_jetHists[8]->Fill(_base->jetBcEMFr->at(j)); //total BC energy divided by jet energy
+		_jetHists[9]->Fill(_base->jetBcRhCnt->at(j));
+		_jetHists[10]->Fill(_base->jetID->at(j));
 			
 		
 	}
@@ -43,28 +42,28 @@ void ReducedBaseSkimmer::SkimCaloJets(){
 	_caloJetHists[0]->Fill(nCJets);
 	for(int j = 0; j < nCJets; j++){
 		//these are vectors
-	//	_caloJetHists[1]->Fill(_base->cljBcCnt[j]);
-	//	_caloJetHists[2]->Fill(_base->cljSeedTOFTime[j]);
-	//	_caloJetHists[3]->Fill(_base->cljCMeanTime[j]);
-	//	_caloJetHists[4]->Fill(_base->cljBc3dEx[j]);
-	//	_caloJetHists[5]->Fill(_base->cljBc3dEy[j]);
-	//	_caloJetHists[6]->Fill(_base->cljBc3dEz[j]);
-	//	_caloJetHists[7]->Fill(_base->cljBc3dEv[j]);
-	//	_caloJetHists[8]->Fill(_base->cljBc3dEslope[j]);
-	//	_caloJetHists[9]->Fill(_base->cljBc3dEchisp[j]);
-	//	_caloJetHists[10]->Fill(_base->cljBc2dEx[j]);
-	//	_caloJetHists[11]->Fill(_base->cljBc2dEy[j]);
-	//	_caloJetHists[12]->Fill(_base->cljBc2dEv[j]);
-	//	_caloJetHists[13]->Fill(_base->cljBc2dEslope[j]);
-	//	_caloJetHists[14]->Fill(_base->cljBc2dEchisp[j]);
-	//	_caloJetHists[15]->Fill(_base->cljCDrMeanTime[j]);
-	//	_caloJetHists[16]->Fill(_base->cljPt[j]);
-	//	_caloJetHists[17]->Fill(_base->cljEnergy[j]);
-	//	_caloJetHists[18]->Fill(_base->cljPhi[j]);
-	//	_caloJetHists[19]->Fill(_base->cljEta[j]);
-	//	_caloJetHists[20]->Fill(_base->cljPx[j]);
-	//	_caloJetHists[21]->Fill(_base->cljPy[j]);
-	//	_caloJetHists[22]->Fill(_base->cljPz[j]);	
+	//	_caloJetHists[1]->Fill(_base->cljBcCnt->at(j));
+	//	_caloJetHists[2]->Fill(_base->cljSeedTOFTime->at(j));
+	//	_caloJetHists[3]->Fill(_base->cljCMeanTime->at(j));
+	//	_caloJetHists[4]->Fill(_base->cljBc3dEx->at(j));
+	//	_caloJetHists[5]->Fill(_base->cljBc3dEy->at(j));
+	//	_caloJetHists[6]->Fill(_base->cljBc3dEz->at(j));
+	//	_caloJetHists[7]->Fill(_base->cljBc3dEv->at(j));
+	//	_caloJetHists[8]->Fill(_base->cljBc3dEslope->at(j));
+	//	_caloJetHists[9]->Fill(_base->cljBc3dEchisp->at(j));
+	//	_caloJetHists[10]->Fill(_base->cljBc2dEx->at(j));
+	//	_caloJetHists[11]->Fill(_base->cljBc2dEy->at(j));
+	//	_caloJetHists[12]->Fill(_base->cljBc2dEv->at(j));
+	//	_caloJetHists[13]->Fill(_base->cljBc2dEslope->at(j));
+	//	_caloJetHists[14]->Fill(_base->cljBc2dEchisp->at(j));
+	//	_caloJetHists[15]->Fill(_base->cljCDrMeanTime->at(j));
+	//	_caloJetHists[16]->Fill(_base->cljPt->at(j));
+	//	_caloJetHists[17]->Fill(_base->cljEnergy->at(j));
+	//	_caloJetHists[18]->Fill(_base->cljPhi->at(j));
+	//	_caloJetHists[19]->Fill(_base->cljEta->at(j));
+	//	_caloJetHists[20]->Fill(_base->cljPx->at(j));
+	//	_caloJetHists[21]->Fill(_base->cljPy->at(j));
+	//	_caloJetHists[22]->Fill(_base->cljPz->at(j));	
 
 
 	}
@@ -78,15 +77,15 @@ void ReducedBaseSkimmer::SkimGenJets(){
 	for(int j = 0; j < nJets; j++){
 		//if a jet was not dR matched within dR = 0.3, default values are stored
 		//these are vectors
-		//_genJetHists[1]->Fill(_base->jetGenEnergy[j]);	
-		//_genJetHists[2]->Fill(_base->jetGenPt[j]);
-		//_genJetHists[3]->Fill(_base->jenGenEta[j]);
-		//_genJetHists[4]->Fill(_base->jetGenPhi[j]);
-		//_genJetHists[5]->Fill(_base->jetGenTOF[j]);
-		//_genJetHists[6]->Fill(_base->jetGenDrMatch[j]);
-		//_genJetHists[7]->Fill(_base->jetGenTimeVar[j]);
-		//_genJetHists[8]->Fill(_base->jetGenTimeLLP[j]);
-		//_genJetHists[9]->Fill(_base->jetGenNKids[j]);
+		//_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
+		//_genJetHists[2]->Fill(_base->jetGenPt->at(j));
+		//_genJetHists[3]->Fill(_base->jenGenEta->at(j));
+		//_genJetHists[4]->Fill(_base->jetGenPhi->at(j));
+		//_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
+		//_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
+		//_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
+		//_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
+		//_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
 		
 
 

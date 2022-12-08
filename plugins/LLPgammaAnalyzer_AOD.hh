@@ -207,7 +207,7 @@ typedef ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float>,ROOT::Math::
 
 enum class ECAL {EB, EM, EP, EE, NONE};
 
-#define ecal_config_path ""
+#define ecal_config_path "test/"
 //#define ecal_config_path "ecal_config/"
 //#define ecal_config_path "/uscms/home/jaking/nobackup/llpa/CMSSW_10_6_20/src/LLPGamma/LLPgammaAnalyzer/macros/ecal_config/"
 //#define ecal_config_path "/LLPGamma/LLPgammaAnalyzer/macros/ecal_config/"

@@ -11,12 +11,16 @@
 <use name="DataFormats/Common"/>
 <use name="DataFormats/EgammaCandidates"/>
 <use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/DetId"/>
+<use name="DataFormats/EcalRecHit"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="DataFormats/EcalDigi"/>
+<use name="DataFormats/GeometryVector"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="CondFormats/JetMETObjects"/>
 <use name="SimDataFormats/PileupSummaryInfo"/>
 <use name="RecoEgamma/PhotonIdentification"/>
 <use name="RecoEgamma/EgammaTools"/>
 <use name="JetMETCorrections/Modules"/>
+<use name="Geometry/CaloGeometry"/>
 <flags EDM_PLUGIN="1"/>
