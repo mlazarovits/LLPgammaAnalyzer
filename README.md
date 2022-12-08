@@ -5,7 +5,7 @@ Long Lived Particle to Photon Analyzer
 Make sure the CMSSW environment is set with
 ```
 cd CMSSW_X_X_X/src
-cmssw
+cmsenv
 ```
 Integrate analyzers and create executables with CMSSW
 ```
