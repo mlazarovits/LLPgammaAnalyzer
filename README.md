@@ -1,7 +1,7 @@
 # LLPgammaAnalyzer
 Long Lived Particle to Photon Analyzer - adapted for primary vertex timing analysis
 
-## To set up CMSSW Analyzers
+## To set up CMSSW Analyzers and Executables
 Make sure the CMSSW environment is set with
 ```
 cd CMSSW_X_X_X/src
