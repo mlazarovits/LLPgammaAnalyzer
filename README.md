@@ -18,7 +18,7 @@ now you are set to run the analyzer/ntuplizer or custom executables! (executable
 ```
 cmsRun config/llpgana_mc_aod.py 
 ```
-make sure you are running over the files you want, and the output file name is updated
+make sure you are running over the files you want and the output file name is updated
 
 ## To run primary vertex time skimmer
 ```
