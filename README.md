@@ -14,18 +14,18 @@ scram b
 now you are set to run the analyzer/ntuplizer or custom executables! (executable scripts found in ```bin/```)
 
 
-## To make Ntuplesi from AOD:
+## To make Ntuples from AOD
 ```
 cmsRun LLPgammaAnalyzer_AOD
 ```
 
-## To run primary vertex time skimmer:
+## To run primary vertex time skimmer
 ```
 pvTimeSkimmer
 ```
 
 
-## To run Jack's AOD skimmer/histogram maker:
+## To run Jack's AOD skimmer/histogram maker
 ```
 cd macros
 make
