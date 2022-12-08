@@ -11,8 +11,13 @@ Integrate analyzers and create executables with CMSSW
 ```
 scram b 
 ```
-now you are set to run the analyzer/ntuplizer or custom executables (scripts found in ```bin/```)
+now you are set to run the analyzer/ntuplizer or custom executables! (executable scripts found in ```bin/```)
 
+
+## To make Ntuplesi from AOD:
+```
+cmsRun LLPgammaAnalyzer_AOD
+```
 
 ## To run primary vertex time skimmer:
 ```
