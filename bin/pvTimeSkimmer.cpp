@@ -1,6 +1,11 @@
 #include <iostream>
 #include <fstream>
-#include "ReducedBase.hh"
+#include <vector>
+#include <TH1D.h>
+#include <TChain.h>
+#include <TFile.h>
+
+#include "../interface/ReducedBase.hh"
 
 
 using std::cout;
@@ -44,7 +49,6 @@ int main(int argc, char* argv[]){
 	for(int i = 0; i < nEntries; i++){
 		if (i % 100000 == 0) cout << "Processed " << i << " of " << nEntries << endl;
 		base->GetEntry(i);
-		
 		
 
 

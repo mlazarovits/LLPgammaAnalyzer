@@ -1,7 +1,7 @@
 #define ReducedBase_cxx
-#include "ReducedBase.hh"
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
+#include "../interface/ReducedBase.hh"
+//#include <TH2.h>
+//#include <TStyle.h>
+//#include <TCanvas.h>
 
 

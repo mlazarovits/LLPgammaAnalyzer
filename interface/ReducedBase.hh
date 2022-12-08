@@ -8,9 +8,9 @@
 #ifndef ReducedBase_h
 #define ReducedBase_h
 
-//#include <TROOT.h>
-//#include <TChain.h>
-//#include <TFile.h>
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -1454,7 +1454,7 @@ inline void ReducedBase::Init(TTree *tree)
    Notify();
 }
 
-Bool_t ReducedBase::Notify()
+inline Bool_t ReducedBase::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -1465,14 +1465,14 @@ Bool_t ReducedBase::Notify()
    return kTRUE;
 }
 
-void ReducedBase::Show(Long64_t entry)
+inline void ReducedBase::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t ReducedBase::Cut(Long64_t entry)
+inline Int_t ReducedBase::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.

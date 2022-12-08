@@ -14,5 +14,6 @@ test/oldworkingArea/
 *.pdf
 *.x
 *.swp
+*.o
 macros/*.obj
 __*
