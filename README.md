@@ -4,14 +4,23 @@ Long Lived Particle to Photon Analyzer
 ## To set up CMSSW Analyzers
 Make sure the CMSSW environment is set with
 ```
+cd CMSSW_X_X_X/src
 cmssw
 ```
-Integrate analyzers with CMSSW
+Integrate analyzers and create executables with CMSSW
 ```
 scram b 
 ```
+now you are set to run the analyzer/ntuplizer or custom executables (scripts found in ```bin/```)
 
-## To run AOD skimmer/histogram maker:
+
+## To run primary vertex time skimmer:
+```
+pvTimeSkimmer
+```
+
+
+## To run Jack's AOD skimmer/histogram maker:
 ```
 cd macros
 make
