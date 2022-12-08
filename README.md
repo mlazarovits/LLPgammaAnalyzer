@@ -1,5 +1,5 @@
 # LLPgammaAnalyzer
-Long Lived Particle to Photon Analyzer
+Long Lived Particle to Photon Analyzer - adapted for primary vertex timing analysis
 
 ## To set up CMSSW Analyzers
 Make sure the CMSSW environment is set with
