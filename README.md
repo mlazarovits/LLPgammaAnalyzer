@@ -33,12 +33,15 @@ this script needs to be run with python 2 for certain dependencies
 pvTimeSkimmer
 ```
 
-
 ## To run Jack's AOD skimmer/histogram maker
 ```
 cd macros
 make
 ./hist_maker_aodsim.obj
 ```
+
+## Troubleshooting
+- if `undefined reference` error pops up during compilation, make sure the necessary source (.cc) files are included in the relevant BuildFile
+
 
 
