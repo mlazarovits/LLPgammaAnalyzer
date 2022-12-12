@@ -20,6 +20,14 @@ cmsRun config/llpgana_mc_aod.py
 ```
 make sure you are running over the files you want and the output file name is updated
 
+
+## To run multicrab jobs for ntuplizer
+```
+cd test/
+python2 multicrab_mc_llpgana_cmssw106_aod.py
+```
+this script needs to be run with python 2 for certain dependencies
+
 ## To run primary vertex time skimmer
 ```
 pvTimeSkimmer
@@ -32,3 +40,5 @@ cd macros
 make
 ./hist_maker_aodsim.obj
 ```
+
+
