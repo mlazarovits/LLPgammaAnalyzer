@@ -150,7 +150,8 @@ def docrab( dataset ):
             #trial          = "llpga_GJets_AOD_v52" # removed photon ID requirment
             #trial          = "llpga_GMSB_AOD_v52" 
             #trial          = "llpga_GJets_AOD_v53" # fixed ootpho rh collection ?
-            trial          = "llpga_GMSB_AOD_v53"
+            #trial          = "llpga_GMSB_AOD_v53"
+            trial           = "llpga_GJets_AOD_HTBinned"
 
             #config.Data.outLFNDirBase  = "/store/user/jaking/LLPGamma/"+trial+"/"
             config.Data.outLFNDirBase  = "/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
@@ -176,13 +177,13 @@ def docrab( dataset ):
             config.Data.inputDataset     = inDO[0]
             # Submit.
             try:
-                print "Submitting for input dataset %s" % primaryDataset + '_' + runEra + '_' + dataset
+                print("Submitting for input dataset %s" % primaryDataset + '_' + runEra + '_' + dataset)
                 crabCommand(options.crabCmd, config = config, *options.crabCmdOpts.split())
                 os.system("rm -rf %s/crab_%s/inputs" % (config.General.workArea, config.General.requestName))
             except HTTPException as hte:
-                print "Submission for input dataset %s failed: %s" % (inDO[0], hte.headers)
+                print("Submission for input dataset %s failed: %s" % (inDO[0], hte.headers))
             except ClientException as cle:
-                print "Submission for input dataset %s failed: %s" % (inDO[0], cle)
+                print("Submission for input dataset %s failed: %s" % (inDO[0], cle))
 
     # All other commands can be simply executed.
     elif options.workArea:
@@ -193,15 +194,15 @@ def docrab( dataset ):
                 continue
             # Execute the crab command.
             msg = "Executing (the equivalent of): crab %s --dir %s %s" % (options.crabCmd, projDir, options.crabCmdOpts)
-            print "-"*len(msg)
-            print msg
-            print "-"*len(msg)
+            print("-"*len(msg))
+            print(msg)
+            print("-"*len(msg))
             try:
                 crabCommand(options.crabCmd, dir = projDir, *options.crabCmdOpts.split())
             except HTTPException as hte:
-                print "Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, hte.headers)
+                print("Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, hte.headers))
             except ClientException as cle:
-                print "Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, cle)
+                print("Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, cle))
 
 
 ##33333333333333333333333333333333333333333333333333333333333
@@ -412,12 +413,10 @@ def run_multi():
 
 		]
 
-        runDataset = dsGMSB
-        #runDataset = dsGJET
-        for dataset in runDataset :
-		    docrab( dataset )
-
-
+        #runDataset = dsGMSB
+        runDataset = dsGJET
+	for dataset in runDataset:
+		docrab(dataset)
 
 run_multi()
 
