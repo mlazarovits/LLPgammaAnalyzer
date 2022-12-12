@@ -97,16 +97,16 @@ def docrab( dataset ):
         inputDataAndOpts = [[dataset[0]]]
 
         for inDO in inputDataAndOpts:
-            print( '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' )
-            print( 'Input dataset for Crab Job : ' )
+            print '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' 
+            print 'Input dataset for Crab Job : ' 
             #print( inDO )
             # inDO[0] is of the form /A/B/C. Since A+B is unique for each inDS, use this in the CRAB request name.
             primaryDataset = (inDO[0].split('/')[1]).split('_T')[0]
-            print( primaryDataset )
+            print primaryDataset 
             runEra         = ((inDO[0].split('/')[2]).split('_')[0]+'_'+(inDO[0].split('/')[2]).split('_')[1]).split('AODSIM')[0]
-            print( runEra )
+            print runEra 
             dataset        = inDO[0].split('/')[3]
-            print( dataset )
+            print dataset 
 
             #trial          = "llpga_v1" # 4 Feb 22 : t37L_ phsc & elesc _005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2 
             #trial          = "llpga_v2" # 16 May 22
@@ -177,13 +177,13 @@ def docrab( dataset ):
             config.Data.inputDataset     = inDO[0]
             # Submit.
             try:
-                print("Submitting for input dataset %s" % primaryDataset + '_' + runEra + '_' + dataset)
+                print "Submitting for input dataset %s" % primaryDataset + '_' + runEra + '_' + dataset
                 crabCommand(options.crabCmd, config = config, *options.crabCmdOpts.split())
                 os.system("rm -rf %s/crab_%s/inputs" % (config.General.workArea, config.General.requestName))
             except HTTPException as hte:
-                print("Submission for input dataset %s failed: %s" % (inDO[0], hte.headers))
+                print "Submission for input dataset %s failed: %s" % (inDO[0], hte.headers)
             except ClientException as cle:
-                print("Submission for input dataset %s failed: %s" % (inDO[0], cle))
+                print "Submission for input dataset %s failed: %s" % (inDO[0], cle)
 
     # All other commands can be simply executed.
     elif options.workArea:
@@ -194,15 +194,15 @@ def docrab( dataset ):
                 continue
             # Execute the crab command.
             msg = "Executing (the equivalent of): crab %s --dir %s %s" % (options.crabCmd, projDir, options.crabCmdOpts)
-            print("-"*len(msg))
-            print(msg)
-            print("-"*len(msg))
+            print "-"*len(msg)
+            print msg
+            print "-"*len(msg)
             try:
                 crabCommand(options.crabCmd, dir = projDir, *options.crabCmdOpts.split())
             except HTTPException as hte:
-                print("Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, hte.headers))
+                print "Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, hte.headers)
             except ClientException as cle:
-                print("Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, cle))
+                print "Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, cle)
 
 
 ##33333333333333333333333333333333333333333333333333333333333
@@ -415,8 +415,9 @@ def run_multi():
 
         #runDataset = dsGMSB
         runDataset = dsGJET
-	for dataset in runDataset:
-		docrab(dataset)
+	
+        for dataset in runDataset:
+                docrab(dataset)
 
 run_multi()
 
