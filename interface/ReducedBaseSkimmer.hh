@@ -1,26 +1,25 @@
 #ifndef ReducedBaseSkimmer_HH
 #define ReducedBaseSkimmer_HH
-
+#include <TChain.h>
 #include "ReducedBase.hh"
 
 class ReducedBaseSkimmer{
 	public:
-		ReducedBaseSkimmer(ReducedBase* base);
+		ReducedBaseSkimmer(TChain* ch);
 		virtual ~ReducedBaseSkimmer();
-		void SkimJets();
-		void SkimCaloJets();
-		void SkimGenJets();
-		void SkimRecHits();
-		void SkimVertices();
-
+		vector<TH1D*> Skim();
 
 	private:
+		TChain* _ch;
 		ReducedBase* _base;
-		TH1D* _jetHists[100]; //PF jets
-		TH1D* _genJetHists[100];
-		TH1D* _caloJetHists[23]; //really only need either PF jets or calo jets (not both)
-		TH1D* _vertexHists[4]; //first vertex is PV
-		TH1D* _recHitHists[10];		
+		vector<TH1D*> _jetHists; //PF jets
+		vector<TH1D*> _genJetHists;
+		vector<TH1D*> _vertexHists; //first vertex is PV
+		vector<TH1D*> _recHitHists;		
+		void _SkimJets();
+		void _SkimGenJets();
+		void _SkimRecHits();
+		void _SkimVertices();
 		
 
 };

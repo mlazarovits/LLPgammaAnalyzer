@@ -285,7 +285,7 @@ inline ReducedBase::ReducedBase(TTree *tree) : fChain(0)
          f = new TFile("ntuples/GMSB_MC_AODSIM_100TeV_cTau200to10000cm.root");
       }
       TDirectory * dir = (TDirectory*)f->Get("ntuples/GMSB_MC_AODSIM_100TeV_cTau200to10000cm.root:/tree");
-      dir->GetObject("ReducedBase",tree);
+      dir->GetObject("llpgtree",tree);
 
    }
    Init(tree);

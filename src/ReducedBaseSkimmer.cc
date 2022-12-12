@@ -1,21 +1,65 @@
+#include <iostream>
 #include <TH1D.h>
+#include <TChain.h>
 #include "../interface/ReducedBaseSkimmer.hh"
 
+using std::cout;
+using std::endl;
 
-ReducedBaseSkimmer::ReducedBaseSkimmer(ReducedBase* base){ 
-	_base = base;
+ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){ 
+	_ch = ch;
+	_base = new ReducedBase(ch);
+	_jetHists.push_back(new TH1D("nJets","nJets",21, -0.5, 20.5));
+	_jetHists.push_back(new TH1D("jetE", "jetE", 500, 0, 5000)); 
+	_jetHists.push_back(new TH1D("jetPt", "jetPt", 500, 0, 5000)); 
+	_jetHists.push_back(new TH1D("jetEta", "jetEta", 700, -3.5, 3.5)); 
+	_jetHists.push_back(new TH1D("jetPhi", "jetPhi", 700, -3.5, 3.5)); 
+	_jetHists.push_back(new TH1D("jetID", "jetID", 5, 0, 5)); 
+	_jetHists.push_back(new TH1D("jetRecHitId", "jetRecHitId", 101, 0, 9191000000.00)); 
+
+
+	_genJetHists.push_back(new TH1D("nJetsGen","nJetsGen",21,-0.5,20.5));
+	_genJetHists.push_back(new TH1D("jetGenEnergy","jetGenEnergy",500,0,5000));	
+	_genJetHists.push_back(new TH1D("jetGenPt","jetGenPt",500,0,5000));
+	_genJetHists.push_back(new TH1D("jetGenEta","jetGenEta",700,-3.5,3.5));
+	_genJetHists.push_back(new TH1D("jetGenTOF","jetGenTOF",300,0,30));
+	_genJetHists.push_back(new TH1D("jetGenDrMatch","jetGenDrMatch",320,0,3.2));
+	_genJetHists.push_back(new TH1D("jetGenTimeVar","jetGenTimeVar",270,-2,25));
+	_genJetHists.push_back(new TH1D("jetGenNKids","jetGenNKids",100,0,100));
+	
+
 
 }
 
 
 
-ReducedBaseSkimmer::~ReducedBaseSkimmer(){ }
+ReducedBaseSkimmer::~ReducedBaseSkimmer(){ 
+	//delete[] _jetHists; ?
+}
 
 
 
 
-void ReducedBaseSkimmer::SkimJets(){
-	int nJets = _base->nJets;
+vector<TH1D*> ReducedBaseSkimmer::Skim(){
+	int nEntries = _ch->GetEntries();
+	int SKIP = 10;
+	if(SKIP != 1) cout << "Choosing 1 out of every " << SKIP << " events" << endl;
+	for(int e = 0; e < nEntries; e+=SKIP){
+		_base->GetEntry(e);
+		if((e/SKIP)%(std::max(1, int(nEntries/SKIP/10))) == 0)
+	 cout << "      event " << e << " | " << nEntries << endl;
+		_SkimJets();
+	}
+	vector<TH1D*> hists;		
+	for(int h = 0; h < 7; h++) hists.push_back(_jetHists[h]); 
+	return hists;
+
+
+}
+
+void ReducedBaseSkimmer::_SkimJets(){
+	//only fill jets that we dR matched to rec hits
+	int nJets = _base->nGoodDrJets;
 	_jetHists[0]->Fill(nJets);
 	for(int j = 0; j < nJets; j++){
 		//energy, spatial variables
@@ -24,68 +68,35 @@ void ReducedBaseSkimmer::SkimJets(){
 		_jetHists[2]->Fill(_base->jetPt->at(j));
 		_jetHists[3]->Fill(_base->jetEta->at(j));
 		_jetHists[4]->Fill(_base->jetPhi->at(j));
-		//BC variables
-		_jetHists[6]->Fill(_base->jetBcTimesCnt->at(j)); //number of basic cluster (BC) mean times
-		_jetHists[7]->Fill(_base->jetBcSumRHEnr->at(j)); //total BC energy in jet
-		_jetHists[8]->Fill(_base->jetBcEMFr->at(j)); //total BC energy divided by jet energy
-		_jetHists[9]->Fill(_base->jetBcRhCnt->at(j));
-		_jetHists[10]->Fill(_base->jetID->at(j));
-			
+		_jetHists[5]->Fill(_base->jetID->at(j));
+		int nRHs = _base->jetDrRhCnt->at(j);
+		for(int rh = 0; rh < nRHs; rh++){
+			_jetHists[6]->Fill(_base->jetDrRhIds->at(j).at(rh));
+		}	
 		
 	}
 
 
 }
 
-void ReducedBaseSkimmer::SkimCaloJets(){ 
-	int nCJets = _base->nCaloJets;
-	_caloJetHists[0]->Fill(nCJets);
-	for(int j = 0; j < nCJets; j++){
-		//these are vectors
-	//	_caloJetHists[1]->Fill(_base->cljBcCnt->at(j));
-	//	_caloJetHists[2]->Fill(_base->cljSeedTOFTime->at(j));
-	//	_caloJetHists[3]->Fill(_base->cljCMeanTime->at(j));
-	//	_caloJetHists[4]->Fill(_base->cljBc3dEx->at(j));
-	//	_caloJetHists[5]->Fill(_base->cljBc3dEy->at(j));
-	//	_caloJetHists[6]->Fill(_base->cljBc3dEz->at(j));
-	//	_caloJetHists[7]->Fill(_base->cljBc3dEv->at(j));
-	//	_caloJetHists[8]->Fill(_base->cljBc3dEslope->at(j));
-	//	_caloJetHists[9]->Fill(_base->cljBc3dEchisp->at(j));
-	//	_caloJetHists[10]->Fill(_base->cljBc2dEx->at(j));
-	//	_caloJetHists[11]->Fill(_base->cljBc2dEy->at(j));
-	//	_caloJetHists[12]->Fill(_base->cljBc2dEv->at(j));
-	//	_caloJetHists[13]->Fill(_base->cljBc2dEslope->at(j));
-	//	_caloJetHists[14]->Fill(_base->cljBc2dEchisp->at(j));
-	//	_caloJetHists[15]->Fill(_base->cljCDrMeanTime->at(j));
-	//	_caloJetHists[16]->Fill(_base->cljPt->at(j));
-	//	_caloJetHists[17]->Fill(_base->cljEnergy->at(j));
-	//	_caloJetHists[18]->Fill(_base->cljPhi->at(j));
-	//	_caloJetHists[19]->Fill(_base->cljEta->at(j));
-	//	_caloJetHists[20]->Fill(_base->cljPx->at(j));
-	//	_caloJetHists[21]->Fill(_base->cljPy->at(j));
-	//	_caloJetHists[22]->Fill(_base->cljPz->at(j));	
+
+//make function to match dR jets to rechits
 
 
-	}
-}
-
-
-
-void ReducedBaseSkimmer::SkimGenJets(){
+void ReducedBaseSkimmer::_SkimGenJets(){
 	int nJets = _base->nJets;
 	_genJetHists[0]->Fill(nJets);
 	for(int j = 0; j < nJets; j++){
 		//if a jet was not dR matched within dR = 0.3, default values are stored
 		//these are vectors
-		//_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
-		//_genJetHists[2]->Fill(_base->jetGenPt->at(j));
-		//_genJetHists[3]->Fill(_base->jenGenEta->at(j));
-		//_genJetHists[4]->Fill(_base->jetGenPhi->at(j));
-		//_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
-		//_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
-		//_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
-		//_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
-		//_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
+		_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
+		_genJetHists[2]->Fill(_base->jetGenPt->at(j));
+		_genJetHists[3]->Fill(_base->jetGenEta->at(j));
+		_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
+		_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
+		_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
+		_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
+		_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
 		
 
 
@@ -96,7 +107,7 @@ void ReducedBaseSkimmer::SkimGenJets(){
 
 
 
-void ReducedBaseSkimmer::SkimRecHits(){
+void ReducedBaseSkimmer::_SkimRecHits(){
 	int nRHs = _base->nRecHits;
 	_recHitHists[0]->Fill(nRHs);
 	for(int r = 0; r < nRHs; r++){
@@ -122,7 +133,7 @@ void ReducedBaseSkimmer::SkimRecHits(){
 }
 
 
-void ReducedBaseSkimmer::SkimVertices(){
+void ReducedBaseSkimmer::_SkimVertices(){
 	int nVtx = _base->nVtx;
 	_vertexHists[1]->Fill(nVtx);
 	for(int v = 0; v < nVtx; v++){
