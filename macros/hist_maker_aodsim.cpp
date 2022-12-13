@@ -859,6 +859,7 @@ void makehists::llpgana_hist_maker( std::string indir, std::string infilelist, s
     std::cout << "<<<<<<<< Write Output Maps and Hists <<<<<<<<<<<<<< " << std::endl;
 
 	endJobs();
+/*
 	for( int it = 0; it < n1dHists; it++ ){ if(hist1d[it]) hist1d[it]->Write(); }
     for( int it = 0; it < n2dHists; it++ ){ if(hist2d[it]) hist2d[it]->Write(); }
     for( int it = 0; it < n3dHists; it++ ){ if(hist3d[it]) hist3d[it]->Write(); }
@@ -871,7 +872,7 @@ void makehists::llpgana_hist_maker( std::string indir, std::string infilelist, s
 			ebeeMapT[it]->Write(); delete ebeeMapT[it]; 
 			ebeeMapR[it]->Write(); delete ebeeMapR[it];
 	}//<<>>for( int it = 0; it < nEBEEMaps; it++ )
-
+*/
     fOutFile->Close();
     std::cout << "llpgana_hist_maker : Thats all Folks!!" << std::endl;
 }//<<>>void llpgana_hist_maker
