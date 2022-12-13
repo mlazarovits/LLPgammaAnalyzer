@@ -28,6 +28,22 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_genJetHists.push_back(new TH1D("jetGenNKids","jetGenNKids",100,0,100));
 	
 
+	_recHitHists.push_back(new TH1D("nRHs","nRHs",102,0,4794));
+	_recHitHists.push_back(new TH1D("rhPosX","rhPosX",100,-175,175));
+	_recHitHists.push_back(new TH1D("rhPosY","rhPosY",100,-175,175));
+	_recHitHists.push_back(new TH1D("rhPosZ","rhPosZ",100,-380,380));
+	_recHitHists.push_back(new TH1D("rhEta","rhEta",700,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",700,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",1000,0,1000));
+	_recHitHists.push_back(new TH1D("rhTime","rhTime",2000,-50,50));
+	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",2000,-50,50));
+	_recHitHists.push_back(new TH1D("rhTOF","rhTOF",2000,-50,50));
+
+
+	_vertexHists.push_back(new TH1D("nVtx","nVtx",12,34150,34146));
+	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,-0.10,0.04));
+	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
+	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
 
 }
 
@@ -112,15 +128,15 @@ void ReducedBaseSkimmer::_SkimRecHits(){
 	_recHitHists[0]->Fill(nRHs);
 	for(int r = 0; r < nRHs; r++){
 		//these are vectors
-		//_recHitHists[1]->Fill(_base->rhPosX[r]);
-		//_recHitHists[2]->Fill(_base->rhPosY[r]);
-		//_recHitHists[3]->Fill(_base->rhPosZ[r]);
-		//_recHitHists[4]->Fill(_base->rhPosEta[r]);
-		//_recHitHists[5]->Fill(_base->rhPosPhi[r]);
-		//_recHitHists[6]->Fill(_base->rhEnergy[r]);
-		//_recHitHists[7]->Fill(_base->rhTime[r]);
-		//_recHitHists[8]->Fill(_base->rhTimeErr[r]);
-		//_recHitHists[9]->Fill(_base->rhTOF[r]);
+		_recHitHists[1]->Fill(_base->rhPosX[r]);
+		_recHitHists[2]->Fill(_base->rhPosY[r]);
+		_recHitHists[3]->Fill(_base->rhPosZ[r]);
+		_recHitHists[4]->Fill(_base->rhPosEta[r]);
+		_recHitHists[5]->Fill(_base->rhPosPhi[r]);
+		_recHitHists[6]->Fill(_base->rhEnergy[r]);
+		_recHitHists[7]->Fill(_base->rhTime[r]);
+		_recHitHists[8]->Fill(_base->rhTimeErr[r]);
+		_recHitHists[9]->Fill(_base->rhTOF[r]);
 		
 
 
@@ -135,14 +151,12 @@ void ReducedBaseSkimmer::_SkimRecHits(){
 
 void ReducedBaseSkimmer::_SkimVertices(){
 	int nVtx = _base->nVtx;
-	_vertexHists[1]->Fill(nVtx);
-	for(int v = 0; v < nVtx; v++){
-		//first vertex is primary vertex
-		//these are not vectors, these are floats
-		//_vertexHists[1]->Fill(_base->vtxX[v]);
-		//_vertexHists[2]->Fill(_base->vtxY[v]);
-		//_vertexHists[3]->Fill(_base->vtxZ[v]);
-	}
+	_vertexHists[0]->Fill(nVtx);
+	//only PV saved
+	//these are not vectors, these are floats
+	_vertexHists[1]->Fill(_base->vtxX[v]);
+	_vertexHists[2]->Fill(_base->vtxY[v]);
+	_vertexHists[3]->Fill(_base->vtxZ[v]);
 
 
 
