@@ -70,7 +70,9 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 		_SkimVertices();
 	}
 	vector<TH1D*> hists;		
-	for(int h = 0; h < 7; h++) hists.push_back(_jetHists[h]); 
+	for(int h = 0; h < (int)_jetHists.size(); h++) hists.push_back(_jetHists[h]); 
+	for(int h = 0; h < (int)_recHitHists.size(); h++) hists.push_back(_recHitHists[h]); 
+	for(int h = 0; h < (int)_vertexHists.size(); h++) hists.push_back(_vertexHists[h]); 
 	return hists;
 
 
