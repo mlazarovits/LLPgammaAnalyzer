@@ -64,7 +64,10 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 		_base->GetEntry(e);
 		if((e/SKIP)%(std::max(1, int(nEntries/SKIP/10))) == 0)
 	 cout << "      event " << e << " | " << nEntries << endl;
+		//add skimmers for objects here
 		_SkimJets();
+		_SkimRecHits();
+		_SkimVertices();
 	}
 	vector<TH1D*> hists;		
 	for(int h = 0; h < 7; h++) hists.push_back(_jetHists[h]); 
@@ -128,19 +131,15 @@ void ReducedBaseSkimmer::_SkimRecHits(){
 	_recHitHists[0]->Fill(nRHs);
 	for(int r = 0; r < nRHs; r++){
 		//these are vectors
-		_recHitHists[1]->Fill(_base->rhPosX[r]);
-		_recHitHists[2]->Fill(_base->rhPosY[r]);
-		_recHitHists[3]->Fill(_base->rhPosZ[r]);
-		_recHitHists[4]->Fill(_base->rhPosEta[r]);
-		_recHitHists[5]->Fill(_base->rhPosPhi[r]);
-		_recHitHists[6]->Fill(_base->rhEnergy[r]);
-		_recHitHists[7]->Fill(_base->rhTime[r]);
-		_recHitHists[8]->Fill(_base->rhTimeErr[r]);
-		_recHitHists[9]->Fill(_base->rhTOF[r]);
-		
-
-
-
+		_recHitHists[1]->Fill(_base->rhPosX->at(r));
+		_recHitHists[2]->Fill(_base->rhPosY->at(r));
+		_recHitHists[3]->Fill(_base->rhPosZ->at(r));
+		_recHitHists[4]->Fill(_base->rhPosEta->at(r));
+		_recHitHists[5]->Fill(_base->rhPosPhi->at(r));
+		_recHitHists[6]->Fill(_base->rhEnergy->at(r));
+		_recHitHists[7]->Fill(_base->rhTime->at(r));
+		_recHitHists[8]->Fill(_base->rhTimeErr->at(r));
+		_recHitHists[9]->Fill(_base->rhTOF->at(r));
 
 
 	}
@@ -153,10 +152,10 @@ void ReducedBaseSkimmer::_SkimVertices(){
 	int nVtx = _base->nVtx;
 	_vertexHists[0]->Fill(nVtx);
 	//only PV saved
-	//these are not vectors, these are floats
-	_vertexHists[1]->Fill(_base->vtxX[v]);
-	_vertexHists[2]->Fill(_base->vtxY[v]);
-	_vertexHists[3]->Fill(_base->vtxZ[v]);
+	//these are not vectors, these are floats - position of only primary vertex
+	_vertexHists[1]->Fill(_base->vtxX);
+	_vertexHists[2]->Fill(_base->vtxY);
+	_vertexHists[3]->Fill(_base->vtxZ);
 
 
 

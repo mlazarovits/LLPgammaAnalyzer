@@ -49,7 +49,6 @@ int main(int argc, char* argv[]){
 	ReducedBaseSkimmer skim(ch);
 	vector<TH1D*> hists = skim.Skim();
 
-cout << "hists size: " << hists.size() << endl;
 
 	TFile* outFile = new TFile(outfilename.c_str(),"RECREATE");
 	outFile->cd();

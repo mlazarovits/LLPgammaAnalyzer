@@ -29,6 +29,7 @@ public :
    UInt_t          lumi;
    ULong64_t       event;
    Int_t           nVtx;
+//vtxX/Y/Z is position of primary vertex
    Float_t         vtxX;
    Float_t         vtxY;
    Float_t         vtxZ;
