@@ -4,6 +4,7 @@
 #include <TH1D.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TSystem.h>
 
 #include "../interface/ReducedBaseSkimmer.hh"
 
@@ -16,9 +17,18 @@ int main(int argc, char* argv[]){
 	cout << "Look at all those chickens!" << endl;	
 
 	string indir = "ntuples/";
-	string outfilename = "root/llpgana_mc_AODSIM_GMSB_AOD_v55_pv-time-skim.root";
+	string infileName = "GMSB_MC_AODSIM_100TeV_cTau200to10000cm";
+	string outfilename = "pv-time-skim.root";
+	string outfileDir = "skims/"+infileName+"/";
+	outfilename = outfileDir+outfilename;
+
+	//if out dir doesn't exist, make it
+	if(gSystem->AccessPathName(outfileDir.c_str())){
+		gSystem->mkdir(outfileDir.c_str());
+	}	
 
 	string eosdir = "root://cmseos.fnal.gov//store/user/lpcsusylep/jaking/";
+	
 	
 	string treeName = "tree/llpgtree";
 	string infilelist = "";	
@@ -41,7 +51,7 @@ int main(int argc, char* argv[]){
 		}
 	}
 	else{
-		string infile = indir+"GMSB_MC_AODSIM_100TeV_cTau200to10000cm.root";
+		string infile = indir+infileName+".root";
 		ch->Add(infile.c_str());
 	}
 
