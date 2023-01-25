@@ -33,9 +33,15 @@ this script needs to be run with python 2 for certain dependencies
 pvTimeSkimmer
 ```
 
+## To run Jack's code
+```
+cd CMSSW_X_X_X/src
+scram b
+```
+
 ## To run Jack's AOD skimmer/histogram maker
 ```
-cd macros
+cd LLPgammaAnalyzer/macros
 make
 ./hist_maker_aodsim.obj
 ```
