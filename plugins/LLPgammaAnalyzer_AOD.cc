@@ -23,8 +23,8 @@
 #include "LLPgammaAnalyzer_AOD.hh"
 using namespace std;
 
-//#define DEBUG true
 #define DEBUG false
+//#define DEBUG true
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // constructors and destructor
@@ -190,7 +190,7 @@ LLPgammaAnalyzer_AOD::~LLPgammaAnalyzer_AOD(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // member functions
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 detIdMap LLPgammaAnalyzer_AOD::SetupDetIDs(){
 
 	detIdMap DetIDMap;
@@ -214,7 +214,7 @@ detIdMap LLPgammaAnalyzer_AOD::SetupDetIDs(){
 
 }//>>>>detIdMap LLPgammaAnalyzer_AOD::SetupDetIDs()
 
-
+*/
 int LLPgammaAnalyzer_AOD::getPFJetID(const reco::PFJet & jet){ 
 	
 	const auto eta  = std::abs(jet.eta());
@@ -957,17 +957,21 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_ieipt( vector<float> times, rh
     for( uInt it(0); it < rechits.size(); it++ ){
 
 		const auto recHitID = getRawID(rechits[it]);
-		const auto & idinfo = DetIDMap[recHitID];
-		if( idinfo.ecal == ECAL::EB ){
+		//const auto & idinfo = DetIDMap[recHitID];
+		//if( idinfo.ecal == ECAL::EB ){
     		//auto wt = 1/std::sqrt(sq2(N/rechits[it].energy())+2*sq2(C)); 
-        	auto resolution = 1/(sq2(N/rechits[it].energy())+2*sq2(C));
+        	if( getIsEB(rechits[it]) ){
+		auto resolution = 1/(sq2(N/rechits[it].energy())+2*sq2(C));
         	wts.push_back(resolution);
 			totWts += resolution;
-        	//const auto recHitPos = barrelGeometry->getGeometry(recHitId)->getPosition();
-        	const auto rhEtaPos = tdis*(idinfo.i2);//recHitPos.eta();
-        	etas.push_back(rhEtaPos);
+        	const auto recHitPos = barrelGeometry->getGeometry(recHitID)->getPosition();
+        	//const auto rhEtaPos = tdis*(idinfo.i2);//recHitPos.eta();
+        	//etas.push_back(rhEtaPos);
+        	etas.push_back(recHitPos.z());
         	//const auto rhPhiPos = tdis*idinfo.i1;//recHitPos.phi();
-        	phis.push_back(idinfo.i1);// tdis * below with wrap correction
+        	//phis.push_back(idinfo.i1);// tdis * below with wrap correction
+			float rawPhi = PI + recHitPos.phi();
+			phis.push_back(tdis*rawPhi/0.01745329);
 			ebtimes.push_back(times[it]);
 		} else { return emepReturn; //std::cout << "In getRhGrpEigen_sph : NOT EB !!!!!!" << std::endl; }
 		}//<<>>if( idinfo.ecal == ECAL::EB )
@@ -1081,12 +1085,14 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_sph( vector<float> times, rhGr
     for( uInt it(0); it < nRecHits; it++ ){
 
         const auto recHitID = getRawID(rechits[it]);
-        const auto & idinfo = DetIDMap[recHitID];
-        if( idinfo.ecal == ECAL::EB ){ 
-        	const auto rhEtaPos = idinfo.i2;//recHitPos.eta();
-        	etas.push_back(rhEtaPos);
-        	const auto rhPhiPos = idinfo.i1;//recHitPos.phi();
-        	phis.push_back(rhPhiPos);
+        const auto recHitPos = barrelGeometry->getGeometry(recHitID)->getPosition();
+	//const auto & idinfo = DetIDMap[recHitID];
+        if(getIsEB(rechits[it])){
+	//if( idinfo.ecal == ECAL::EB ){ 
+        	//const auto rhEtaPos = idinfo.i2;//recHitPos.eta();
+        	etas.push_back(recHitPos.z());
+        	//const auto rhPhiPos = idinfo.i1;//recHitPos.phi();
+        	phis.push_back(2.2*(PI + recHitPos.phi()/0.01745329));
         	ebtimes.push_back(times[it]);	
 			auto rhenergy = rechits[it].energy();
 			auto resolution = 1/(sq2(N/rhenergy)+2*C*C);
@@ -1270,18 +1276,20 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_ep( vector<float> times, rhGro
     for( uInt it(0); it < rechits.size(); it++ ){
 
         const auto recHitID = getRawID(rechits[it]);
-        const auto & idinfo = DetIDMap[recHitID];
-        if( idinfo.ecal == ECAL::EB ){
+        //const auto & idinfo = DetIDMap[recHitID];
+        if( getIsEB(rechits[it]) ){
+	//if( idinfo.ecal == ECAL::EB ){
             //auto wt = 1/std::sqrt(sq2(N/rechits[it].energy())+2*sq2(C)); 
             auto wt = 1/(sq2(N/rechits[it].energy())+2*sq2(C));
             wts.push_back(wt);
-            //const auto recHitPos = barrelGeometry->getGeometry(recHitId)->getPosition();
-            const auto rhEtaPos = tdis*idinfo.i2;//recHitPos.eta();
-            etas.push_back(rhEtaPos);
+            const auto recHitPos = barrelGeometry->getGeometry(recHitID)->getPosition();
+            //const auto rhEtaPos = tdis*idinfo.i2;//recHitPos.eta();
+            etas.push_back(recHitPos.z());
 			//hist1d[69]->Fill(rhEtaPos);
-            const auto rhPhiPos = tdis*idinfo.i1;//recHitPos.phi();
+            //const auto rhPhiPos = tdis*idinfo.i1;//recHitPos.phi();
             //hist1d[70]->Fill(rhPhiPos);
-            phis.push_back(rhPhiPos);
+           	float rawPhi = PI+recHitPos.phi(); 
+		phis.push_back(tdis*(rawPhi)/0.01745329);
             ebtimes.push_back(times[it]);
         }//<<>>if( idinfo.ecal == ECAL::EB )
     }//<<>>for( uInt it(0); it < rechits.size(); it++ )
@@ -1578,7 +1586,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	vtxX = primevtx.position().x();
 	vtxY = primevtx.position().y();
 	vtxZ = primevtx.position().z();
-	
+	//add more vertex info to ntuples here
+		
 // -- Process Objects ---------------------------------------    
 
 // ** extracted from disphoana : starting point **** not all functios/varibles defined ***************
@@ -1751,11 +1760,11 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         // something in this section is seg faluting after several rechits for crab jobs
         const auto recHitID = getRawID(recHit);
         auto isEB = getIsEB(recHit); // which subdet
-        const auto & idinfo = DetIDMap[recHitID];
-	    if( DEBUG ) std::cout << " -- processing EBEE info" << std::endl;
-        if( DEBUG ) std::cout << " -- processing GEO info" << std::endl;
-        const auto geometry( ( idinfo.ecal == ECAL::EB ) ? barrelGeometry : endcapGeometry );
-	//if( !geometry->present(recHit.detid()) ) continue; 
+        //const auto & idinfo = DetIDMap[recHitID];
+	  //  if( DEBUG ) std::cout << " -- processing EBEE info" << std::endl;
+        //if( DEBUG ) std::cout << " -- processing GEO info" << std::endl;
+        const auto geometry( isEB ? barrelGeometry : endcapGeometry );
+        //const auto geometry( ( idinfo.ecal == ECAL::EB ) ? barrelGeometry : endcapGeometry );
 	auto recHitPos = geometry->getGeometry(recHit.detid())->getPosition();
         if( DEBUG ) std::cout << " -- processing POSITION info" << std::endl;
         const auto rhX = recHitPos.x();
@@ -1792,10 +1801,10 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         rhPosPhi.push_back(recHitPos.phi());
         rhTime.push_back(recHit.time());
         rhTimeErr.push_back(recHit.timeError());
-        if( DEBUG ) std::cout << " -- storing values FLAGS" << std::endl;
-        rhSubdet.push_back( isEB ? 0 : ( ( idinfo.ecal == ECAL::EP ) ? 1 : 2 ) );
-        rhXtalI1.push_back(idinfo.i1);
-        rhXtalI2.push_back(idinfo.i2);
+        //if( DEBUG ) std::cout << " -- storing values FLAGS" << std::endl;
+        //rhSubdet.push_back( isEB ? 0 : ( ( idinfo.ecal == ECAL::EP ) ? 1 : 2 ) );
+        //rhXtalI1.push_back(idinfo.i1);
+        //rhXtalI2.push_back(idinfo.i2);
         rhEnergy.push_back(recHit.energy());
         //energyError()
         rhSwCross.push_back(swisscross);
@@ -3136,7 +3145,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
             	fbcRhGrpEnergy.push_back(bcRhGrpEnr);
             	fbcRhGrpCnt.push_back(bcRhGrpSize);
 			}//<<>>for( auto obc : fbclusts )
-
+/*
 			// make ecal maps of jet/cluster rh collections
 			if( DEBUG ) std::cout << " -- make ecal maps of jet/cluster rh collections" << std::endl;
 			//auto nBcRhGroups = bcRhGroups.size();
@@ -3175,7 +3184,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
             	ebeeMapT[nGoodJetEvents]->Fill( -85.0, 1.0, 200.0 );
 
 			}//<<>>if( nGoodJetEvents < nEBEEMaps ? && ... )
-
+*/
 				
 			// Fill BC based jet times
 			if( DEBUG ) std::cout << "Fill BC based jet times ------------------" << std::endl;
@@ -3288,7 +3297,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
 	nGoodJetEvents = 0;
 
    	// Set up DetIdMap
-   	DetIDMap = SetupDetIDs();
+   	//DetIDMap = SetupDetIDs();
 
 	// Book output files and trees
 	edm::Service<TFileService> fs;
