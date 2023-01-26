@@ -35,6 +35,14 @@ def getOptions():
                       help = "options for crab command CMD",
                       metavar = 'OPTS')
 
+
+    parser.add_option('-d', '--dataset',
+                      dest = 'dataset',
+                      default = 'GJets',
+                      help = "dataset to process",
+                      choices = ['GJets','GMSB','QCD','H2LLP24b','data'],
+		      )
+
     (options, arguments) = parser.parse_args()
 
     if arguments:
@@ -80,10 +88,13 @@ def docrab( dataset ):
         config.Data.inputDataset   = None
         #config.Data.lumiMask       = inputJSON    # Comment out for MC only
         #config.Data.splitting     = 'Automatic'
-        #config.Data.unitsPerJob   = 2000
         config.Data.splitting    = 'EventAwareLumiBased' # MC
-        #config.Data.unitsPerJob  =  1500 # MC GMSB
-        config.Data.unitsPerJob  =  5000 # MC GJet
+	if options.dataset == 'GMSB':
+        	config.Data.unitsPerJob  =  1500 # MC GMSB
+	elif options.dataset == 'GJets':
+        	config.Data.unitsPerJob  =  5000 # MC GJet
+	else:
+        	config.Data.unitsPerJob   = 2000
 
         config.JobType.allowUndistributedCMSSW = True
         config.JobType.inputFiles  = [ inptCfgEB, inptCfgEE ]
@@ -151,10 +162,11 @@ def docrab( dataset ):
             #trial          = "llpga_GMSB_AOD_v52" 
             #trial          = "llpga_GJets_AOD_v53" # fixed ootpho rh collection ?
             #trial          = "llpga_GMSB_AOD_v53"
-            trial           = "llpga_GJets_AOD_HTBinned"
+            #trial           = "llpga_GJets_AOD_HTBinned"
+            trial           = "llpga_"+options.dataset+"_AOD"
 
             #config.Data.outLFNDirBase  = "/store/user/jaking/LLPGamma/"+trial+"/"
-            config.Data.outLFNDirBase  = "/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
+            config.Data.outLFNDirBase  = "/store/user/malazaro/LLPGamma/crabOutput/"+trial+"/"#"/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
             config.General.requestName   = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra+"_request"
             config.Data.outputDatasetTag = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra
 
@@ -168,11 +180,16 @@ def docrab( dataset ):
 #>>>>>>>>>>>>>>>>>>>     #MC Run3  #globalTag=112X_mcRun3_2021_realistic_v16  #  <<<<<<<   comment/uncomment lumi mask when using/!using MC  >>>>>>>>>>>>>
             ##config.JobType.pyCfgParams   = ['globalTag=112X_mcRun3_2021_realistic_v16','outputFileName=output.root']
 
+	    if options.dataset == 'GMSB':
 #>>>>>>>>>>>>>>>>>>>     #MC GMSB 17  #globalTag=94X_mc2017_realistic_v14  #  <<<<<<<   comment/uncomment lumi mask when using/!using MC  >>>>>>>>>>>>>
-            config.JobType.pyCfgParams   = ['globalTag=94X_mc2017_realistic_v14','outputFileName=output.root']
+            	config.JobType.pyCfgParams   = ['globalTag=94X_mc2017_realistic_v14','outputFileName=output.root']
             ##config.JobType.pyCfgParams   = ['globalTag=106X_dataRun2_v28','outputFileName=output.root','hasGenInfo=True']
 #>>>>>>>>>>>>>>>>>>>     #MC RunIISummer20UL18RECO
-            #config.JobType.pyCfgParams   = ['globalTag=106X_upgrade2018_realistic_v11_L1v1','outputFileName=output.root','hasGenInfo=True']
+	    if options.dataset == 'GJets':
+            	config.JobType.pyCfgParams   = ['globalTag=106X_upgrade2018_realistic_v11_L1v1','outputFileName=output.root','hasGenInfo=True']
+	    else:
+		print("Error: global tag not specificed for this dataset. Check the available tags in the script and set accordingly.")
+		exit()
 
             config.Data.inputDataset     = inDO[0]
             # Submit.
@@ -207,7 +224,7 @@ def docrab( dataset ):
 
 ##33333333333333333333333333333333333333333333333333333333333
 
-def run_multi():
+def run_multi( ds ):
 
 # DataSet: DATA
  
@@ -402,22 +419,29 @@ def run_multi():
         ]
 
 # Dataset: GJets HT 18
-
+##DEBUG MODE
         dsGJET = [
 
-            ['/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-4cores5k_106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
-            ['/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
-            ['/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
-            ['/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
-            ['/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM']
+            ['/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-4cores5k_106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM']#,
+           # ['/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
+           # ['/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
+           # ['/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM'],
+           # ['/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM']
 
 		]
-
-        #runDataset = dsGMSB
-        runDataset = dsGJET
-	
-        for dataset in runDataset:
+	if ds == 'GMSB':
+        	runDataset = dsGMSB
+	elif ds == 'data':
+		runDataset = dsData
+	elif ds == 'GJets':	
+        	runDataset = dsGJET
+        elif ds == 'QCD':
+		runDataset = dsQCD 
+	elif ds == 'H2LLP24b':
+		runDataset = dsHt2LLt4b
+	for dataset in runDataset:
                 docrab(dataset)
 
-run_multi()
+options = getOptions()
+run_multi( options.dataset )
 
