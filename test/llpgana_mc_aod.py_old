@@ -23,7 +23,7 @@ options.register('hasGenInfo',True,VarParsing.multiplicity.singleton,VarParsing.
 #options.register('muhighpTmin',50.0,VarParsing.multiplicity.singleton,VarParsing.varType.float,'muon high pT minimum cut');
 
 ## GT to be used
-options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.singleton,VarParsing.varType.string,'global tag to be used');
+options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
 #options.register('globalTag','106X_dataRun2_v28',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
 #options.register('globalTag','112X_mcRun3_2021_realistic_v16',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
 #112X_mcRun3_2021_realistic_v16
@@ -48,7 +48,7 @@ options.register('processName','TREE',VarParsing.multiplicity.singleton,VarParsi
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v6.root' # adding photon information
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v7.root' # adding ootphoton information
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v8.root' #  added genparticle info for photons, changed genjet to best dr match
-outfilename = '/uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer/ntuples/TESTGMSB_MC_AODSIM_100TeV_cTau200to10000cm.root' # modded genpart to match only photons, mom count on genpart collection
+outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v9.root' # modded genpart to match only photons, mom count on genpart collection
 
 options.register('outputFileName',outfilename,VarParsing.multiplicity.singleton,VarParsing.varType.string,'output file name created by cmsRun');
 
@@ -1344,26 +1344,19 @@ process.source = cms.Source("PoolSource",
         #'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/0E7EC6AF-3277-CE45-A609-B7186BC7FB7C.root',
 
         ),##<<>>fileNames = cms.untracked.vstring
-	##drop branches that give me headaches (aka crab errors)
-	inputCommands=cms.untracked.vstring(
-		#default - keep all (ie keep *)
-		'keep *',
-		'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
-		#drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
-	)
 )##<<>>process.source = cms.Source("PoolSource",
 
 
 ## How many events to process
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))#ST
-#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))#TT
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))#TT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))#LT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500))#US
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(12500))#VS
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#SM
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100000))#MS
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#MD
+#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#MD
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500000))#LG
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#FL
 
@@ -1392,6 +1385,7 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    pfcandidates = cms.InputTag("particleFlow"),
    particleflow = cms.InputTag("particleFlow",""),	
    pfcanphomap = cms.InputTag("particleFlow","photons"),
+   pfcanootphomap = cms.InputTag("particleFlow","photons"),
    pfcanelemap = cms.InputTag("particleFlow","electrons"),
    ## rho
    #rho = cms.InputTag("fixedGridRhoFastjetAll"), #fixedGridRhoAll
@@ -1416,6 +1410,8 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    #gedPhotons = cms.InputTag("gedPhotons"),
    gedPhotons = cms.InputTag("photons"),
    phoCBIDLooseMap = cms.InputTag("PhotonIDProd", "PhotonCutBasedIDLooseEM"), 
+   #ootPhotons = cms.InputTag("slimmedOOTPhotons"),
+   ootPhotons = cms.InputTag("ootPhotons"),
    ## ecal recHits
    #recHitsEB = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
    #recHitsEE = cms.InputTag("reducedEgamma", "reducedEERecHits"),
@@ -1424,6 +1420,8 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    ## superclusters
    #superClusters = cms.InputTag("reducedEgamma", "reducedSuperClusters"),
    superClusters = cms.InputTag("particleFlowSuperClusterECAL", "particleFlowSuperClusterECALBarrel"),
+   #ootSuperClusters = cms.InputTag("reducedEgamma", "reducedOOTSuperClusters"),
+   ootSuperClusters = cms.InputTag("particleFlowSuperClusterOOTECAL", "particleFlowSuperClusterOOTECALBarrel"), 
    ## caloclusters
    #caloClusters = cms.InputTag("reducedEgamma", "reducedEBEEClusters"),
    caloClusters = cms.InputTag("particleFlowEGamma", "EBEEClusters"),
@@ -1436,6 +1434,7 @@ process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_AOD",
    genParticles = cms.InputTag("genParticles", ""),		
 
 )##<<>>process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_aod"
+
 
 # Set up the path
 process.tree_step = cms.EndPath(process.tree)
