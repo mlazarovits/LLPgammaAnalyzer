@@ -1349,7 +1349,6 @@ process.source = cms.Source("PoolSource",
 		#default - keep all (ie keep *)
 		'keep *',
 		'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
-		#drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
 	)
 )##<<>>process.source = cms.Source("PoolSource",
 
