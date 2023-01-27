@@ -1330,11 +1330,11 @@ process.source = cms.Source("PoolSource",
 
         ),##<<>>fileNames = cms.untracked.vstring
 	##drop branches that give me headaches (aka crab errors)
-	#inputCommands=cms.untracked.vstring(
-	#	#default - keep all (ie keep *)
-	#	'keep *',
-	#	'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
-	#)
+	inputCommands=cms.untracked.vstring(
+		#default - keep all (ie keep *)
+		'keep *',
+		'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
+	)
 )##<<>>process.source = cms.Source("PoolSource",
 
 
