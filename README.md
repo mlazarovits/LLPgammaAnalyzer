@@ -12,11 +12,13 @@ Integrate analyzers and create executables with CMSSW
 scram b 
 ```
 now you are set to run the analyzer/ntuplizer or custom executables! (executable scripts found in ```bin/```)
+Every time the analyzer changes, make sure to redo this step to recompile in CMSSW.
 
 
 ## To make Ntuples from AOD
 ```
-cmsRun config/llpgana_mc_aod.py 
+cd test/
+cmsRun llpgana_mc_aod.py -d [dataset] -l [requestName label] 
 ```
 make sure you are running over the files you want and the output file name is updated
 
@@ -26,7 +28,8 @@ make sure you are running over the files you want and the output file name is up
 cd test/
 python2 multicrab_mc_llpgana_cmssw106_aod.py
 ```
-this script needs to be run with python 2 for certain dependencies
+this script needs to be run with python 2 for certain dependencies. 
+Make sure you are running from the ```test/``` directory so the multicrab script and the config script are in the same place.
 
 ## To run primary vertex time skimmer
 ```
