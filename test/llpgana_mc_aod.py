@@ -32,23 +32,8 @@ options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.
 options.register('processName','TREE',VarParsing.multiplicity.singleton,VarParsing.varType.string,'process name to be considered');
 
 ## outputFile Name
-#outfilename = 'llpgana_t35a_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root'
-#outfilename = 'llpgana_t36L_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t36L_noele_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t37MC_noele_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t68MC_eigen_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # adding genJet Parton info
-#outfilename = 'llpgana_mc_t75M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 73 w/ 3DProfile & sphcalrot : ebp ebn + ltime sum flip
-#outfilename = 'llpgana_mc_t76SM_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as May 16 2022 update with energy/delaytime info
-#outfilename = 'llpgana_mc_t79M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 76 + ootPhotons only
-#outfilename = 'llpgana_mc_t80M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 79 + genJetDrmatch
-#outfilename = 'llpgana_mc_AODSIM_GMSB100TeV_v80a_selected_FL.root'
-#outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v3.root' # finishd addig rechits
-#outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v4.root' # testing saved rhIDsGroup for photons
-#outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v5.root' # testing valuemap id cut loose for photons
-#outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v6.root' # adding photon information
-#outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v7.root' # adding ootphoton information
 #outfilename = 'llpgana_mc_AODSIM_ntuplizer_test_v8.root' #  added genparticle info for photons, changed genjet to best dr match
-outfilename = '/uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer/ntuples/TESTGMSB_MC_AODSIM_100TeV_cTau200to10000cm.root' # modded genpart to match only photons, mom count on genpart collection
+outfilename = '/uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer/ntuples/TESTGMSB_MC_AODSIM_l-100TeV_cTau200to10000cm.root' # modded genpart to match only photons, mom count on genpart collection
 
 options.register('outputFileName',outfilename,VarParsing.multiplicity.singleton,VarParsing.varType.string,'output file name created by cmsRun');
 
@@ -1345,11 +1330,11 @@ process.source = cms.Source("PoolSource",
 
         ),##<<>>fileNames = cms.untracked.vstring
 	##drop branches that give me headaches (aka crab errors)
-	inputCommands=cms.untracked.vstring(
-		#default - keep all (ie keep *)
-		'keep *',
-		'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
-	)
+	#inputCommands=cms.untracked.vstring(
+	#	#default - keep all (ie keep *)
+	#	'keep *',
+	#	'drop recoTrackExtrasedmAssociation_muonReducedTrackExtras__RECO'
+	#)
 )##<<>>process.source = cms.Source("PoolSource",
 
 
