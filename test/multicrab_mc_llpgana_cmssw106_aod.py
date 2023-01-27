@@ -42,6 +42,10 @@ def getOptions():
                       help = "dataset to process",
                       choices = ['GJets','GMSB','QCD','H2LLP24b','data'],
 		      )
+    parser.add_option('-l','--label',
+		       dest = 'label',
+		       default = '',
+		       help = 'label for output directory')
 
     (options, arguments) = parser.parse_args()
 
@@ -119,57 +123,17 @@ def docrab( dataset ):
             dataset        = inDO[0].split('/')[3]
             print dataset 
 
-            #trial          = "llpga_v1" # 4 Feb 22 : t37L_ phsc & elesc _005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2 
-            #trial          = "llpga_v2" # 16 May 22
-            #trial          = "llpga_v3" # 17 May 22
-            #trial          = "llpga_v6" # added dr & sc times - use sc
-            #trial          = "llpga_v7" # added dr & sc times - use dr
-            #trial          = "llpga_v8" # added dr & sc times - use gentime
-            #trial          = "llpga_v9" # added dr & sc times - use gentime w/ gen filter
-            #trial          = "llpga_v10" # added dr & sc times - use dr w/ gen filter
-            #trial          = "llpga_v11" # added dr & sc times - use gentime w/ gen filter jet pt -> 100  jet ID -> 2
-            #trial          = "llpga_v12" # added ootPhoton - cut gentime > 25.0   
-            #trial          = "llpga_v14" # as 12 + eta & genenergy cuts on genplots ( + difftime plots )
-            #trial          = "llpga_v15" # as 14 + does not contain LLP or B
-            #trial          = "llpga_v16" # as 14 + no LLP or B cut
-            #trial          = "llpga_v17" # as 14 w/ expanded plots + LLP or B cut
-            #trial          = "llpga_v18" # as 14 w/ expanded plots + LLP or B cut + ootphoton dr match
-            #trial          = "llpga_v21" # as 18 + jet genJet dr match + sqrt(sq2(dif)/sq2(gen))
-            #trial          = "llpga_v23" # as 21 + modified genjet getTOFChain added nextBX flag and gentime var, using maxe for wieghts
-            #trial          = "llpga_v24" # as 23 + exclude flight legs with sum t > 25.0 ( nextBX = true ) in genTime/angle/ect calc
-            #trial          = "llpga_v25" # as 24 + step is llp logic, purity, and varince cuts
-            #trial          = "llpga_v26" # as 25 w/ var < 1.5 & purity > 0.75 on 2Ds + var vs purity plot  named 25/220617-XXXXXX
-            #trial          = "llpga_v27" # as 25 w/ var < 15 & purity > 0.88 on 2Ds + nKids
-            #trial          = "llpga_v28" # as 25 w/ var < 1 & purity > 0.88 on 2Ds + nKids
-            #trial          = "llpga_v29" # as 28 + difftime < 1.5
-            #trial          = "llpga_v30" # as 28 + difftime < 1.0
-            #trial          = "llpga_v33" # as 28 + difftime < 0.8 + genPhaseSpaceCut (9-4*e/genE)
-            #trial          = "llpga_v34" # as 28 + difftime < 0.8 + genPhaseSpaceCut (9-4*e/genE) && not genPhSpaceCut + scdiff v drmatch
-            #trial          = "llpga_v35" # as 34 + emfrac && gen plots have full cut selection w/ genPhaseSpaceCut && gen/clstr plots have hasGoodSCTime cut
-            #trial          = "llpga_v36" # as 35 w/ no gen plot cut, changed difftime endcase checks, set goodGenSCdiffTime < 20.0 to testnew end cases
-            #trial          = "llpga_v38" # ps 36 /o/e + rh plots 
-            #trial          = "llpga_GMSB_v38" # switching to run2 2017 GMSB MC 
-            #trial          = "llpga_GMSB_AOD_v39" # switching to v1 of nutuplizer in AODSIM
-			#( v39x solving crab crash issue )
-            #trial          = "llpga_GMSB_AOD_v39d" # units/job 10k -> 2k
-            #trial          = "llpga_GMSB_AOD_v43" # units/job 10k -> 1.5k + rechit collection test (40-43)
-            #trial          = "llpga_GMSB_AOD_v46" # removed geo & rechit position calcs in rh collection loop (44) -> upload config file ECAL
-            #trial          = "llpga_GMSB_AOD_v48" # DetIDMap issues solved : Full run 1
-            #trial          = "llpga_GMSB_AOD_v49" # added more photon/ootphoton + rhcollection information
-            #trial          = "llpga_GMSB_AOD_v50" # added gen particle info
-            #trial          = "llpga_GMSB_AOD_v51" # added gen photon info  and isGenPhotonLLP 
-            #trial          = "llpga_GJets_AOD_v52" # removed photon ID requirment
-            #trial          = "llpga_GMSB_AOD_v52" 
-            #trial          = "llpga_GJets_AOD_v53" # fixed ootpho rh collection ?
-            #trial          = "llpga_GMSB_AOD_v53"
-            #trial           = "llpga_GJets_AOD_HTBinned"
             trial           = "llpga_"+options.dataset+"_AOD"
+	    if options.label is not '':
+		trial += "_"+options.label
 
             #config.Data.outLFNDirBase  = "/store/user/jaking/LLPGamma/"+trial+"/"
             config.Data.outLFNDirBase  = "/store/user/malazaro/LLPGamma/crabOutput/"+trial+"/"#"/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
             config.General.requestName   = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra+"_request"
             config.Data.outputDatasetTag = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra
 
+
+	    print "Writing files to:", config.Data.outLFNDirBase
 #>>>>>>>>>>>>>>>>>>>     #2018   #globalTag=106X_dataRun2_v28
             #config.JobType.pyCfgParams   = ['globalTag=106X_dataRun2_v28','outputFileName=output.root']
 #>>>>>>>>>>>>>>>>>>>	    #2017   #globalTag=106X_dataRun2_v20
