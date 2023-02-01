@@ -23,8 +23,8 @@
 #include "LLPgammaAnalyzer_AOD.hh"
 using namespace std;
 
-//#define DEBUG false
-#define DEBUG true
+#define DEBUG false
+//#define DEBUG true
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // constructors and destructor
@@ -2349,17 +2349,11 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( DEBUG ) std::cout << " - Photon 2d/3d: below min RH cnt" << std::endl;
             continue;
         }//<<>>if( eleRhGroup.size() < minRHcnt ) ***** IF eleRhGroup.size() > minRHcnt BELOW THIS POINT IN LOOP *****
-std::cout << "a" << std::endl;
         auto tofTimes = getLeadTofRhTime( eleRhGroup, vtxX, vtxY, vtxZ );
-std::cout << "b" << std::endl;
         auto timeStats = getTimeDistStats( tofTimes, eleRhGroup );
-std::cout << "c" << std::endl;
         auto seedTOFTime = getSeedTofTime( *scptr, vtxX, vtxY, vtxZ );
-std::cout << "d" << std::endl;
 //        auto eleSCEigen3D = getRhGrpEigen_ieipt( tofTimes, eleRhGroup );
-std::cout << "e" << std::endl;
   //      auto eleSCEigen2D = getRhGrpEigen_sph( tofTimes, eleRhGroup );
-std::cout << "f" << std::endl;
 
 
 /*
@@ -3072,12 +3066,12 @@ std::cout << "f" << std::endl;
 			if( DEBUG ) std::cout << " --- get jetSCtofTimes for " << jetScRhGroup.size() << " rechits " << std::endl;
 	 		auto jetSCtofTimes = getLeadTofRhTime( jetScRhGroup, vtxX, vtxY, vtxZ );
 	 		auto jetSCTimeStats = getTimeDistStats( jetSCtofTimes, jetScRhGroup );
-
-            auto jetSCEigen3D = getRhGrpEigen_ieipt( jetSCtofTimes, jetScRhGroup );
-    	    auto jetSCEigen2D = getRhGrpEigen_sph( jetSCtofTimes, jetScRhGroup );
+//            auto jetSCEigen3D = getRhGrpEigen_ieipt( jetSCtofTimes, jetScRhGroup );
+//    	    auto jetSCEigen2D = getRhGrpEigen_sph( jetSCtofTimes, jetScRhGroup );
             auto impangle = getATan2( hypo( jet.px(), jet.py()), jet.pz());
 		
-			jetImpactAngle.push_back(impangle);
+	    jetImpactAngle.push_back(impangle);
+/*
 			jetSc3dEx.push_back(jetSCEigen3D[0]);
             jetSc3dEy.push_back(jetSCEigen3D[1]);
             jetSc3dEz.push_back(jetSCEigen3D[2]);
@@ -3094,7 +3088,7 @@ std::cout << "f" << std::endl;
             jetSc2dEchisp2.push_back(jetSCEigen2D[6]);
             jetSc2dErangle.push_back(jetSCEigen2D[7]);
             jetSc2dEnxsum.push_back(jetSCEigen2D[8]);
-
+*/
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
     	//<<<<if( jetScRhGroup.size() >= minRHcnt && scemf > minEmf )
 
@@ -3120,7 +3114,7 @@ std::cout << "f" << std::endl;
 			vector<float> bcTimes;
 	        vector<rhGroup> bcRhGroups; 
 			vector<float> bcEnergies;
-			for( auto bc : jetBCGroup ){
+	for( auto bc : jetBCGroup ){
 	            auto bcRhGroup = getRHGroup( bc, bcMinEnergy );
 				if( not isRhGrpEx( bcRhGroup ) ) std::cout << " --- !!!!! bcRhGroup is not exclusive !!! " << std::endl;
 				//int bcRhGroupSize = bcRhGroup.size();
@@ -3130,16 +3124,16 @@ std::cout << "f" << std::endl;
 				bcEnergies.push_back(bc.energy());
 				uInt it(0); for(auto fbc : unusedfbclusts){if(bc.seed() == fbc.seed()){unusedfbclusts.erase(unusedfbclusts.begin()+it); break;}it++;}
 			}//<<>>for( auto bc : jetBCGroup )
-			hist1d[21]->Fill(bcRhGroups.size());
+		//	hist1d[21]->Fill(bcRhGroups.size());
 
         	// search for duplicate rhits in cluster rh collections
         	if( DEBUG ) std::cout << " --- premerge bcRhGroup dupCnt: " << getDupCnt(bcRhGroups) << " in " << bcRhGroups.size() <<std::endl;
-        	hist1d[20]->Fill(getDupCnt(bcRhGroups));
+        	//hist1d[20]->Fill(getDupCnt(bcRhGroups));
         	// condense clusters with duplicate rhits in rh collections 
 			while(reduceRhGrps(bcRhGroups)){}
         	// search for duplicate rhits in cluster rh collections
         	if( DEBUG ) std::cout << " --- postmerge bcRhGroup dupCnt: " << getDupCnt(bcRhGroups) << " in " << bcRhGroups.size() << std::endl;
-			hist1d[22]->Fill(bcRhGroups.size());
+		//	hist1d[22]->Fill(bcRhGroups.size());
 
 			if( DEBUG ) std::cout << " -- Get energy and rh count for matched basics clusters" << std::endl;
 			vector<float> bcRhGrpEnergy;
@@ -3148,7 +3142,7 @@ std::cout << "f" << std::endl;
         	for( auto bcRhGroup : bcRhGroups ){
 				auto bcRhGrpSize = bcRhGroup.size();
 				auto bcRhGrpEnr = getRhGrpEnr(bcRhGroup);
-               	hist2d[47]->Fill(bcRhGrpSize, bcRhGrpEnr);
+          //     	hist2d[47]->Fill(bcRhGrpSize, bcRhGrpEnr);
 				bcRhCnt += bcRhGrpSize;
                	//std::cout << " ---- get times for bcRhGroup w/ nRecHits: " << bcRhGroup.size() << std::endl;
                	auto bcRhTimes = getLeadTofRhTime( bcRhGroup, vtxX, vtxY, vtxZ );
@@ -3158,11 +3152,11 @@ std::cout << "f" << std::endl;
 				bcRhGrpCnt.push_back(bcRhGrpSize);
 				//if( bcRhGrpSize == 1 ) hist1d[54]->Fill(bcRhGrpEnr/jet.energy());
 				//else if( bcRhGrpSize > 1 ) hist1d[56]->Fill(bcRhGrpEnr/jet.energy());
-				for(const auto rh : bcRhGroup ) hist2d[49]->Fill(rh.time(), rh.energy());
+	//			for(const auto rh : bcRhGroup ) hist2d[49]->Fill(rh.time(), rh.energy());
             }//<<>>for( auto bc : jetBCGroup )
 
 
-			if( DEBUG ) std::cout << " -- Get energy and rh count for unused basics clusters" << std::endl;
+			if( DEBUG ) std::cout << " -- Get energy and rh count for unused basic clusters" << std::endl;
 			vector<float> fbcRhGrpEnergy;
            	vector<uInt> fbcRhGrpCnt;
 			for( auto obc : unusedfbclusts ){
@@ -3170,7 +3164,7 @@ std::cout << "f" << std::endl;
             	auto bcRhGroup = getRHGroup( obc, bcMinEnergy );				
 				auto bcRhGrpEnr = getRhGrpEnr(bcRhGroup);
 				auto bcRhGrpSize = bcRhGroup.size();
-				hist2d[48]->Fill(bcRhGrpSize, bcRhGrpEnr);
+			//	hist2d[48]->Fill(bcRhGrpSize, bcRhGrpEnr);
             	fbcRhGrpEnergy.push_back(bcRhGrpEnr);
             	fbcRhGrpCnt.push_back(bcRhGrpSize);
 			}//<<>>for( auto obc : fbclusts )
@@ -3236,19 +3230,19 @@ std::cout << "f" << std::endl;
 				jetCBCMedTime.push_back(jetBCTimeStats[10]);//c med
 	        	jetCBCMuTime.push_back(jetBCTimeStats[6]);//c mu
 				//std::cout << " - fill dbct hist " << std::endl;
-				if( nBCTimes == 1 ){ hist1d[11]->Fill(-3.5); }
-				else {//<<>>if( nBCTimes == 1 )
-					for( uInt ita = 0; ita < nBCTimes; ita++ ){
-                 		hist2d[50]->Fill(bcTimes[ita],bcRhGrpEnergy[ita]);
-						//hist2d[50]->Fill(bcTimes[ita],bcEnergies[ita]);
-						for( uInt itb = ita+1; itb < nBCTimes; itb++ ){
-							auto dt = getdt(bcTimes[ita],bcTimes[itb]);
-							hist1d[11]->Fill(dt);
-							hist1d[23]->Fill(dt);
-							auto effe = effMean(bcRhGrpEnergy[ita],bcRhGrpEnergy[itb]);
-							hist2d[45]->Fill(dt, effe);
-							hist2d[46]->Fill(dt, effe);
-				}	}	}//<<>>if( nBCTimes == 1 ) : else	
+	//			if( nBCTimes == 1 ){ hist1d[11]->Fill(-3.5); }
+	//			else {//<<>>if( nBCTimes == 1 )
+	//				for( uInt ita = 0; ita < nBCTimes; ita++ ){
+        //         	//	hist2d[50]->Fill(bcTimes[ita],bcRhGrpEnergy[ita]);
+	//					//hist2d[50]->Fill(bcTimes[ita],bcEnergies[ita]);
+	//					for( uInt itb = ita+1; itb < nBCTimes; itb++ ){
+	//						auto dt = getdt(bcTimes[ita],bcTimes[itb]);
+	//						hist1d[11]->Fill(dt);
+	//						hist1d[23]->Fill(dt);
+	//						auto effe = effMean(bcRhGrpEnergy[ita],bcRhGrpEnergy[itb]);
+	//						hist2d[45]->Fill(dt, effe);
+	//						hist2d[46]->Fill(dt, effe);
+	//			}	}	}//<<>>if( nBCTimes == 1 ) : else	
 
         	} else { //<<>>if( nBCTimes == 0 )
                		jetCBCMedTime.push_back(-29.75);
@@ -3271,29 +3265,29 @@ std::cout << "f" << std::endl;
 			//jetCSBCMuTime.push_back(-29.25);
 
             jetImpactAngle.push_back(-99);
-            jetSc3dEx.push_back(-99);
-            jetSc3dEy.push_back(-99);
-            jetSc3dEz.push_back(-99);
-            jetSc3dEv.push_back(-99);
-            jetSc3dEslope.push_back(-99);
-            jetSc3dEchisp.push_back(-99);
+           // jetSc3dEx.push_back(-99);
+           // jetSc3dEy.push_back(-99);
+           // jetSc3dEz.push_back(-99);
+           // jetSc3dEv.push_back(-99);
+           // jetSc3dEslope.push_back(-99);
+           // jetSc3dEchisp.push_back(-99);
 
-            jetSc2dEx.push_back(-99);
-            jetSc2dEy.push_back(-99);
-            jetSc2dEv.push_back(-99);
-            jetSc2dEslope.push_back(-99);
-            jetSc2dEchisp.push_back(-99);
-            jetSc2dEslope2.push_back(-99);
-            jetSc2dEchisp2.push_back(-99);
-            jetSc2dErangle.push_back(-99);
-            jetSc2dEnxsum.push_back(-99);
-            jetScRhCnt.push_back(-99);
+           // jetSc2dEx.push_back(-99);
+           // jetSc2dEy.push_back(-99);
+           // jetSc2dEv.push_back(-99);
+           // jetSc2dEslope.push_back(-99);
+           // jetSc2dEchisp.push_back(-99);
+           // jetSc2dEslope2.push_back(-99);
+           // jetSc2dEchisp2.push_back(-99);
+           // jetSc2dErangle.push_back(-99);
+           // jetSc2dEnxsum.push_back(-99);
+           // jetScRhCnt.push_back(-99);
 
-            jetBcTimesCnt.push_back(-99);
-            jetBcSumRHEnr.push_back(-99);
-            jetBcEMFr.push_back(-99);
-            jetBcRhCnt.push_back(-99);
-            jetBcGrpCnt.push_back(-99);
+            //jetBcTimesCnt.push_back(-99);
+            //jetBcSumRHEnr.push_back(-99);
+            //jetBcEMFr.push_back(-99);
+            //jetBcRhCnt.push_back(-99);
+            //jetBcGrpCnt.push_back(-99);
 				
 	   	}//<<>>if( jetSCGroup.size() >= minRHcnt) : else			
 
