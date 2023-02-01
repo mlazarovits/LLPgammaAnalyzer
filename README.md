@@ -18,7 +18,7 @@ Every time the analyzer changes, make sure to redo this step to recompile in CMS
 ## To make Ntuples from AOD
 ```
 cd test/
-cmsRun llpgana_mc_aod.py -d [dataset] -l [requestName label] 
+cmsRun llpgana_mc_aod.py 
 ```
 make sure you are running over the files you want and the output file name is updated
 
@@ -26,7 +26,7 @@ make sure you are running over the files you want and the output file name is up
 ## To run multicrab jobs for ntuplizer
 ```
 cd test/
-python2 multicrab_mc_llpgana_cmssw106_aod.py
+python2 multicrab_mc_llpgana_cmssw106_aod.py -d [dataset] -l [requestName label] 
 ```
 this script needs to be run with python 2 for certain dependencies. 
 Make sure you are running from the ```test/``` directory so the multicrab script and the config script are in the same place.
@@ -38,7 +38,7 @@ pvTimeSkimmer
 
 ## To run Jack's code
 ```
-cd CMSSW_X_X_X/src
+cd ~/nobackup/Jack_LLPCode/CMSSW_X_X_X/src
 scram b
 ```
 
@@ -54,3 +54,6 @@ make
 - instructions are for running on LPC system
 - make sure you edit the header files in `interface/` not `include/`
 
+
+## Analyzer notes
+- primary vertex (PV) coordinates are gotten at the beginning of the each event in event loop
