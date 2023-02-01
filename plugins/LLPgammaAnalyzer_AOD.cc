@@ -23,8 +23,8 @@
 #include "LLPgammaAnalyzer_AOD.hh"
 using namespace std;
 
-#define DEBUG false
-//#define DEBUG true
+//#define DEBUG false
+#define DEBUG true
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // constructors and destructor
@@ -85,8 +85,8 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	recHitsEETag(iConfig.getParameter<edm::InputTag>("recHitsEE")),
 
 	// gedphotons
-	gedPhotonsTag(iConfig.getParameter<edm::InputTag>("gedPhotons")),
-    phoCBIDLooseMapTag(iConfig.getParameter<edm::InputTag>("phoCBIDLooseMap")),
+	//gedPhotonsTag(iConfig.getParameter<edm::InputTag>("gedPhotons")),
+   // phoCBIDLooseMapTag(iConfig.getParameter<edm::InputTag>("phoCBIDLooseMap")),
 
 
 	// pfcand ref
@@ -157,8 +157,8 @@ LLPgammaAnalyzer_AOD::LLPgammaAnalyzer_AOD(const edm::ParameterSet& iConfig) :
 	recHitsEEToken_				= consumes<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit>>>(recHitsEETag);
 
 	// photons
-	gedPhotonsToken_ 			= consumes<std::vector<reco::Photon>>(gedPhotonsTag);
-	phoCBIDLooseMapToken_		= consumes<edm::ValueMap<bool>>(phoCBIDLooseMapTag); 
+	//gedPhotonsToken_ 			= consumes<std::vector<reco::Photon>>(gedPhotonsTag);
+	//phoCBIDLooseMapToken_		= consumes<edm::ValueMap<bool>>(phoCBIDLooseMapTag); 
 
 	// pfref
 	//reco2pf_					= consumes<edm::ValueMap<std::vector<reco::PFCandidateRef>>>(reco2pfTag);
@@ -1538,8 +1538,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	iEvent.getByToken(electronsToken_, electrons_);
 
 	// PHOTONS
-	iEvent.getByToken(gedPhotonsToken_, gedPhotons_);
-    iEvent.getByToken(phoCBIDLooseMapToken_, phoCBIDLooseMap_);
+	//iEvent.getByToken(gedPhotonsToken_, gedPhotons_);
+    //iEvent.getByToken(phoCBIDLooseMapToken_, phoCBIDLooseMap_);
 
 	// MUONS
     iEvent.getByToken(muonsToken_, muons_);
@@ -1580,7 +1580,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     if( DEBUG ) std::cout << "******************************************************************************************************" << std::endl;
 	if( DEBUG ) std::cout << "Processing event: " << event << " in run: " << run << " and lumiblock: " << lumi << std::endl;
 
-// -- Process Prime Vertix -----------------------------------
+// -- Process Primary Vertex -----------------------------------
 	const auto & primevtx = vertices_->front();
 	
 	vtxX = primevtx.position().x();
@@ -1667,14 +1667,14 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     if( DEBUG ) std::cout << "Collecting Photons/Electrons" << std::endl;
 
 	//auto phoIdx(0);
-    for( const auto photon : *gedPhotons_ ){
- 
-		//edm::Ref<reco::PhotonCollection> photonRef(gedPhotons_,phoIdx); 
-		//if( not (*phoCBIDLooseMap_)[photonRef] ){ fphotons.push_back(photon);} 
-		//phoIdx++;
-		fphotons.push_back(photon);
-
-	}//<<>>for( const auto photon : *gedPhotons_ )
+//    for( const auto photon : *gedPhotons_ ){
+// 
+//		//edm::Ref<reco::PhotonCollection> photonRef(gedPhotons_,phoIdx); 
+//		//if( not (*phoCBIDLooseMap_)[photonRef] ){ fphotons.push_back(photon);} 
+//		//phoIdx++;
+//		fphotons.push_back(photon);
+//
+//	}//<<>>for( const auto photon : *gedPhotons_ )
 
     for( const auto electron : *electrons_ ){ felectrons.push_back(electron); }
 
@@ -1848,6 +1848,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	metPy = t1pfMET.py();
 	metPhi = t1pfMET.phi();
 	metEta = t1pfMET.eta();	
+/*
 
 	//-------------------------------------------------------------------------------------
 	if( DEBUG ) std::cout << "Processing CaloJets" << std::endl;
@@ -1967,7 +1968,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	}//<<>>for (const auto caloJet : fcalojets )
     nCaloJets = iCaloJet;
-
 	//-------------------------------------------------------------------------------------------
     if( DEBUG ) std::cout << "Processing gedPhotons" << std::endl;
 
@@ -2280,7 +2280,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	nPhotons = iGedPhos;
 
 	//-------------------------------------------------------------------------------------------------------
-
+*/
 
 
 	//------------------------------------------------------------------------------------------
@@ -2349,12 +2349,20 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			if( DEBUG ) std::cout << " - Photon 2d/3d: below min RH cnt" << std::endl;
             continue;
         }//<<>>if( eleRhGroup.size() < minRHcnt ) ***** IF eleRhGroup.size() > minRHcnt BELOW THIS POINT IN LOOP *****
+std::cout << "a" << std::endl;
         auto tofTimes = getLeadTofRhTime( eleRhGroup, vtxX, vtxY, vtxZ );
+std::cout << "b" << std::endl;
         auto timeStats = getTimeDistStats( tofTimes, eleRhGroup );
+std::cout << "c" << std::endl;
         auto seedTOFTime = getSeedTofTime( *scptr, vtxX, vtxY, vtxZ );
-        auto eleSCEigen3D = getRhGrpEigen_ieipt( tofTimes, eleRhGroup );
-        auto eleSCEigen2D = getRhGrpEigen_sph( tofTimes, eleRhGroup );
+std::cout << "d" << std::endl;
+//        auto eleSCEigen3D = getRhGrpEigen_ieipt( tofTimes, eleRhGroup );
+std::cout << "e" << std::endl;
+  //      auto eleSCEigen2D = getRhGrpEigen_sph( tofTimes, eleRhGroup );
+std::cout << "f" << std::endl;
 
+
+/*
         eleSc3dEx.push_back(eleSCEigen3D[0]);
         eleSc3dEy.push_back(eleSCEigen3D[1]);
         eleSc3dEz.push_back(eleSCEigen3D[2]);
@@ -2367,12 +2375,12 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         eleSc2dEv.push_back(eleSCEigen2D[2]);
         eleSc2dEslope.push_back(eleSCEigen2D[3]);
         eleSc2dEchisp.push_back(eleSCEigen2D[4]);
-
+*/
         eleSeedTOFTime.push_back(seedTOFTime);
         eleCMeanTime.push_back(timeStats[6]);
-        if( DEBUG ) std::cout << " - Electron 2d/3d: " << eleSCEigen2D[0] << " " << eleSCEigen2D[1] << " " << eleSCEigen2D[2] << " " << eleSCEigen2D[3] << " "
-                              << eleSCEigen2D[4] << " / " << eleSCEigen3D[0] << " " << eleSCEigen3D[1] << " " << eleSCEigen3D[2] << " " 
-                              << eleSCEigen3D[3] << " " << eleSCEigen3D[4] << " " << eleSCEigen3D[5] << " time: " << timeStats[6] << std::endl;
+   //     if( DEBUG ) std::cout << " - Electron 2d/3d: " << eleSCEigen2D[0] << " " << eleSCEigen2D[1] << " " << eleSCEigen2D[2] << " " << eleSCEigen2D[3] << " "
+     //                         << eleSCEigen2D[4] << " / " << eleSCEigen3D[0] << " " << eleSCEigen3D[1] << " " << eleSCEigen3D[2] << " " 
+       //                       << eleSCEigen3D[3] << " " << eleSCEigen3D[4] << " " << eleSCEigen3D[5] << " time: " << timeStats[6] << std::endl;
 
 	}//<<>>for( const auto electron : *electrons_ )
 	nElectrons = iElectros;
@@ -2675,9 +2683,30 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	   		auto leadJetRh = getLeadRh( jetDrRhGroup );
 			//hist2d[52]->Fill( dremf, jetemfrac );			
 			//hist2d[55]->Fill( sumdrrhe, jeteme );
+		
+			//primary vertex time stamping - margaret lives here
+			if( DEBUG ) std::cout << "Doing PV time stuff" << std::endl;
+			//pv times are calculated from highest energy rechit in dR matched jet to rhgroup
+			auto lead_rh = getLeadRh(jetDrRhGroup);
+			auto lead_rh_id = lead_rh.detid();
+			auto lead_rh_pos = barrelGeometry->getGeometry(lead_rh_id)->getPosition();
+
+			auto lead_rh_x = lead_rh_pos.x();
+			auto lead_rh_y = lead_rh_pos.y();
+			auto lead_rh_z = lead_rh_pos.z();
+
+			auto diff_x = lead_rh_x - vtxX;
+			auto diff_y = lead_rh_y - vtxY;
+			auto diff_z = lead_rh_z - vtxZ;
+
+			float dist = sqrt(diff_x*diff_x + diff_y*diff_y + diff_z*diff_z);
+
+			pvTimes.push_back(dist/SOL);
+	   		
 
 
-	   		if( DEBUG ) std::cout << "Starting RecHit Loop" << std::endl;
+
+			if( DEBUG ) std::cout << "Starting RecHit Loop" << std::endl;
 			for ( uInt irhg = 0; irhg < rhCount; irhg++){
 			
 				//std::cout << " -- irhg: " << irhg << " rhCount: " << rhCount << std::endl;
@@ -2886,7 +2915,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         vector<float> phDr;
         vector<float> eleEnergy;
         vector<float> eleDr;
-
+/*
 
 	if( true ) { //---------------------------------- gedPhotons lock ------------------------------------------------
         int iph(0);
@@ -2949,7 +2978,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 		}//<<>>for( const auto photon : *gedPhotons_ ) 
 	} // ------------ gedPhotons lock ------------------------------------------------------------------
-
+*/
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
     if( true ) { //---------------------------------- electrons lock ------------------------------------------------
@@ -3276,6 +3305,9 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	if( goodJetEvent ) nGoodJetEvents++;
 
+
+
+
 	// -- Fill output trees ------------------------------------------
 	if( DEBUG ) std::cout << "---------- Next Event -----" << std::endl;
 	outTree->Fill();
@@ -3307,14 +3339,15 @@ void LLPgammaAnalyzer_AOD::beginJob(){
 	
 	//int jtdiv(400);
 	//float jtran(8);
-    int jtdiv(625);
-    float jtran(25);
-	int jdtdiv(200);
-	float jdtran(4);
-   	int jztdiv(100);
-   	float jztran(2);
-	int rhcnt(80);
+//    int jtdiv(625);
+//    float jtran(25);
+//	int jdtdiv(200);
+//	float jdtran(4);
+//   	int jztdiv(100);
+//   	float jztran(2);
+//	int rhcnt(80);
 
+/*
    	//------ 1D Hists --------------------------------------------------------------------------
 
 	hist1d[11] = fs->make<TH1D>("jetBcClTimeDiff", "jetBcClTimeDiff", jdtdiv, -1*jdtran, jdtran);
@@ -3385,7 +3418,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
       	string ste("ebeeMapEnr_"+std::to_string(it));
       	ebeeMapE[it] = fs->make<TH2D>( ste.c_str(), ste.c_str(), 361, -90, 90, 721, 0, 360);
 	}//<<>>for(int it=0; it<nEBEEMaps; it++)
-
+*/
 	std::cout << "Analyzer making trees" << std::endl;
 
 	// Create output Tree branches -----------------------------
@@ -3477,7 +3510,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("cljPx", &cljPx);
     outTree->Branch("cljPy", &cljPy);
     outTree->Branch("cljPz", &cljPz);
-*/
 
     outTree->Branch("nPhotons", &nPhotons);
     outTree->Branch("phoSeedTOFTime", &phoSeedTOFTime);
@@ -3502,7 +3534,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("phoPz", &phoPz);
     outTree->Branch("phoRhIds", &phoRhIds);
 
-/*
     outTree->Branch("phoIsPFPhoton", &phoIsPFPhoton);
     outTree->Branch("phoIsStdPhoton", &phoIsStdPhoton);
     outTree->Branch("phoHasConTracks", &phoHasConTracks);
@@ -3580,12 +3611,10 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("genPhoPdgId", &genPhoPdgId);
     outTree->Branch("genPhoLLP", &genPhoLlp);
 
-*/
 
     outTree->Branch("nElectrons", &nElectrons);
     //outTree->Branch("eleRhIds", &eleRhIds); 
     outTree->Branch("eleSeedTOFTime", &eleSeedTOFTime);
-  /*
     outTree->Branch("eleCMeanTime", &eleCMeanTime);
     outTree->Branch("eleSc3dEx", &eleSc3dEx);
     outTree->Branch("eleSc3dEy", &eleSc3dEy);
@@ -3598,7 +3627,6 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("eleSc2dEv", &eleSc2dEv);
     outTree->Branch("eleSc2dEslope", &eleSc2dEslope);
     outTree->Branch("eleSc2dEchisp", &eleSc2dEchisp);
-    */
     outTree->Branch("elePt", &elePt);
     outTree->Branch("eleEnergy", &eleEnergy);
     outTree->Branch("elePhi", &elePhi);
@@ -3606,6 +3634,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("elePx", &elePx);
     outTree->Branch("elePy", &elePy);
     outTree->Branch("elePz", &elePz);
+    */
 
 
     outTree->Branch("jetSumEPFrac", &jetSumEPFrac);
@@ -3696,6 +3725,10 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("rhTimeErr", &rhTimeErr);
     outTree->Branch("rhTOF", &rhTOF);
     outTree->Branch("rhID", &rhID);
+
+    //primary vertex stuff
+    outTree->Branch("pvTimes", &pvTimes);
+
 /*
     outTree->Branch("rhXtalI1", &rhXtalI1);
     outTree->Branch("rhXtalI2", &rhXtalI2);
@@ -3710,20 +3743,20 @@ void LLPgammaAnalyzer_AOD::beginJob(){
     outTree->Branch("rhpedrms12", &rhpedrms12);
     outTree->Branch("rhpedrms6", &rhpedrms6);
     outTree->Branch("rhpedrms1", &rhpedrms1);
-*/
+
     outTree->Branch("metSumEt", &metSumEt);
     outTree->Branch("metPt", &metPt);
     outTree->Branch("metPx", &metPx);
     outTree->Branch("metPy", &metPy);
     outTree->Branch("metPhi", &metPhi);
     outTree->Branch("metEta", &metEta);
-
+*/
 }//>>>>void LLPgammaAnalyzer_AOD::beginJob()
 
 
 // ------------ method called once each job just after ending the event loop	------------
 void LLPgammaAnalyzer_AOD::endJob(){
-
+/*
 	thresDivTH2D( hist2d[73], hist2d[74], 100 );
     thresDivTH2D( hist2d[75], hist2d[76], 100 );
     thresDivTH2D( hist2d[77], hist2d[78], 100 );
@@ -3731,7 +3764,7 @@ void LLPgammaAnalyzer_AOD::endJob(){
     thresDivTH2D( hist2d[80], hist2d[85], 100 );
 	profileTH2D( hist2d[87], hist1d[87], hist1d[101] );
     profileTH2D( hist2d[85], hist1d[88], hist1d[102] );
-
+*/
 }//>>>>void LLPgammaAnalyzer_AOD::endJob()
 
 

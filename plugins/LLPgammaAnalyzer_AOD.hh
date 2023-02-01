@@ -501,7 +501,10 @@ class LLPgammaAnalyzer_AOD : public edm::one::EDAnalyzer<edm::one::SharedResourc
       	std::vector<float> 	rhadcToGeV, rhSwCross;
       	std::vector<float> 	rhped12, rhped6, rhped1;
       	std::vector<float> 	rhpedrms12, rhpedrms6, rhpedrms1;
+	
+	std::vector<float> pvTimes;
 
+/*
       	// gedPhotons
       	const edm::InputTag gedPhotonsTag;
       	edm::EDGetTokenT<std::vector<reco::Photon> > gedPhotonsToken_;
@@ -571,11 +574,12 @@ class LLPgammaAnalyzer_AOD : public edm::one::EDAnalyzer<edm::one::SharedResourc
         std::vector<float>  ootPhoTrkSumPtSolidConeDR04, ootPhoTrkSumPtHollowConeDR04;
         std::vector<int>    ootPhoNTrkSolidConeDR04, ootPhoNTrkHollowConeDR04;
 
+
         // genOOTPhotons
 
         std::vector<double> genOOTPhoPt, genOOTPhoEnergy, genOOTPhoPhi, genOOTPhoEta, genOOTPhoPx, genOOTPhoPy, genOOTPhoPz;
         std::vector<int>    genOOTPhoPdgId, genOOTPhoLlp;
-
+*/
         // genEvtInfo
         const edm::InputTag genEvtInfoTag;
         edm::EDGetTokenT<GenEventInfoProduct> genEvtInfoToken_;
