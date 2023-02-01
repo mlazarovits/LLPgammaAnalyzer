@@ -2572,6 +2572,8 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
     jetSc2dErangle.clear();
     jetSc2dEnxsum.clear();
 
+    pvTimes.clear();
+
 //////////  reffrence information
 // **** const reco::TrackRefVector& associatedTracks() const;
 // **** const reco::PixelClusterTagInfo* tagInfoPixelCluster(const std::string& label = "") const; // from b tagging info methods
@@ -2693,7 +2695,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			auto diff_y = lead_rh_y - vtxY;
 			auto diff_z = lead_rh_z - vtxZ;
 
-			float dist = sqrt(diff_x*diff_x + diff_y*diff_y + diff_z*diff_z);
+			float dist = std::sqrt(diff_x*diff_x + diff_y*diff_y + diff_z*diff_z);
 
 			pvTimes.push_back(dist/SOL);
 	   		
