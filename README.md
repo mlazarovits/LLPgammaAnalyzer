@@ -57,3 +57,8 @@ make
 
 ## Analyzer notes
 - primary vertex (PV) coordinates are gotten at the beginning of the each event in event loop
+### Steps for adding a new branch
+- declare branch object in corresponding ```.hh``` file
+- add branch to tree
+- fill branch in appropriate spot
+- make sure branch gets cleared in an appropriate spot too
