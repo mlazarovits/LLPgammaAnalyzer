@@ -32,10 +32,10 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_recHitHists.push_back(new TH1D("rhPosX","rhPosX",100,-175,175));
 	_recHitHists.push_back(new TH1D("rhPosY","rhPosY",100,-175,175));
 	_recHitHists.push_back(new TH1D("rhPosZ","rhPosZ",100,-380,380));
-	_recHitHists.push_back(new TH1D("rhEta","rhEta",700,-3.5,3.5));
-	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",700,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhEta","rhEta",100,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",100,-3.5,3.5));
 	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",1000,0,1000));
-	_recHitHists.push_back(new TH1D("rhTime","rhTime",2000,-50,50));
+	_recHitHists.push_back(new TH1D("rhTime","rhTime",500,-50,50));
 	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",2000,-50,50));
 	_recHitHists.push_back(new TH1D("rhTOF","rhTOF",2000,-50,50));
 
