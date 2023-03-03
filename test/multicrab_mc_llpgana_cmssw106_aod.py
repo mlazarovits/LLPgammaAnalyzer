@@ -196,18 +196,18 @@ def run_multi( ds ):
 
 			# Dataset: JetHT UL2018
 
-			#['/JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD',''],
-			#['/JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD',''],
-			#['/JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD',''],
-			#['/JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD',''],
-			#['/JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD',''],
+			['/JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD',''],
+			['/JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD',''],
+			['/JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD',''],
+			['/JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD',''],
+			['/JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD',''],
 
 			# Dataset: /EGamma/Run2018-12Nov2019_UL2018-/MINIAOD
 
-            ['/EGamma/Run2018A-12Nov2019_UL2018-v2/MINIAOD',''],
-            ['/EGamma/Run2018B-12Nov2019_UL2018-v2/MINIAOD',''],
-            ['/EGamma/Run2018C-12Nov2019_UL2018-v2/MINIAOD',''],
-            ['/EGamma/Run2018D-12Nov2019_UL2018-v4/MINIAOD',''],
+           # ['/EGamma/Run2018A-12Nov2019_UL2018-v2/MINIAOD',''],
+           # ['/EGamma/Run2018B-12Nov2019_UL2018-v2/MINIAOD',''],
+           # ['/EGamma/Run2018C-12Nov2019_UL2018-v2/MINIAOD',''],
+           # ['/EGamma/Run2018D-12Nov2019_UL2018-v4/MINIAOD',''],
     
 			# Dataset: /DoubleEG/Run2016-21Feb2020_UL2016-/MINIAOD
 
