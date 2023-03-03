@@ -45,12 +45,20 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
 	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
 
+	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",500,-50,50));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",500,-50,50));
 }
 
 
 
+
 ReducedBaseSkimmer::~ReducedBaseSkimmer(){ 
-	//delete[] _jetHists; ?
+	delete _base;
+	_jetHists.clear();
+	_genJetHists.clear();
+	_vertexHists.clear();
+	_recHitHists.clear();
+	_pvTimeHists.clear();
 }
 
 
@@ -68,11 +76,13 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 		_SkimJets();
 		_SkimRecHits();
 		_SkimVertices();
+		_MakePVTimes();
 	}
 	vector<TH1D*> hists;		
 	for(int h = 0; h < (int)_jetHists.size(); h++) hists.push_back(_jetHists[h]); 
 	for(int h = 0; h < (int)_recHitHists.size(); h++) hists.push_back(_recHitHists[h]); 
 	for(int h = 0; h < (int)_vertexHists.size(); h++) hists.push_back(_vertexHists[h]); 
+	for(int h = 0; h < (int)_pvTimeHists.size(); h++) hists.push_back(_pvTimeHists[h]); 
 	return hists;
 
 
@@ -101,7 +111,54 @@ void ReducedBaseSkimmer::_SkimJets(){
 }
 
 
-//make function to match dR jets to rechits
+//make function to match dR jets to rechits - don't need this - ntuple has rechitIDs + jetRecHitOfJet and can match that way
+/*
+
+void ReducedBaseSkimer::_getRHGroup(int jetIdx){
+	//get ids of all rechits in a jet (given jet idx)
+	int idx = ( std::find(_base->jetRecHitOfJet()->begin(),_base->jetRecHitOfJet()->end(),jetIdx) - _base->jetRecHitOfJet()->begin() );
+
+	unsigned int rhID = _base->rhID->at(idx);
+	double e = 0.;
+	
+
+
+
+}
+
+*/
+void ReducedBaseSkimmer::_MakePVTimes(){
+//loop through jets - find pairs that are back to back (dphi ~ pi or something)
+	int nJets = _base->nJets;
+	double dphi;
+	for(int j1 = 0; j1 < nJets; j1++){
+		for(int j2 = 0; j2 < nJets; j2++){
+			if(j1 <= j2) continue;
+			//calculate dphi 
+			dphi = _base->jetPhi->at(j1) - _base->jetPhi->at(j2);
+			//make sure dphi is around pi
+			if(dphi < 3 && dphi > 3.28) continue;
+			
+				
+		}
+	}
+
+
+
+//within each jet in pair:
+//	find lead rh of jet
+//	find pos of lead rh, compute distance from (0,0,0)
+//	compute distance bw lead rh and pv
+//	take difference, divide by SOL = t_pv
+//	put t_pv in histogram pvTime
+//for each pair:
+//	take difference of t_pv_diff = t_pv_jet1 - t_pv_jet2
+//	put t_pv_diff in histogram pvTimeRes
+
+
+
+
+}
 
 
 void ReducedBaseSkimmer::_SkimGenJets(){

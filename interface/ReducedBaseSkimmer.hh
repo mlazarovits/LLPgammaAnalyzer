@@ -16,11 +16,13 @@ class ReducedBaseSkimmer{
 		vector<TH1D*> _genJetHists;
 		vector<TH1D*> _vertexHists; //first vertex is PV
 		vector<TH1D*> _recHitHists;		
+		vector<TH1D*> _pvTimeHists;		
 		void _SkimJets();
 		void _SkimGenJets();
 		void _SkimRecHits();
 		void _SkimVertices();
-		
+		void _MakePVTimes();
+		void _pvTime();		
 
 };
 
