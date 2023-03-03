@@ -2281,7 +2281,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	//-------------------------------------------------------------------------------------------------------
 */
-
+/*
 
 	//------------------------------------------------------------------------------------------
 
@@ -2356,7 +2356,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
   //      auto eleSCEigen2D = getRhGrpEigen_sph( tofTimes, eleRhGroup );
 
 
-/*
         eleSc3dEx.push_back(eleSCEigen3D[0]);
         eleSc3dEy.push_back(eleSCEigen3D[1]);
         eleSc3dEz.push_back(eleSCEigen3D[2]);
@@ -2369,7 +2368,6 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
         eleSc2dEv.push_back(eleSCEigen2D[2]);
         eleSc2dEslope.push_back(eleSCEigen2D[3]);
         eleSc2dEchisp.push_back(eleSCEigen2D[4]);
-*/
         eleSeedTOFTime.push_back(seedTOFTime);
         eleCMeanTime.push_back(timeStats[6]);
    //     if( DEBUG ) std::cout << " - Electron 2d/3d: " << eleSCEigen2D[0] << " " << eleSCEigen2D[1] << " " << eleSCEigen2D[2] << " " << eleSCEigen2D[3] << " "
@@ -2378,7 +2376,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 
 	}//<<>>for( const auto electron : *electrons_ )
 	nElectrons = iElectros;
-
+*/
 	//---------------------------------------------------------------------------------------------
 //    if( DEBUG ) std::cout << "Processing PFCandidates" << std::endl;
 //	//for ( reco::PFCandidate pfcand = pfcands_->begin(); pfcand != pfcands_->end(); pfcand++){	
@@ -2630,6 +2628,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 		jetPHM.push_back(jet.photonMultiplicity());
 		jetELM.push_back(jet.electronMultiplicity());
 
+		jetRecHitId.push_back({});
    //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
    
 	   	//if( DEBUG ) std::cout << "Fill jet pt/phi/eta Histograms" << std::endl;
@@ -2687,16 +2686,17 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			auto lead_rh_id = lead_rh.detid();
 			auto lead_rh_pos = barrelGeometry->getGeometry(lead_rh_id)->getPosition();
 
-			auto lead_rh_x = lead_rh_pos.x();
-			auto lead_rh_y = lead_rh_pos.y();
-			auto lead_rh_z = lead_rh_pos.z();
+			auto lead_rh_X = lead_rh_pos.x();
+			auto lead_rh_Y = lead_rh_pos.y();
+			auto lead_rh_Z = lead_rh_pos.z();
+	
+			const auto d_rh = hypo(lead_rh_X,lead_rh_Y,lead_rh_Z);
+			const auto d_pv = hypo(lead_rh_X-vtxX,lead_rh_Y-vtxY,lead_rh_Z-vtxZ);
 
-			auto diff_x = lead_rh_x - vtxX;
-			auto diff_y = lead_rh_y - vtxY;
-			auto diff_z = lead_rh_z - vtxZ;
+			//distance difference between (0 to rh) - (rh to pv)
+			float dist = (d_rh-d_pv);
 
-			float dist = std::sqrt(diff_x*diff_x + diff_y*diff_y + diff_z*diff_z);
-
+			//should be t_pv - t_0: time difference bw t_pv and central detector point (0,0,0)
 			pvTimes.push_back(dist/SOL);
 	   		
 
@@ -2709,7 +2709,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 				jetRecHitOfJet.push_back(ijet);
 				auto detid = (jetDrRhGroup[irhg]).detid();
 				//std::cout << " -- (jetDrRhGroup[irhg]).detid(): " << detid.rawId() << std::endl;
-		      	jetRecHitId.push_back(detid.rawId());	
+		      	jetRecHitId[ijet].push_back(detid.rawId());	
 				//auto rhtime = tofTimes[irhg];
 				//std::cout << " -- tofTimes[irhg]: " << rhtime << std::endl;
 		      	//fillTH1(rhtime,hist1d[0]);//hist1d[0]->Fill(rhtime);
@@ -2976,7 +2976,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	} // ------------ gedPhotons lock ------------------------------------------------------------------
 */
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
-
+/*
     if( true ) { //---------------------------------- electrons lock ------------------------------------------------
         int iel(0);
         bool ematched = false;
@@ -3041,7 +3041,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	   	}//<<>>for( const auto electron : *electrons_ )
     } // ------------ electrons lock ------------------------------------------------------------------
         // SC group creation finished <<<<< -----------------------------------------------
-
+*/
     //<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
 
 		nJetScMatch.push_back(nMatched);
@@ -3443,6 +3443,7 @@ void LLPgammaAnalyzer_AOD::beginJob(){
 	outTree->Branch("jetPt", &jetPt);
 	outTree->Branch("jetEta", &jetEta);
 	outTree->Branch("jetPhi", &jetPhi);
+	outTree->Branch("jetRecHitOfJet",&jetRecHitOfJet);
 	outTree->Branch("jetNHF", &jetNHF);
 	outTree->Branch("jetNEMF", &jetNEMF);  
 	outTree->Branch("jetCHF", &jetCHF);
