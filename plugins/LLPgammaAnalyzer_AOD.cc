@@ -1007,16 +1007,16 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_ieipt( vector<float> times, rh
         float lphi = adjphis[it] - adjmphi;
         float ltime = ebtimes[it] - mtime;
         auto epxcor = epeigncos*(leta) - epeignsin*(lphi);
-        auto epycor = epeignsin*(leta) + epeigncos*(lphi);
-        auto etxcor = eteigncos*(epxcor) - eteignsin*(ltime);
-        auto etycor = eteignsin*(epxcor) + eteigncos*(ltime);
-        auto fill = ltime*wts[it];
-        hist2d[77]->Fill(epxcor,epycor,fill);
-        hist2d[78]->Fill(epxcor,epycor,wts[it]);
-        hist2d[79]->Fill(etxcor,etycor,fill);
-        hist2d[84]->Fill(etxcor,etycor,wts[it]);
-        hist2d[80]->Fill(epxcor,ltime,fill);
-        hist2d[85]->Fill(epxcor,ltime,wts[it]);
+        //auto epycor = epeignsin*(leta) + epeigncos*(lphi);
+        //auto etxcor = eteigncos*(epxcor) - eteignsin*(ltime);
+        //auto etycor = eteignsin*(epxcor) + eteigncos*(ltime);
+        //auto fill = ltime*wts[it];
+        //hist2d[77]->Fill(epxcor,epycor,fill);
+        //hist2d[78]->Fill(epxcor,epycor,wts[it]);
+        //hist2d[79]->Fill(etxcor,etycor,fill);
+        //hist2d[84]->Fill(etxcor,etycor,wts[it]);
+        //hist2d[80]->Fill(epxcor,ltime,fill);
+        //hist2d[85]->Fill(epxcor,ltime,wts[it]);
 		auto sl = (ltime)/(epxcor);
 		xsum += sl*wts[it];
         xs.push_back(sl);
@@ -1159,7 +1159,7 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_sph( vector<float> times, rhGr
 	// -----------------------------------------
 	// finding nemo ( slope )
 	// -----------------------------------------
-    auto nWts = resolutions.size();
+  auto nWts = resolutions.size();
 	//auto nWts = wts.size();
 	//bool nwtcut = nWts > 10;
     //bool pfcut = true;
@@ -1186,14 +1186,14 @@ vector<float> LLPgammaAnalyzer_AOD::getRhGrpEigen_sph( vector<float> times, rhGr
         auto fill = ltime*resolutions[it];
         //if( nwtcut ){
         //if( pfcut ){
-        	hist2d[73]->Fill(sxcor,sycor,fill);
-        	hist2d[74]->Fill(sxcor,sycor,resolutions[it]);
-        	hist2d[75]->Fill(leta,lphi,fill);
-        	hist2d[76]->Fill(leta,lphi,resolutions[it]);
+        	//hist2d[73]->Fill(sxcor,sycor,fill);
+        	//hist2d[74]->Fill(sxcor,sycor,resolutions[it]);
+        	//hist2d[75]->Fill(leta,lphi,fill);
+        	//hist2d[76]->Fill(leta,lphi,resolutions[it]);
 		//}//<<>>if( std::abs(fill) < x )
 		//if( pfcut ){
-			hist2d[86]->Fill(sycor,ltime,resolutions[it]);
-			hist2d[87]->Fill(sxcor,ltime,resolutions[it]);
+		//	hist2d[86]->Fill(sycor,ltime,resolutions[it]);
+		//	hist2d[87]->Fill(sxcor,ltime,resolutions[it]);
         //}//<<>>if( pfcut )
 			//if( sxcor > -1 && sxcor <= 0 ) hist1d[94]->Fill(ltime,resolutions[it]);
         	//if( sxcor < 1 && sxcor >= 0 ) hist1d[95]->Fill(ltime,resolutions[it]);
@@ -2706,7 +2706,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			for ( uInt irhg = 0; irhg < rhCount; irhg++){
 			
 				//std::cout << " -- irhg: " << irhg << " rhCount: " << rhCount << std::endl;
-				jetRecHitOfJet.push_back(ijet);
+				//jetRecHitOfJet.push_back(ijet);
 				auto detid = (jetDrRhGroup[irhg]).detid();
 				//std::cout << " -- (jetDrRhGroup[irhg]).detid(): " << detid.rawId() << std::endl;
 		      	jetRecHitId[ijet].push_back(detid.rawId());	

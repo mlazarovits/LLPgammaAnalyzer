@@ -286,15 +286,16 @@ class LLPgammaAnalyzer_AOD : public edm::one::EDAnalyzer<edm::one::SharedResourc
       	TTree *outTree;
 
 		// histograms
-		TH1D *hist1d[nHists];
-      	TH2D *hist2d[nHists];
+		//turn off histograms in ntuples
+	//	TH1D *hist1d[nHists];
+      	//TH2D *hist2d[nHists];
 
-      	TH2D *ebeeMapSc[nEBEEMaps];
-      	TH2D *ebeeMapBc[nEBEEMaps];
-      	TH2D *ebeeMapDr[nEBEEMaps];
+      //	TH2D *ebeeMapSc[nEBEEMaps];
+      //	TH2D *ebeeMapBc[nEBEEMaps];
+      //	TH2D *ebeeMapDr[nEBEEMaps];
 
-      	TH2D *ebeeMapT[nEBEEMaps];
-      	TH2D *ebeeMapE[nEBEEMaps];
+      //	TH2D *ebeeMapT[nEBEEMaps];
+      //	TH2D *ebeeMapE[nEBEEMaps];
 		
 		// Flags
 		const bool hasGenInfo;
