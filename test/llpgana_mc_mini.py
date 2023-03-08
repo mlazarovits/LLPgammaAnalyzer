@@ -34,16 +34,7 @@ options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.
 options.register('processName','TREE',VarParsing.multiplicity.singleton,VarParsing.varType.string,'process name to be considered');
 
 ## outputFile Name
-#outfilename = 'llpgana_t35a_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root'
-#outfilename = 'llpgana_t36L_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t36L_noele_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t37MC_noele_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 35a + ph time
-#outfilename = 'llpgana_t68MC_eigen_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # adding genJet Parton info
-#outfilename = 'llpgana_mc_t75M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 73 w/ 3DProfile & sphcalrot : ebp ebn + ltime sum flip
-#outfilename = 'llpgana_mc_t76SM_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as May 16 2022 update with energy/delaytime info
-#outfilename = 'llpgana_mc_t79M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 76 + ootPhotons only
-#outfilename = 'llpgana_GMSB_t80M_pheigen95t60r9_005_jetht_emf00bc3rh2e_id2pt200nrh5eta15rhe2.root' # as 79 + genJetDrmatch
-outfilename = 'llpgana_mc_MINIAODSIM_GMSB100TeV_v80a_2per_FL.root'
+outfilename = 'llpgana_mc_MINIAODSIM_test_JetHT_2018A.root'
 
 options.register('outputFileName',outfilename,VarParsing.multiplicity.singleton,VarParsing.varType.string,'output file name created by cmsRun');
 
@@ -86,8 +77,6 @@ gmsbver2 = 'MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/'
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-	'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/00B87525-94D1-C741-9B03-00528106D15A.root'	
-
 
 		#'file:jwk_reco_data_DIGI2RAW.root'),
 
@@ -183,7 +172,7 @@ process.source = cms.Source("PoolSource",
 
 		  ## JetHT
 
-        #'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/00B87525-94D1-C741-9B03-00528106D15A.root',
+        '/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/00B87525-94D1-C741-9B03-00528106D15A.root',
         #'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/00F0369F-B9FA-5643-B0F4-F286B80B30B5.root',
         #'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/0173DB9C-3E46-4741-B80B-9671E9E917CA.root',
         #'/store/data/Run2018A/JetHT/MINIAOD/UL2018_MiniAODv2-v1/260000/017C1808-933C-0D48-95B5-A8B9A0B16601.root',
@@ -234,11 +223,11 @@ process.source = cms.Source("PoolSource",
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))#LT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500))#US
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(12500))#VS
-#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#S
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#S
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100000))#SM
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#M
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500000))#L
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#F
+#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#F
 
 # Set the global tag depending on the sample type
 from Configuration.AlCa.GlobalTag import GlobalTag
@@ -250,7 +239,7 @@ process.TFileService = cms.Service("TFileService",
 		                   fileName = cms.string(options.outputFileName))
 				   
 # Make the tree 
-process.tree = cms.EDAnalyzer("LLPgammaAnalyzer",
+process.tree = cms.EDAnalyzer("LLPgammaAnalyzer_MINI",
    ## flags
    hasGenInfo = cms.bool(options.hasGenInfo),
    ## additional collections
