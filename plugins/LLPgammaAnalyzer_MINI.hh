@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    LLPgammaAnalyzer
-// Class:      LLPgammaAnalyzer
+// Package:    LLPgammaAnalyzer_MINI
+// Class:      LLPgammaAnalyzer_MINI
 //
-/**\class LLPgammaAnalyzer LLPgammaAnalyzer.cc LLPgammaAnalyzer/plugins/LLPgammaAnalyzer.cc
+/**\class LLPgammaAnalyzer_MINI LLPgammaAnalyzer_MINI.cc LLPgammaAnalyzer_MINI/plugins/LLPgammaAnalyzer_MINI.cc
 
  Description: [one line class summary]
 
@@ -190,8 +190,8 @@ typedef unsigned int uInt;
 #define PI 3.1415926535 // pie ...  
 
 enum class ECAL {EB, EM, EP, EE, NONE};
-#define ecal_config_path "/uscms/home/jaking/nobackup/llpa/CMSSW_10_6_20/src/LLPGamma/LLPgammaAnalyzer/macros/ecal_config/"
-//#define ecal_config_path "/LLPGamma/LLPgammaAnalyzer/macros/ecal_config/"
+#define ecal_config_path "/uscms/home/jaking/nobackup/llpa/CMSSW_10_6_20/src/LLPGamma/LLPgammaAnalyzer_MINI/macros/ecal_config/"
+//#define ecal_config_path "/LLPGamma/LLPgammaAnalyzer_MINI/macros/ecal_config/"
 
 struct DetIDStruct{
 	DetIDStruct() {}
@@ -207,12 +207,12 @@ typedef std::map<UInt_t,DetIDStruct> detIdMap;
 //  Class Declaration
 //
 
-class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class LLPgammaAnalyzer_MINI : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 
 	public:
 
-    	explicit LLPgammaAnalyzer(const edm::ParameterSet&);
-      	~LLPgammaAnalyzer();
+    	explicit LLPgammaAnalyzer_MINI(const edm::ParameterSet&);
+      	~LLPgammaAnalyzer_MINI();
 
       	static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -265,16 +265,16 @@ class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> 
       	TTree *outTree;
 
 		// histograms
-      	TH1D *jetTimeHist, *jetRHTimeHist;
-		TH1D *hist1d[nHists];
-      	TH2D *hist2d[nHists];
+ //     	TH1D *jetTimeHist, *jetRHTimeHist;
+ //       	TH1D *hist1d[nHists];
+ //     	TH2D *hist2d[nHists];
 
-      	TH2D *ebeeMapSc[nEBEEMaps];
-      	TH2D *ebeeMapBc[nEBEEMaps];
-      	TH2D *ebeeMapDr[nEBEEMaps];
+ //     	TH2D *ebeeMapSc[nEBEEMaps];
+ //     	TH2D *ebeeMapBc[nEBEEMaps];
+ //     	TH2D *ebeeMapDr[nEBEEMaps];
 
-      	TH2D *ebeeMapT[nEBEEMaps];
-      	TH2D *ebeeMapE[nEBEEMaps];
+ //     	TH2D *ebeeMapT[nEBEEMaps];
+ //     	TH2D *ebeeMapE[nEBEEMaps];
 		
 		// Flags
 		const bool hasGenInfo;
@@ -334,7 +334,7 @@ class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> 
       	std::vector<float>  jetPhMuTime, jetOOTPhMuTime, jetEleMuTime;
       	std::vector<int>    jetID, njetKids, jetKidOfJet, njetSubs, njetRecHits, jetRecHitOfJet;
       	std::vector<int>    jetKidPdgID, jetKidCharge, jetKid3Charge, jetPHM, jetELM;
-      	std::vector<uInt>   jetRecHitId;
+      	std::vector<std::vector<uInt>>   jetRecHitId;
       	std::vector<bool>   jetKidLLP;
       	std::vector<double> jetKidMass, jetKidVx, jetKidVy, jetKidVz;
       	std::vector<float>  jetKidE, jetKidPt, jetKidPhi, jetKidEta, jetKidTime, jetKidMedTime;
@@ -366,12 +366,8 @@ class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> 
 
         detIdMap DetIDMap;
       	int nRecHits;
-      	std::vector<float> rhX, rhY, rhZ, rhE, rhtime, rhtimeErr, rhTOF;
+      	std::vector<float> rhPosX, rhPosY, rhPosZ, rhEnergy, rhTime, rhTimeErr, rhTOF, rhPosEta, rhPosPhi;
       	std::vector<uInt> rhID;
-      	std::vector<bool> rhisOOT, rhisGS6, rhisGS1;
-      	std::vector<float> rhadcToGeV;
-      	std::vector<float> rhped12, rhped6, rhped1;
-      	std::vector<float> rhpedrms12, rhpedrms6, rhpedrms1;
 
       	// gedPhotons
       	const edm::InputTag gedPhotonsTag;
@@ -389,7 +385,7 @@ class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> 
       	const CaloSubdetectorGeometry * barrelGeometry;
       	const CaloSubdetectorGeometry * endcapGeometry;  
 
-};//<<>>class LLPgammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+};//<<>>class LLPgammaAnalyzer_MINI : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 
 //
 // Helper functions ( single line function defs, mostly )
