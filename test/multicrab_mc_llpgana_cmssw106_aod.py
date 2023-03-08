@@ -86,19 +86,24 @@ def docrab( dataset ):
         config.General.requestName = None
 
         config.JobType.pluginName  = 'Analysis'
-        config.JobType.psetName    = 'llpgana_mc_aod.py'
+        config.JobType.psetName    = 'llpgana_mc_mini.py'
         config.JobType.pyCfgParams = None
 
         config.Data.inputDataset   = None
         #config.Data.lumiMask       = inputJSON    # Comment out for MC only
         #config.Data.splitting     = 'Automatic'
         config.Data.splitting    = 'EventAwareLumiBased' # MC
-	if options.dataset == 'GMSB':
+        #for choosing # of files to run over
+	#config.Data.splitting    = 'FileBased' # MC
+        #config.Data.totalUnits    = '5' # MC
+        if options.dataset == 'GMSB':
         	config.Data.unitsPerJob  =  1500 # MC GMSB
-	elif options.dataset == 'GJets':
+        elif options.dataset == 'GJets':
         	config.Data.unitsPerJob  =  5000 # MC GJet
-	else:
+        else:
         	config.Data.unitsPerJob   = 2000
+        if options.dataset == 'data':
+        	config.Data.runRange  =  '316241-316245' # MC GMSB
 
         config.JobType.allowUndistributedCMSSW = True
         config.JobType.inputFiles  = [ inptCfgEB, inptCfgEE ]
@@ -123,7 +128,7 @@ def docrab( dataset ):
             dataset        = inDO[0].split('/')[3]
             print dataset 
 
-            trial           = "llpga_"+options.dataset+"_AOD"
+            trial           = "llpga_"+primaryDataset+"_"+runEra+"_"+dataset
 	    if options.label is not '':
 		trial += "_"+options.label
 
@@ -151,6 +156,8 @@ def docrab( dataset ):
 #>>>>>>>>>>>>>>>>>>>     #MC RunIISummer20UL18RECO
 	    if options.dataset == 'GJets':
             	config.JobType.pyCfgParams   = ['globalTag=106X_upgrade2018_realistic_v11_L1v1','outputFileName=output.root','hasGenInfo=True']
+	    if options.dataset == 'data':
+            	config.JobType.pyCfgParams   = ['globalTag=106X_dataRun2_v28','outputFileName=output.root']
 	    else:
 		print("Error: global tag not specificed for this dataset. Check the available tags in the script and set accordingly.")
 		exit()
@@ -186,7 +193,7 @@ def docrab( dataset ):
                 print "Failed executing command %s for task %s: %s" % (options.crabCmd, projDir, cle)
 
 
-##33333333333333333333333333333333333333333333333333333333333
+#############################################################
 
 def run_multi( ds ):
 
@@ -197,10 +204,10 @@ def run_multi( ds ):
 			# Dataset: JetHT UL2018
 
 			['/JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD',''],
-			['/JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD',''],
-			['/JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD',''],
-			['/JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD',''],
-			['/JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD',''],
+		#	['/JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD',''],
+		#	['/JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD',''],
+		#	['/JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD',''],
+		#	['/JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD',''],
 
 			# Dataset: /EGamma/Run2018-12Nov2019_UL2018-/MINIAOD
 
