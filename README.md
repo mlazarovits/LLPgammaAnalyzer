@@ -53,7 +53,7 @@ make
 - if `undefined reference` error pops up during compilation, make sure the necessary source (.cc) files are included in the relevant BuildFile
 - instructions are for running on LPC system
 - make sure you edit the header files in `interface/` not `include/`
-
+- can find the global tag for the corresponding dataset/sample in [CMS DAS](https://cmsweb.cern.ch/das/)
 
 ## Analyzer notes
 - primary vertex (PV) coordinates are gotten at the beginning of the each event in event loop
