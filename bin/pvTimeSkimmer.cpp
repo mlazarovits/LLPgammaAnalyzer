@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 	cout << "Look at all those chickens!" << endl;	
 
 	string indir = "ntuples/";
-	string infileName = "GMSB_MC_AODSIM_100TeV_cTau200to10000cm";
+	string infileName = "llpgana_mc_MINIAODSIM_test_JetHT_2018A";
 	string outfilename = "pv-time-skim.root";
 	string outfileDir = "skims/"+infileName+"/";
 	outfilename = outfileDir+outfilename;
