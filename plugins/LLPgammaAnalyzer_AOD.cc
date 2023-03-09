@@ -2678,7 +2678,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	   		auto leadJetRh = getLeadRh( jetDrRhGroup );
 			//hist2d[52]->Fill( dremf, jetemfrac );			
 			//hist2d[55]->Fill( sumdrrhe, jeteme );
-		
+		/*
 			//primary vertex time stamping - margaret lives here
 			if( DEBUG ) std::cout << "Doing PV time stuff" << std::endl;
 			//pv times are calculated from highest energy rechit in dR matched jet to rhgroup
@@ -2699,7 +2699,7 @@ void LLPgammaAnalyzer_AOD::analyze(const edm::Event& iEvent, const edm::EventSet
 			//should be t_pv - t_0: time difference bw t_pv and central detector point (0,0,0)
 			pvTimes.push_back(dist/SOL);
 	   		
-
+*/
 
 
 			if( DEBUG ) std::cout << "Starting RecHit Loop" << std::endl;
