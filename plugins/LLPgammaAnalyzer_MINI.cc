@@ -1614,9 +1614,9 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 // -- Process Prime Vertix
 	const auto & primevtx = vertices_->front();
 	
-	auto vtxX = primevtx.position().x();
-	auto vtxY = primevtx.position().y();
-	auto vtxZ = primevtx.position().z();
+	vtxX = primevtx.position().x();
+	vtxY = primevtx.position().y();
+	vtxZ = primevtx.position().z();
 	
 // ---- process jets --------------------------
 
@@ -1666,6 +1666,7 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 	for(const auto& bclust : *caloCluster_ ) fbclusts.push_back(bclust);
 
 	if( DEBUG ) std::cout << "Processing RecHits" << std::endl;
+	nRecHits = 0;
 	rhPosX.clear();
 	rhPosY.clear();
 	rhPosZ.clear();
@@ -1678,6 +1679,7 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 	rhID.clear();
 	std::vector<EcalRecHit> _rechits;
 	for(const auto rechit : *recHitsEB_) _rechits.push_back(rechit);
+	nRecHits = (int)_rechits.size();
 	for(const auto rechit : _rechits){
 		const auto rhid = getRawID(rechit);
 		auto Rh_pos = barrelGeometry->getGeometry(rechit.detid())->getPosition();
@@ -1696,72 +1698,9 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 		rhPosPhi.push_back(Rh_phi);
 		
 		rhTime.push_back(rechit.time());
-		rhTime.push_back(rechit.timeError());
+		rhTimeErr.push_back(rechit.timeError());
+		rhEnergy.push_back(rechit.energy());
 }	
-//	for (const auto recHit : *recHitsEB_ )
-//	{ fillTH1(recHit.time(),hist1d[131]); fillTH1(recHit.energy(),hist1d[132]); hist2d[122]->Fill(recHit.time(),recHit.energy()); 
-//		fillTH1(recHit.checkFlag(EcalRecHit::kOutOfTime),hist1d[135]); }
-//    for (const auto recHit : *recHitsEE_ )
-//	{ fillTH1(recHit.time(),hist1d[133]); fillTH1(recHit.energy(),hist1d[134]); hist2d[123]->Fill(recHit.time(),recHit.energy()); 
-//		fillTH1(recHit.checkFlag(EcalRecHit::kOutOfTime),hist1d[136]); }
-/*
-    if( DEBUG ) std::cout << "Processing gedPhotons" << std::endl;
-    for( const auto photon : *gedPhotons_ ){
-
-        const auto &phosc = photon.superCluster().isNonnull() ? photon.superCluster() : photon.parentSuperCluster();
-        const auto scptr = phosc.get();
-		//if( DEBUG ) std::cout << " -- gedPhotons : " << scptr << std::endl;
-        scGroup phoSCGroup{*scptr};
-//        auto phoRhGroup = getRHGroup( phoSCGroup, 2.0, hist1d[137], hist1d[138], hist1d[139] );
-        if( phoRhGroup.size() < 3 ) continue;
-        auto phoTofTimes = getLeadTofRhTime( phoRhGroup, vtxX, vtxY, vtxZ );
-        auto phoTimeStats = getTimeDistStats( phoTofTimes, phoRhGroup );
-		auto phoSeedTOFTime = getSeedTofTime( *scptr, vtxX, vtxY, vtxZ );
-        //auto phoLeadTOFTime =  getLeadTofTime( phoRhGroup, vtxX, vtxY, vtxZ );
-        hist1d[146]->Fill( phoTimeStats[6] );//c mean
-        hist1d[147]->Fill( phoSeedTOFTime );//lead time 
-        hist1d[148]->Fill( phoTimeStats[6] - phoSeedTOFTime );//diff
-    }//<<>>for( const auto photon : *gedPhotons_ )
-
-    if( DEBUG ) std::cout << "Processing ootPhotons" << std::endl;
-    for( const auto ootphoton : *ootPhotons_ ){
-
-        const auto &ootphosc = ootphoton.superCluster().isNonnull() ? ootphoton.superCluster() : ootphoton.parentSuperCluster();
-        const auto scptr = ootphosc.get();
-        //if( DEBUG ) std::cout << " -- ootPhotons : " << scptr << std::endl;
-        scGroup ootPhoSCGroup{*scptr};
- //       auto ootPhoRhGroup = getRHGroup( ootPhoSCGroup, 2.0, hist1d[140], hist1d[141], hist1d[142] );
-        if( ootPhoRhGroup.size() < 3 ) continue;
-        auto ootPhoTofTimes = getLeadTofRhTime( ootPhoRhGroup, vtxX, vtxY, vtxZ );
-        auto ootPhoTimeStats = getTimeDistStats( ootPhoTofTimes, ootPhoRhGroup );
-        auto ootPhoSeedTOFTime = getSeedTofTime( *scptr, vtxX, vtxY, vtxZ );
-        //auto ootPhoLeadTOFTime =  getLeadTofTime( ootPhoRhGroup, vtxX, vtxY, vtxZ );
-        hist1d[149]->Fill( ootPhoTimeStats[6] );//c mean
-        hist1d[150]->Fill( ootPhoSeedTOFTime );//lead time 
-        hist1d[151]->Fill( ootPhoTimeStats[6] - ootPhoSeedTOFTime );//diff
-    }//<<>>for( const auto photon : *gedPhotons_ )
-    if( DEBUG ) std::cout << "Processing Electrons" << std::endl;
-	for( const auto electron : *electrons_ ){
-
-    	const auto &elesc = electron.superCluster().isNonnull() ? electron.superCluster() : electron.parentSuperCluster();
-        const auto scptr = elesc.get();
-        //if( DEBUG ) std::cout << " -- Electrons : " << scptr << std::endl;
-        scGroup eleSCGroup{*scptr};
-    	auto eleRhGroup = getRHGroup( eleSCGroup, 2.0, hist1d[143], hist1d[144], hist1d[145] );
-        //if( DEBUG ) std::cout << " --- eleRhGroup " << std::endl;
-		if( eleRhGroup.size() < 3 ) continue;
-        auto eleTofTimes = getLeadTofRhTime( eleRhGroup, vtxX, vtxY, vtxZ );
-        //if( DEBUG ) std::cout << " --- eleTofTimes " << std::endl;
-        auto eleTimeStats = getTimeDistStats( eleTofTimes, eleRhGroup );
-        //if( DEBUG ) std::cout << " --- eleTimeStats " << std::endl;
-        auto eleSeedTOFTime = getSeedTofTime( *scptr, vtxX, vtxY, vtxZ );
-		//auto eleLeadTOFTime =  getLeadTofTime( eleRhGroup, vtxX, vtxY, vtxZ );
-        //if( DEBUG ) std::cout << " --- eleLeadTOFTime " << std::endl;
-        hist1d[152]->Fill( eleTimeStats[6] );//c mean
-        hist1d[153]->Fill( eleSeedTOFTime );//lead time 
-        hist1d[154]->Fill( eleTimeStats[6] - eleSeedTOFTime );//diff
-	}//<<>>for( const auto electron : *electrons_ )
-*/
 
     if( DEBUG ) std::cout << "Init for Jet Loop with " << nJets << " jets"<< std::endl;
 
@@ -2072,23 +2011,13 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 					std::cout << " Angle: " << jetGenImpactAngle << std::endl;
 					std::cout << " -- Energy : " << jetGenEnergy << " Pt : " << jetGenPt << " EMfrac : " << jetGenEMFrac << std::endl;
 				}//<<>>if( DEBUG )
-//                hist2d[109]->Fill(genTime[0],tofcor);
-//                hist1d[110]->Fill(genTime[0]);
-//                hist1d[111]->Fill(tofcor);
 			}//<<>>if( jetGenJet )
 			else { if( DEBUG ) std::cout << " - jetGenJet GenTime : jetGenJet == 0 " << std::endl; jetGenTime = -50.0; }
 			}//<<>>if( rhCount >= minRHcnt )
 
-		//<<<<if( hasGenInfo )
     
 			else if( DEBUG ) std::cout << " - jetGenJet GenTime : rhCount == 0 " << std::endl;
 			if( DEBUG ) std::cout << " ---------------------------------------------------- " << std::endl;
-            //for( auto kid : kids ){
-            //  std::string depth(" --");
-            //    std::cout << " -- kid > pdgID : " << kid->pdgId() << " pt : " << kid->pt() << " vtx (" << kid->vx() << "," << kid->vy() << "," << kid->vz() << ")";
-            //  std::cout << " nMothers : " << kid->numberOfMothers() << std::endl;
-            //  motherChase( kid.get(), depth );
-            //}//<<>>for( auto kid : kids )
 
         }//<<>>if( hasGenInfo )
 	}//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
@@ -2119,59 +2048,8 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 	      	if( dPhi < dPhiLmt ) continue;
 
 			if( DEBUG ) std::cout << " - get jet pair dt" << std::endl;
-			auto dTmu = getdt( jetMuTime[q], jetMuTime[p] );
-            //auto dTmed = getdt( jetMedTime[q], jetMedTime[p] );
-            //auto dTcmu = getdt( jetCMuTime[q], jetCMuTime[p] );
-            //auto dTcmed = getdt( jetCMedTime[q], jetCMedTime[p] );
-            if( DEBUG ) std::cout << "dT dR      : " << dTmu <<  " " << jetMuTime[q] << " " << jetMuTime[p] << std::endl;
-	      	//auto dTmusc = getdt( jetSCMuTime[q], jetSCMuTime[p] );
-	      	//auto dTmedsc = getdt( jetSCMedTime[q], jetSCMedTime[p] );
-	      	//auto dTcmusc = getdt( jetCSCMuTime[q], jetCSCMuTime[p] );
-	      	//auto dTcmedsc = getdt( jetCSCMedTime[q], jetCSCMedTime[p] );
-            //if( DEBUG ) std::cout << "dT SC      : " << dTmusc <<  " " << jetSCMuTime[q] << " " << jetSCMuTime[p] << std::endl;
-	      //	auto dTcmubc = getdt( jetCBCMuTime[q], jetCBCMuTime[p] );
-           // if( DEBUG ) std::cout << "dT cMu BC  : " << dTcmubc <<  " " << jetCBCMuTime[q] << " " << jetCBCMuTime[p] << std::endl;
-	   //   	auto dTcmedbc = getdt( jetCBCMedTime[q], jetCBCMedTime[p] );
-           // if( DEBUG ) std::cout << "dT cMed BC : " << dTcmedbc <<  " " << jetCBCMedTime[q] << " " << jetCBCMedTime[p] << std::endl;
-           // auto dTmuph = getdt( jetPhMuTime[q], jetPhMuTime[p] );
-           // if( DEBUG ) std::cout << "dT Ph      : " << dTmuph <<  " " << jetPhMuTime[q] << " " << jetPhMuTime[p] << std::endl;
-           // auto dTmuel = getdt( jetEleMuTime[q], jetEleMuTime[p] );
-           // if( DEBUG ){ std::cout << "dT Ele     : " << dTmuel <<  " " << jetEleMuTime[q] << " " << jetEleMuTime[p] << std::endl;}
 
 
-			if( DEBUG ){ std::cout << " - fill hists" << std::endl;}
-/*
-			auto dtThrs = -2.5;//removes default dt values from getdt
-			if( dTmu > dtThrs ) hist1d[15]->Fill(dTmu);
-	      	if( dTmed > dtThrs ) hist1d[16]->Fill(dTmed);
-            if( dTcmu > dtThrs ) hist1d[39]->Fill(dTcmu);
-            if( dTcmed > dtThrs ) hist1d[40]->Fill(dTcmed);
-
-	      	if( dTmedsc > dtThrs ) hist1d[48]->Fill(dTmedsc);
-	      	if( dTmusc > dtThrs ) hist1d[49]->Fill(dTmusc);
-	      	if( dTcmusc > dtThrs ) hist1d[41]->Fill(dTcmusc);
-	      	if( dTcmedsc > dtThrs ) hist1d[42]->Fill(dTcmedsc);
-
-	      	if( dTcmubc > dtThrs ) hist1d[27]->Fill(dTcmubc);
-	      	if( dTcmedbc > dtThrs ) hist1d[28]->Fill(dTcmedbc);
-
-            if( dTmuph > dtThrs ) hist1d[59]->Fill(dTmuph);
-            if( dTmuel > dtThrs*2 ) hist1d[60]->Fill(dTmuel);
-
-			hist2d[22]->Fill(dTmu,nJets);
-	      	hist2d[26]->Fill(dTmu,diffPt);
-	      	hist2d[27]->Fill(dTmu,htPct);
-	      	hist2d[28]->Fill(dTmu,dPhi);
-	     	hist2d[23]->Fill(dTmed,nJets);
-	      	hist2d[29]->Fill(dTmu,diffPt);
-	      	hist2d[30]->Fill(dTmu,htPct);
-	      	hist2d[31]->Fill(dTmu,dPhi);
-
-			if( DEBUG ) std::cout << " - fill dt vs eff e hists" << std::endl;
-	      	auto effje = effMean(jetPHE[p],jetPHE[q]);
-	      	hist2d[43]->Fill(dTmusc,effje);
-	      	hist2d[44]->Fill(dTmu,effje);
-*/
 		}//<<>>for ( uInt p = q+1; p < nJets; p++ )
 	}//<<>>for ( uInt q = 0; q < nJets; q++ )
 	//-------------------------------------------------------------------------------
@@ -2221,41 +2099,19 @@ void LLPgammaAnalyzer_MINI::beginJob(){
 	outTree->Branch("lumi", &lumi);
 	outTree->Branch("event", &event, "event/l");
 
+	//PV info
+	outTree->Branch("vtxX",&vtxX);
+	outTree->Branch("vtxY",&vtxY);
+	outTree->Branch("vtxZ",&vtxZ);
+
 	// Jet info
-	outTree->Branch("njets", &nJets);
+	outTree->Branch("nJets", &nJets);
 	outTree->Branch("jetE", &jetE);
 	outTree->Branch("jetPt", &jetPt);
 	outTree->Branch("jetEta", &jetEta);
 	outTree->Branch("jetPhi", &jetPhi);
 	outTree->Branch("jetID", &jetID);
-//	outTree->Branch("jetNHF", &jetNHF);
-//	outTree->Branch("jetNEMF", &jetNEMF);  
-//	outTree->Branch("jetCHF", &jetCHF);
-//	outTree->Branch("jetCEMF", &jetCEMF);
-//	outTree->Branch("jetMUF", &jetMUF);
-//	outTree->Branch("jetNHM", &jetNHM);
-//	outTree->Branch("jetCHM", &jetCHM);
-//	outTree->Branch("jetPHM", &jetPHM);
-//	outTree->Branch("jetELM", &jetELM);
-//	outTree->Branch("jetC", &jetC);
-//	outTree->Branch("jetPHE", &jetPHE);
-//	outTree->Branch("jetPHEF", &jetPHEF);
-//	outTree->Branch("jetELE", &jetELE);
-//	outTree->Branch("jetELEF", &jetELEF);
-//	outTree->Branch("jetKidE", &jetKidE);
-//	outTree->Branch("jetKidPt", &jetKidPt);
-//	outTree->Branch("jetKidPhi", &jetKidPhi);
-//	outTree->Branch("jetKidEta", &jetKidEta);
-//	outTree->Branch("jetKidPdgID", &jetKidPdgID);
-//	outTree->Branch("jetKidCharge", &jetKidCharge);
-//	outTree->Branch("jetKid3Charge", &jetKid3Charge);
-//	outTree->Branch("jetKidMass", &jetKidMass);
-//	outTree->Branch("jetKidVx", &jetKidVx);
-//	outTree->Branch("jetKidVy", &jetKidVy);
-//	outTree->Branch("jetKidVz", &jetKidVz);
-//	outTree->Branch("jetKidTime", &jetKidTime);
-//	outTree->Branch("jetKidMedTime", &jetKidMedTime);
-//	outTree->Branch("njetSubs", &njetSubs);
+	outTree->Branch("jetRecHitId",&jetRecHitId);
 
 	//rh info
 	outTree->Branch("nRecHits",&nRecHits);
@@ -2267,7 +2123,6 @@ void LLPgammaAnalyzer_MINI::beginJob(){
 	outTree->Branch("rhEnergy",&rhEnergy);
 	outTree->Branch("rhTime",&rhTime);
 	outTree->Branch("rhTimeErr",&rhTimeErr);
-	outTree->Branch("rhTOF",&rhTOF);
 	outTree->Branch("rhID",&rhID);
 
 }//>>>>void LLPgammaAnalyzer_MINI::beginJob()
