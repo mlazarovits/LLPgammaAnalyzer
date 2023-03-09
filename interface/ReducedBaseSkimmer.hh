@@ -22,8 +22,7 @@ class ReducedBaseSkimmer{
 		void _SkimRecHits();
 		void _SkimVertices();
 		void _MakePVTimes();
-		void _pvTime();		
-
+		double _MakeJetTime(int j);
 };
 
 
