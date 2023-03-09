@@ -1367,12 +1367,13 @@ vector<float> LLPgammaAnalyzer_MINI::getRhGrpEigen_ep( vector<float> times, rhGr
 }//>>>>vector<float> LLPgammaAnalyzer_MINI::getRhGrpEigen_ep( vector<float> times, rhGroup rechits ){
 
 float LLPgammaAnalyzer_MINI::getdt( float t1, float t2 ){
-
+if(DEBUG) cout << "getdt" << endl;
+if(DEBUG) cout << " t1: " << t1 << " t2: " << t2 << endl;	
 	auto dt = t1 - t2;
+if(DEBUG) cout << "dt: " << dt << endl;	
 	if( dt == 0.0 )	dt = -5.5;// to be commented out in final version
 	if( t1 == 0.0 || t2 == 0.0 ) dt = -5.0;// to be copmmented out in final version
 	if( t1 < -28.9 || t2 < -28.9 ) dt = -3.75;
-	
 	return dt;
 }//>>>>float LLPgammaAnalyzer_MINI::getdt( float t1, float t2 )
 
@@ -2123,19 +2124,19 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
             //auto dTcmu = getdt( jetCMuTime[q], jetCMuTime[p] );
             //auto dTcmed = getdt( jetCMedTime[q], jetCMedTime[p] );
             if( DEBUG ) std::cout << "dT dR      : " << dTmu <<  " " << jetMuTime[q] << " " << jetMuTime[p] << std::endl;
-	      	auto dTmusc = getdt( jetSCMuTime[q], jetSCMuTime[p] );
+	      	//auto dTmusc = getdt( jetSCMuTime[q], jetSCMuTime[p] );
 	      	//auto dTmedsc = getdt( jetSCMedTime[q], jetSCMedTime[p] );
 	      	//auto dTcmusc = getdt( jetCSCMuTime[q], jetCSCMuTime[p] );
 	      	//auto dTcmedsc = getdt( jetCSCMedTime[q], jetCSCMedTime[p] );
-            if( DEBUG ) std::cout << "dT SC      : " << dTmusc <<  " " << jetSCMuTime[q] << " " << jetSCMuTime[p] << std::endl;
-	      	auto dTcmubc = getdt( jetCBCMuTime[q], jetCBCMuTime[p] );
-            if( DEBUG ) std::cout << "dT cMu BC  : " << dTcmubc <<  " " << jetCBCMuTime[q] << " " << jetCBCMuTime[p] << std::endl;
-	      	auto dTcmedbc = getdt( jetCBCMedTime[q], jetCBCMedTime[p] );
-            if( DEBUG ) std::cout << "dT cMed BC : " << dTcmedbc <<  " " << jetCBCMedTime[q] << " " << jetCBCMedTime[p] << std::endl;
-            auto dTmuph = getdt( jetPhMuTime[q], jetPhMuTime[p] );
-            if( DEBUG ) std::cout << "dT Ph      : " << dTmuph <<  " " << jetPhMuTime[q] << " " << jetPhMuTime[p] << std::endl;
-            auto dTmuel = getdt( jetEleMuTime[q], jetEleMuTime[p] );
-            if( DEBUG ){ std::cout << "dT Ele     : " << dTmuel <<  " " << jetEleMuTime[q] << " " << jetEleMuTime[p] << std::endl;}
+            //if( DEBUG ) std::cout << "dT SC      : " << dTmusc <<  " " << jetSCMuTime[q] << " " << jetSCMuTime[p] << std::endl;
+	      //	auto dTcmubc = getdt( jetCBCMuTime[q], jetCBCMuTime[p] );
+           // if( DEBUG ) std::cout << "dT cMu BC  : " << dTcmubc <<  " " << jetCBCMuTime[q] << " " << jetCBCMuTime[p] << std::endl;
+	   //   	auto dTcmedbc = getdt( jetCBCMedTime[q], jetCBCMedTime[p] );
+           // if( DEBUG ) std::cout << "dT cMed BC : " << dTcmedbc <<  " " << jetCBCMedTime[q] << " " << jetCBCMedTime[p] << std::endl;
+           // auto dTmuph = getdt( jetPhMuTime[q], jetPhMuTime[p] );
+           // if( DEBUG ) std::cout << "dT Ph      : " << dTmuph <<  " " << jetPhMuTime[q] << " " << jetPhMuTime[p] << std::endl;
+           // auto dTmuel = getdt( jetEleMuTime[q], jetEleMuTime[p] );
+           // if( DEBUG ){ std::cout << "dT Ele     : " << dTmuel <<  " " << jetEleMuTime[q] << " " << jetEleMuTime[p] << std::endl;}
 
 
 			if( DEBUG ){ std::cout << " - fill hists" << std::endl;}
