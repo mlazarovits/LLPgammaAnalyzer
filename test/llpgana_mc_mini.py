@@ -22,10 +22,10 @@ options.register('hasGenInfo',True,VarParsing.multiplicity.singleton,VarParsing.
 #options.register('mulowpTmin',20.0,VarParsing.multiplicity.singleton,VarParsing.varType.float,'muon low pT minimum cut');
 #options.register('muhighpTmin',50.0,VarParsing.multiplicity.singleton,VarParsing.varType.float,'muon high pT minimum cut');
 
-## GT to be used
-#options.register('globalTag','106X_dataRun2_v28',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
-#options.register('globalTag','112X_mcRun3_2021_realistic_v16',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
-options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
+## globalTag to be used
+#options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.singleton,VarParsing.varType.string,'gloabl tag to be used');
+#for JetHT 2018A
+options.register('globalTag','106X_dataRun2_v33',VarParsing.multiplicity.singleton,VarParsing.varType.string,'global tag to be used');
 #94X_mc2017_realistic_v14
 #102X_mc2017_realistic_v7
 #112X_mcRun3_2021_realistic_v16
@@ -34,7 +34,7 @@ options.register('globalTag','94X_mc2017_realistic_v14',VarParsing.multiplicity.
 options.register('processName','TREE',VarParsing.multiplicity.singleton,VarParsing.varType.string,'process name to be considered');
 
 ## outputFile Name
-outfilename = 'llpgana_mc_MINIAODSIM_test_JetHT_2018A.root'
+outfilename = '../ntuples/llpgana_mc_MINIAODSIM_test_JetHT_2018A.root'
 
 options.register('outputFileName',outfilename,VarParsing.multiplicity.singleton,VarParsing.varType.string,'output file name created by cmsRun');
 
