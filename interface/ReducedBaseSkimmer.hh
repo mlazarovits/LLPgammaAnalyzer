@@ -22,7 +22,10 @@ class ReducedBaseSkimmer{
 		void _SkimRecHits();
 		void _SkimVertices();
 		void _MakePVTimes();
-		double _MakeJetTime(int j);
+		void _MakeJetGeo(int j);
+
+		vector<double> _jetTimes;
+		vector<double> _jetLengths;
 };
 
 

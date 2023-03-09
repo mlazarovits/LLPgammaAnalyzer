@@ -15,7 +15,6 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_jetHists.push_back(new TH1D("jetEta", "jetEta", 700, -3.5, 3.5)); 
 	_jetHists.push_back(new TH1D("jetPhi", "jetPhi", 700, -3.5, 3.5)); 
 	_jetHists.push_back(new TH1D("jetID", "jetID", 5, 0, 5)); 
-	_jetHists.push_back(new TH1D("jetRecHitId", "jetRecHitId", 101, 0, 9191000000.00)); 
 
 /*
 	_genJetHists.push_back(new TH1D("nJetsGen","nJetsGen",21,-0.5,20.5));
@@ -39,12 +38,15 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",2000,-50,50));
 
 
-	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,-0.10,0.04));
+	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.,0.13));
 	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
 	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
 
 	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",500,-50,50));
 	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",500,-50,50));
+
+
+
 }
 
 
@@ -57,6 +59,9 @@ ReducedBaseSkimmer::~ReducedBaseSkimmer(){
 	_vertexHists.clear();
 	_recHitHists.clear();
 	_pvTimeHists.clear();
+
+	_jetTimes.clear();
+	_jetLengths.clear();
 }
 
 
@@ -87,7 +92,6 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 }
 
 void ReducedBaseSkimmer::_SkimJets(){
-cout << "makejets" << endl;	
 //only fill jets that we dR matched to rec hits
 	int nJets = _base->nJets;
 	_jetHists[0]->Fill(nJets);
@@ -104,25 +108,7 @@ cout << "makejets" << endl;
 
 }
 
-
-//make function to match dR jets to rechits - don't need this - ntuple has rechitIDs + jetRecHitOfJet and can match that way
-/*
-
-void ReducedBaseSkimer::_getRHGroup(int jetIdx){
-	//get ids of all rechits in a jet (given jet idx)
-	int idx = ( std::find(_base->jetRecHitOfJet()->begin(),_base->jetRecHitOfJet()->end(),jetIdx) - _base->jetRecHitOfJet()->begin() );
-
-	unsigned int rhID = _base->rhID->at(idx);
-	double e = 0.;
-	
-
-
-
-}
-
-*/
 void ReducedBaseSkimmer::_MakePVTimes(){
-cout << "makepvtimes" << endl;
 //loop through jets - find pairs that are back to back (dphi ~ pi or something)
 	int nJets = _base->nJets;
 	double dphi;
@@ -132,6 +118,9 @@ cout << "makepvtimes" << endl;
 	//double fracPtDn = 0.8; //min fractional pt
 	//double fracHtDn = 0.8; //min fractional ht
 	
+	double vtxX = _base->vtxX;
+	double vtxY = _base->vtxY;
+	double vtxZ = _base->vtxZ;
 	for(int j1 = 0; j1 < nJets; j1++){
 		for(int j2 = 0; j2 < nJets; j2++){
 			if(j1 <= j2) continue;
@@ -147,6 +136,7 @@ cout << "makepvtimes" << endl;
 
 
 
+
 //for each pair:
 //	take difference of t_pv_diff = t_pv_jet1 - t_pv_jet2
 //	put t_pv_diff in histogram pvTimeRes
@@ -157,53 +147,55 @@ cout << "makepvtimes" << endl;
 }
 
 
-//make jet time for jet # i in event
-double ReducedBaseSkimmer::_MakeJetTime(int j){
-cout << "makejettime" << endl;
-//within each jet in pair:
-//	find pos of lead rh, compute distance from (0,0,0)
-//	compute distance bw lead rh and pv
-//	take difference, divide by SOL = t_pv
-//	put t_pv in histogram pvTime
+
+double ReducedBaseSkimmer::_MakePVTime(int j){
+	//time of jet
+	double t_jet = _MakeJetTime(j);
+	//length from jet to (0,0,0)
+	double L_jet_center = _MakeJetLength(j);
+	 
+
+
+
+
+}
+
+
+void ReducedBaseSkimmer::_MakeJetGeo(int j){
+	_jetTimes.clear();
+	_jetLengths.clear();
 	vector<unsigned int> rhIDs = _base->jetRecHitId->at(j);
 	
 //	find lead rh of jet
 	double enr = 0.;
-	unsigned int lead_id = -999;
+	double time = 0.;
+	//get positions of lead rh
+	double rhX = -999;
+	double rhY = -999;
+	double rhZ = -999;
 	for(int i = 0; i < (int)rhIDs.size(); i++){
 		for(int rh = 0; rh < _base->nRecHits; rh++){
 			//get ith rechit in jet j
 			if(_base->rhID->at(rh) == rhIDs[i]){
-				//update energy
+				//update energy + time
 				if(_base->rhEnergy->at(rh) > enr){
 					enr = _base->rhEnergy->at(rh);
-					lead_id = rhIDs[i];
+					rhX = _base->rhPosX->at(rh);
+					rhY = _base->rhPosY->at(rh);
+					rhZ = _base->rhPosZ->at(rh);
+					time = _base->rhTime->at(rh);
 				}
 				break;
 			}
 		}
 	}
 	
-	//get positions of lead rh
-	double rhX = -999;
-	double rhY = -999;
-	double rhZ = -999;
-	for(int rh = 0; rh < _base->nRecHits; rh++){
-		if(_base->rhID->at(rh) == lead_id){
-				rhX = _base->rhPosX->at(rh);
-				rhY = _base->rhPosY->at(rh);
-				rhZ = _base->rhPosZ->at(rh);
-			}
-				break;
-	}
-	
-	//double vtxX = _base->vtxX;
-			//temp
-	double tmp = rhX + rhY + rhZ;
-	return tmp;
-
+	double len = pow((rhX*rhX + rhY*rhY + rhZ*rhZ),0.5);
+	_jetLengths.push_back(len);
+	_jetTimes.push_back(time);	
 
 }
+
 
 
 
@@ -233,17 +225,7 @@ void ReducedBaseSkimmer::_SkimGenJets(){
 
 
 void ReducedBaseSkimmer::_SkimRecHits(){
-cout << "skimrh" << endl;	
 int nRHs = _base->nRecHits;
-cout << "nrhs: " << nRHs << endl;
-cout << "x: " << _base->rhPosX->size() << endl;
-cout << "y: " << _base->rhPosY->size() << endl;
-cout << "z: " << _base->rhPosZ->size() << endl;
-cout << "Eta: " << _base->rhPosEta->size() << endl;
-cout << "Phi: " << _base->rhPosPhi->size() << endl;
-cout << "energy: " << _base->rhEnergy->size() << endl;
-cout << "time: " << _base->rhTime->size() << endl;
-cout << "time err: " << _base->rhTimeErr->size() << endl;
 	_recHitHists[0]->Fill(nRHs);
 	for(int r = 0; r < nRHs; r++){
 		//these are vectors
@@ -259,13 +241,11 @@ cout << "time err: " << _base->rhTimeErr->size() << endl;
 
 	}
 
-cout << "skimrh - end" << endl;	
 
 }
 
 
 void ReducedBaseSkimmer::_SkimVertices(){
-	cout << "skimvertices" << endl;
 	//int nVtx = _base->nVtx;
 	//_vertexHists[0]->Fill(nVtx);
 	////only PV saved
