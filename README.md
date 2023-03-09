@@ -33,6 +33,7 @@ Make sure you are running from the ```test/``` directory so the multicrab script
 
 ## To run primary vertex time skimmer
 ```
+cd /uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer
 pvTimeSkimmer
 ```
 
