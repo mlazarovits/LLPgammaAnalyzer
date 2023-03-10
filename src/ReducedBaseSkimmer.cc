@@ -9,11 +9,12 @@ using std::endl;
 ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){ 
 	_ch = ch;
 	_base = new ReducedBase(ch);
-	_jetHists.push_back(new TH1D("nJets","nJets",21, -0.5, 20.5));
-	_jetHists.push_back(new TH1D("jetE", "jetE", 500, 0, 5000)); 
-	_jetHists.push_back(new TH1D("jetPt", "jetPt", 500, 0, 5000)); 
-	_jetHists.push_back(new TH1D("jetEta", "jetEta", 700, -3.5, 3.5)); 
-	_jetHists.push_back(new TH1D("jetPhi", "jetPhi", 700, -3.5, 3.5)); 
+	_jetHists.push_back(new TH1D("nJets","nJets",11, -0.5, 10.5));
+	_jetHists.push_back(new TH1D("jetE", "jetE", 125, 0, 2500)); 
+	_jetHists.push_back(new TH1D("jetPt", "jetPt", 125, 0, 2500)); 
+	_jetHists.push_back(new TH1D("jetEta", "jetEta", 125, -2, 2)); 
+	_jetHists.push_back(new TH1D("jetPhi", "jetPhi", 125, -3.5, 3.5)); 
+	//jet PF ID - as defined in analyzer
 	_jetHists.push_back(new TH1D("jetID", "jetID", 5, 0, 5)); 
 
 /*
@@ -27,24 +28,25 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_genJetHists.push_back(new TH1D("jetGenNKids","jetGenNKids",100,0,100));
 */	
 
-	_recHitHists.push_back(new TH1D("nRHs","nRHs",102,0,4794));
+	_recHitHists.push_back(new TH1D("nRHs","nRHs",100,0,600));
 	_recHitHists.push_back(new TH1D("rhPosX","rhPosX",100,-175,175));
 	_recHitHists.push_back(new TH1D("rhPosY","rhPosY",100,-175,175));
 	_recHitHists.push_back(new TH1D("rhPosZ","rhPosZ",100,-380,380));
-	_recHitHists.push_back(new TH1D("rhEta","rhEta",100,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhEta","rhEta",100,-2,2));
 	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",100,-3.5,3.5));
-	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",1000,0,1000));
-	_recHitHists.push_back(new TH1D("rhTime","rhTime",500,-50,50));
-	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",2000,-50,50));
+	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",200,0,800));
+	_recHitHists.push_back(new TH1D("rhTime","rhTime",250,-100,100));
+	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",125,-10,10));
+	_recHitHists.push_back(new TH1D("rhEnergy_lead","rhEnergy_lead",200,0,200));
 
 
-	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.,0.13));
+	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.6,0.13));
 	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
 	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
 
-	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",500,-50,50));
-	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",500,-50,50));
-
+	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",250,-20,20));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",250,-50,50));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes_jetDphi","pvTimeRes_jetDphi",250,-3.5,3.5));
 
 
 }
@@ -59,9 +61,6 @@ ReducedBaseSkimmer::~ReducedBaseSkimmer(){
 	_vertexHists.clear();
 	_recHitHists.clear();
 	_pvTimeHists.clear();
-
-	_jetTimes.clear();
-	_jetLengths.clear();
 }
 
 
@@ -121,49 +120,41 @@ void ReducedBaseSkimmer::_MakePVTimes(){
 	double vtxX = _base->vtxX;
 	double vtxY = _base->vtxY;
 	double vtxZ = _base->vtxZ;
+	double t_jet1 = -999.;
+	double t_jet2 = -999.;
+	double diff = -999.;
+	//are jets ordered by decreasing pt?
 	for(int j1 = 0; j1 < nJets; j1++){
 		for(int j2 = 0; j2 < nJets; j2++){
 			if(j1 <= j2) continue;
 			//calculate dphi 
 			dphi = _base->jetPhi->at(j1) - _base->jetPhi->at(j2);
 			//make sure dphi is around pi
-			if(dphi < dphi_dn || dphi > dphi_up) continue;
-			
+			if(fabs(dphi) < dphi_dn || fabs(dphi) > dphi_up) continue;
+			_pvTimeHists[2]->Fill(dphi);
+			t_jet1= _MakePVTime(j1,vtxX,vtxY,vtxZ);
+			t_jet2= _MakePVTime(j2,vtxX,vtxY,vtxZ);
+			_pvTimeHists[0]->Fill(t_jet1);
+			_pvTimeHists[0]->Fill(t_jet2);
 			//calculate jet time for each jet - save in hist
+			diff = t_jet1 - t_jet2;
+			if(fabs(diff) > 10){
+				cout << "tjet1: " << t_jet1 << " tjet2: " << t_jet2 << " dphi: " << dphi << endl;
+			}
 			//save difference in histogram			
+			_pvTimeHists[1]->Fill(diff);	
 		}
 	}
 
-
-
-
-//for each pair:
-//	take difference of t_pv_diff = t_pv_jet1 - t_pv_jet2
-//	put t_pv_diff in histogram pvTimeRes
-
-
-
-
 }
 
 
 
-double ReducedBaseSkimmer::_MakePVTime(int j){
-	//time of jet
-	double t_jet = _MakeJetTime(j);
-	//length from jet to (0,0,0)
-	double L_jet_center = _MakeJetLength(j);
-	 
 
-
-
-
-}
-
-
-void ReducedBaseSkimmer::_MakeJetGeo(int j){
-	_jetTimes.clear();
-	_jetLengths.clear();
+//makes t_pv = t_jet - L^PV_jet with vtx_i = _base->vtxI
+//makes t_0 = t_jet - L^jet_0 with vtx_i = 0
+//right now is taking time and center for jet from lead RH
+double ReducedBaseSkimmer::_MakePVTime(int j, double vtx_x, double vtx_y, double vtx_z){
 	vector<unsigned int> rhIDs = _base->jetRecHitId->at(j);
 	
 //	find lead rh of jet
@@ -189,38 +180,17 @@ void ReducedBaseSkimmer::_MakeJetGeo(int j){
 			}
 		}
 	}
+	_recHitHists[9]->Fill(enr);
 	
-	double len = pow((rhX*rhX + rhY*rhY + rhZ*rhZ),0.5);
-	_jetLengths.push_back(len);
-	_jetTimes.push_back(time);	
-
+	double len_jet = pow(((rhX-vtx_x)*(rhX-vtx_x) + (rhY-vtx_y)*(rhY-vtx_y) + (rhZ-vtx_z)*(rhZ-vtx_z)),0.5);
+	return time - len_jet/_c;
+	
 }
 
 
 
 
-void ReducedBaseSkimmer::_SkimGenJets(){
-/*
-	int nJets = _base->nJets;
-	_genJetHists[0]->Fill(nJets);
-	for(int j = 0; j < nJets; j++){
-		//if a jet was not dR matched within dR = 0.3, default values are stored
-		//these are vectors
-		//_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
-		//_genJetHists[2]->Fill(_base->jetGenPt->at(j));
-		//_genJetHists[3]->Fill(_base->jetGenEta->at(j));
-		//_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
-		//_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
-		//_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
-		//_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
-		//_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
-		
 
-
-	}
-*/
-
-}
 
 
 
@@ -263,6 +233,30 @@ void ReducedBaseSkimmer::_SkimVertices(){
 
 
 
+
+/*
+void ReducedBaseSkimmer::_SkimGenJets(){
+	int nJets = _base->nJets;
+	_genJetHists[0]->Fill(nJets);
+	for(int j = 0; j < nJets; j++){
+		//if a jet was not dR matched within dR = 0.3, default values are stored
+		//these are vectors
+		//_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
+		//_genJetHists[2]->Fill(_base->jetGenPt->at(j));
+		//_genJetHists[3]->Fill(_base->jetGenEta->at(j));
+		//_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
+		//_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
+		//_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
+		//_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
+		//_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
+		
+
+
+	}
+
+}
+
+*/
 
 
 

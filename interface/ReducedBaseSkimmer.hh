@@ -18,14 +18,14 @@ class ReducedBaseSkimmer{
 		vector<TH1D*> _recHitHists;		
 		vector<TH1D*> _pvTimeHists;		
 		void _SkimJets();
-		void _SkimGenJets();
 		void _SkimRecHits();
 		void _SkimVertices();
+		//void _SkimGenJets();
 		void _MakePVTimes();
-		void _MakeJetGeo(int j);
+		double _MakePVTime(int j, double vtx_x = 0., double vtx_y = 0., double vtx_z = 0.);
 
-		vector<double> _jetTimes;
-		vector<double> _jetLengths;
+
+		double _c = 29.9792458; //speed of light in cm/ns
 };
 
 
