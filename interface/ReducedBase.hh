@@ -37,7 +37,8 @@ public :
    vector<float>   *jetEta;
    vector<float>   *jetPhi;
    vector<int>     *jetID;
-   vector<vector<unsigned int> > *jetRecHitId;
+   vector<unsigned int> *jetRecHitId;
+   vector<int>  *jetRecHitOfJet;
    Int_t           nRecHits;
    vector<float>   *rhPosX;
    vector<float>   *rhPosY;
@@ -63,6 +64,7 @@ public :
    TBranch        *b_jetPhi;   //!
    TBranch        *b_jetID;   //!
    TBranch        *b_jetRecHitId;   //!
+   TBranch        *b_jetRecHitOfJet;   //!
    TBranch        *b_nRecHits;   //!
    TBranch        *b_rhPosX;   //!
    TBranch        *b_rhPosY;   //!
@@ -146,6 +148,7 @@ inline void ReducedBase::Init(TTree *tree)
    jetPhi = 0;
    jetID = 0;
    jetRecHitId = 0;
+   jetRecHitOfJet = 0;
    rhPosX = 0;
    rhPosY = 0;
    rhPosZ = 0;
@@ -173,6 +176,7 @@ inline void ReducedBase::Init(TTree *tree)
    fChain->SetBranchAddress("jetPhi", &jetPhi, &b_jetPhi);
    fChain->SetBranchAddress("jetID", &jetID, &b_jetID);
    fChain->SetBranchAddress("jetRecHitId", &jetRecHitId, &b_jetRecHitId);
+   fChain->SetBranchAddress("jetRecHitOfJet", &jetRecHitOfJet, &b_jetRecHitOfJet);
    fChain->SetBranchAddress("nRecHits", &nRecHits, &b_nRecHits);
    fChain->SetBranchAddress("rhPosX", &rhPosX, &b_rhPosX);
    fChain->SetBranchAddress("rhPosY", &rhPosY, &b_rhPosY);
