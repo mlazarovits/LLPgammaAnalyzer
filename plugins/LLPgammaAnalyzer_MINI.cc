@@ -1792,13 +1792,22 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //	hist1d[18]->Fill(nJets);
 	bool goodJetEvent(false);
-	if( DEBUG ) std::cout << "-----------------------------------------------------------" << std::endl;
-	if( DEBUG ) std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl; 
+std::cout << "-----------------------------------------------------------" << std::endl;
+std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl; 
 	for ( uInt ijet(0); ijet < nJets; ijet++ ){ 
-		// places jet info in output tree
-		jetRecHitId.push_back({});	
 		//std::cout << "Processing with jet " << ijet << std::endl;
 	   	const auto & jet = fjets[ijet];
+//moved place - only dealing with jets dR = 0.3 matched to rhGroup with >5 rechits
+	   	if( DEBUG ) std::cout << "Getting jet dR rechit group" << std::endl; 
+		auto jetDrRhGroup = getRHGroup( jet.eta(), jet.phi(), deltaRminJet, minRHenr ); 
+		auto rhCount = jetDrRhGroup.size();
+
+	   	//std::cout << "rhCount is " << rhCount << std::endl;
+	   	auto sumdrrhe = getRhGrpEnr( jetDrRhGroup );
+		auto dremf = sumdrrhe/jet.energy();
+		//float jetDrTime(-99.9);
+		if( rhCount >= minRHcnt && dremf > minEmf ){
+		// places jet info in output tree
 
 	   	// jetID in jet.h ?
 
@@ -1848,8 +1857,8 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 
         // dR matched RH group  -----------------------------------------------
 		// --------------------------------------------------------------------
-
-	   	if( DEBUG ) std::cout << "Getting jet dR rechit group" << std::endl; 
+//original place
+/*	   	if( DEBUG ) std::cout << "Getting jet dR rechit group" << std::endl; 
 		auto jetDrRhGroup = getRHGroup( jet.eta(), jet.phi(), deltaRminJet, minRHenr ); 
 		auto rhCount = jetDrRhGroup.size();
 
@@ -1858,7 +1867,7 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 		auto dremf = sumdrrhe/jet.energy();
 		//float jetDrTime(-99.9);
 		if( rhCount >= minRHcnt && dremf > minEmf ){
-
+*/
 			if( DEBUG ) std::cout << " - get jetDRtofTimes " << std::endl;
 	   		auto tofTimes = getLeadTofRhTime( jetDrRhGroup, vtxX, vtxY, vtxZ );
 	   		//auto leadJetRh = getLeadRh( jetDrRhGroup );
@@ -1880,14 +1889,15 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 			float dist = d_rh - d_pv;
 			pvTimes.push_back(dist/SOL);
 			*/
-			if( DEBUG ) std::cout << "Starting RecHit Loop" << std::endl;
+			 std::cout << "Starting RecHit Loop" << std::endl;
+			cout << "jet #: " << ijet <<  " of " << nJets << " has " << rhCount << " recHits" << endl;
 			for ( uInt irhg = 0; irhg < rhCount; irhg++){
 			
 				//std::cout << " -- irhg: " << irhg << " rhCount: " << rhCount << std::endl;
 				jetRecHitOfJet.push_back(ijet);
 				auto detid = (jetDrRhGroup[irhg]).detid();
 				//std::cout << " -- (jetDrRhGroup[irhg]).detid(): " << detid.rawId() << std::endl;
-		      	jetRecHitId[ijet].push_back(detid.rawId());	
+		      	jetRecHitId.push_back(detid.rawId());	
 			//	auto rhtime = tofTimes[irhg];
 			//std::cout << " -- tofTimes[irhg]: " << rhtime << std::endl;
 		      	//fillTH1(rhtime,hist1d[0]);//hist1d[0]->Fill(rhtime);
@@ -1895,7 +1905,7 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 		      	//std::cout << " -- jetDrRhGroup[irhg]).energy(): " << rhe << std::endl;
 //		      	hist2d[38]->Fill(rhtime, rhe);
 		   	}//<<>>for ( uInt irhg = 0; irhg < rhCount; irhg++)
-			
+			if(DEBUG) std::cout << "evt: " << event << " nrechits in jet: " << rhCount << endl;
 		   	//const auto leadJetRhId = leadJetRh.detid();
 		   	//const auto leadJetRhIdPos = barrelGeometry->getGeometry(leadJetRhId)->getPosition();
 		   //	auto sc_eta = leadJetRhIdPos.eta();
@@ -2112,6 +2122,7 @@ void LLPgammaAnalyzer_MINI::beginJob(){
 	outTree->Branch("jetPhi", &jetPhi);
 	outTree->Branch("jetID", &jetID);
 	outTree->Branch("jetRecHitId",&jetRecHitId);
+	outTree->Branch("jetRecHitOfJet",&jetRecHitOfJet);
 
 	//rh info
 	outTree->Branch("nRecHits",&nRecHits);

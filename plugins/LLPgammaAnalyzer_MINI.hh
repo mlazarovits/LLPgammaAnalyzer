@@ -334,7 +334,7 @@ class LLPgammaAnalyzer_MINI : public edm::one::EDAnalyzer<edm::one::SharedResour
       	std::vector<float>  jetPhMuTime, jetOOTPhMuTime, jetEleMuTime;
       	std::vector<int>    jetID, njetKids, jetKidOfJet, njetSubs, njetRecHits, jetRecHitOfJet;
       	std::vector<int>    jetKidPdgID, jetKidCharge, jetKid3Charge, jetPHM, jetELM;
-      	std::vector<std::vector<uInt>>   jetRecHitId;
+      	std::vector<uInt>   jetRecHitId;
       	std::vector<bool>   jetKidLLP;
       	std::vector<double> jetKidMass, jetKidVx, jetKidVy, jetKidVz;
       	std::vector<float>  jetKidE, jetKidPt, jetKidPhi, jetKidEta, jetKidTime, jetKidMedTime;
