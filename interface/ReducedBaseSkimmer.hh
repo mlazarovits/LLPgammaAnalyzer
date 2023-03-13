@@ -23,8 +23,18 @@ class ReducedBaseSkimmer{
 		//void _SkimGenJets();
 		void _MakePVTimes();
 		double _MakePVTime(int j, double vtx_x = 0., double vtx_y = 0., double vtx_z = 0.);
+	
+		//wraps phi around pi	
+		double _deltaPhi(double phi1, double phi2){
+			double x = phi1 - phi2;
+			double o2pi = 1./(2*_pi);
+			if(fabs(x) <= _pi)
+				return x;
+			double n = std::round(x * o2pi);
+			return x - n * double(2.* _pi);
+		};
 
-
+		double _pi = 3.14159265358979323846;
 		double _c = 29.9792458; //speed of light in cm/ns
 };
 
