@@ -17,6 +17,26 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	//jet PF ID - as defined in analyzer
 	_jetHists.push_back(new TH1D("jetID", "jetID", 5, 0, 5)); 
 
+
+	_recHitHists.push_back(new TH1D("nRHs","nRHs",100,0,600));
+	_recHitHists.push_back(new TH1D("rhPosX","rhPosX",100,-175,175));
+	_recHitHists.push_back(new TH1D("rhPosY","rhPosY",100,-175,175));
+	_recHitHists.push_back(new TH1D("rhPosZ","rhPosZ",100,-380,380));
+	_recHitHists.push_back(new TH1D("rhEta","rhEta",100,-2,2));
+	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",100,-3.5,3.5));
+	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",200,0,800));
+	_recHitHists.push_back(new TH1D("rhTime","rhTime",250,0.,1000));
+	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",125,-10,10));
+	_recHitHists.push_back(new TH1D("rhEnergy_lead","rhEnergy_lead",200,0,200));
+
+
+	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.6,0.13));
+	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
+	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
+
+	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",100,-20,20));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",125,-50,50));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes_jetDphi","pvTimeRes_jetDphi",50,2.98,3.17));
 /*
 	_genJetHists.push_back(new TH1D("nJetsGen","nJetsGen",21,-0.5,20.5));
 	_genJetHists.push_back(new TH1D("jetGenEnergy","jetGenEnergy",500,0,5000));	
@@ -27,26 +47,6 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_genJetHists.push_back(new TH1D("jetGenTimeVar","jetGenTimeVar",270,-2,25));
 	_genJetHists.push_back(new TH1D("jetGenNKids","jetGenNKids",100,0,100));
 */	
-
-	_recHitHists.push_back(new TH1D("nRHs","nRHs",100,0,600));
-	_recHitHists.push_back(new TH1D("rhPosX","rhPosX",100,-175,175));
-	_recHitHists.push_back(new TH1D("rhPosY","rhPosY",100,-175,175));
-	_recHitHists.push_back(new TH1D("rhPosZ","rhPosZ",100,-380,380));
-	_recHitHists.push_back(new TH1D("rhEta","rhEta",100,-2,2));
-	_recHitHists.push_back(new TH1D("rhPhi","rhPhi",100,-3.5,3.5));
-	_recHitHists.push_back(new TH1D("rhEnergy","rhEnergy",200,0,800));
-	_recHitHists.push_back(new TH1D("rhTime","rhTime",250,-100,100));
-	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",125,-10,10));
-	_recHitHists.push_back(new TH1D("rhEnergy_lead","rhEnergy_lead",200,0,200));
-
-
-	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.6,0.13));
-	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
-	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
-
-	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",50,-20,20));
-	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",125,-50,50));
-	_pvTimeHists.push_back(new TH1D("pvTimeRes_jetDphi","pvTimeRes_jetDphi",50,2.98,3.3));
 
 
 }
@@ -67,12 +67,12 @@ ReducedBaseSkimmer::~ReducedBaseSkimmer(){
 
 
 vector<TH1D*> ReducedBaseSkimmer::Skim(){
-	int nEntries = 50;//_ch->GetEntries();
+	int nEntries = _ch->GetEntries();
 	int SKIP = 1;
 	if(SKIP != 1) cout << "Choosing 1 out of every " << SKIP << " events" << endl;
-	for(int e = 25; e < nEntries; e+=SKIP){
+	for(int e = 0; e < nEntries; e+=SKIP){
 		_base->GetEntry(e);
-	//	if((e/SKIP)%(std::max(1, int(nEntries/SKIP/10))) == 0)
+		if((e/SKIP)%(std::max(1, int(nEntries/SKIP/10))) == 0)
 	 cout << "      event " << e << " | " << nEntries << endl;
 	
 		//add skimmers for objects here
@@ -94,7 +94,7 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 }
 
 void ReducedBaseSkimmer::_SkimJets(){
-//only fill jets that we dR matched to rec hits
+	//cout << "skim jets" << endl;
 	int nJets = _base->nJets;
 	_jetHists[0]->Fill(nJets);
 	for(int j = 0; j < nJets; j++){
@@ -112,26 +112,31 @@ void ReducedBaseSkimmer::_SkimJets(){
 
 void ReducedBaseSkimmer::_MakePVTimes(){
 //loop through jets - find pairs that are back to back (dphi ~ pi or something)
+	//cout << "makepvtimes" << endl;
 	int nJets = _base->nJets;
+	if(nJets < 2) return;
 	double dphi;
-	double dphi_up = 3.28;
 	double dphi_dn = 3.;
 	//double ptUp = 200.;
 	//double fracPtDn = 0.8; //min fractional pt
 	//double fracHtDn = 0.8; //min fractional ht
 
-		cout <<"nRechits: " << _base->nRecHits << " njets: " << _base->nJets << endl;
-	for(int i = 0; i < (int)_base->jetRecHitOfJet->size(); i++){
-		//get all RHs for this jet
-		cout << "i: " << i << " jetRecHitOfJet[i]: " << _base->jetRecHitOfJet->at(i) << endl;
-	}
+//		cout <<"nRechits: " << _base->nRecHits << " njets: " << _base->nJets << endl;
+//	cout << "jetRecHitOfJet: " << _base->jetRecHitOfJet->size() << " jetRecHitId: " << _base->jetRecHitId->size() << endl;
+	//if(nJets > 1){
+	//for(int i = 0; i < (int)_base->jetRecHitOfJet->size(); i++){
+	//	//get all RHs for this jet
+	//	cout << "i: " << i << " jetRecHitOfJet[i]: " << _base->jetRecHitOfJet->at(i) << endl;
+	//}
+	//}
 
 	
-	double vtxX = _base->vtxX;
-	double vtxY = _base->vtxY;
-	double vtxZ = _base->vtxZ;
 	double t_jet1 = -999.;
 	double t_jet2 = -999.;
+	double d_pv_1 = -999.;
+	double d_pv_2 = -999.;
+	double t_pv1 = -999.;
+	double t_pv2 = -999.;
 	double diff = -999.;
 	//are jets ordered by decreasing pt?
 	////cout << "njets: " << _base->nJets << endl;
@@ -140,19 +145,25 @@ void ReducedBaseSkimmer::_MakePVTimes(){
 			if(j1 <= j2) continue;
 			//calculate dphi 
 			dphi = _deltaPhi(_base->jetPhi->at(j1), _base->jetPhi->at(j2));
-			cout << "dphi: " << dphi << endl;
-			if(fabs(dphi) < dphi_dn || fabs(dphi) > dphi_up) continue;
+			if(fabs(dphi) < dphi_dn){
+			//cout << "dphi less than 3: " << fabs(dphi) << endl; 
+			continue;}
 			_pvTimeHists[2]->Fill(fabs(dphi));
-			t_jet1= _MakePVTime(j1,vtxX,vtxY,vtxZ);
-			t_jet2= _MakePVTime(j2,vtxX,vtxY,vtxZ);
-			if(t_jet1 == -999. || t_jet2 == -999.) continue;
-			_pvTimeHists[0]->Fill(t_jet1);
-			_pvTimeHists[0]->Fill(t_jet2);
+			t_jet1 = _MakeJetTime(j1);
+			t_jet2 = _MakeJetTime(j2);
+			if(t_jet1 == -999. || t_jet2 == -999.){cout << "jet time invalid"<< endl; continue;}
+			d_pv_1 = _MakeJetCentroid(j1);
+			d_pv_2 = _MakeJetCentroid(j2);
+			if(d_pv_1 == -999. || d_pv_2 == -999.){cout << "jet centroid invalid" << endl; continue;}
+			t_pv1 = t_jet1 - d_pv_1/_c;
+			t_pv2 = t_jet2 - d_pv_2/_c;
+		cout << "t_jet1: " << t_jet1 << " t_jet2: " << t_jet2 << endl;
+		cout << "d_pv_1: " << d_pv_1 << " d_pv_2: " << d_pv_2 << endl;
+		cout << "t_pv1: " << t_pv1 << " t_pv2: " << t_pv2 << "\n" << endl;
+			_pvTimeHists[0]->Fill(t_pv1);
+			_pvTimeHists[0]->Fill(t_pv2);
 			//calculate jet time for each jet - save in hist
-			diff = t_jet1 - t_jet2;
-			if(fabs(diff) > 20){
-			cout << "tjet1: " << t_jet1 << " tjet2: " << t_jet2 << " dphi: " << dphi << endl;
-			}
+			diff = t_pv1 - t_pv2;
 			//save difference in histogram			
 			_pvTimeHists[1]->Fill(diff);	
 		}
@@ -161,23 +172,19 @@ void ReducedBaseSkimmer::_MakePVTimes(){
 }
 
 
-
-
-//makes t_pv = t_jet - L^PV_jet with vtx_i = _base->vtxI
-//makes t_0 = t_jet - L^jet_0 with vtx_i = 0
 //right now is taking time and center for jet from lead RH
-double ReducedBaseSkimmer::_MakePVTime(int j, double vtx_x, double vtx_y, double vtx_z){
-	cout << "_MakePVTime" << endl;
-	cout << "jet #: " << j << endl;
-	cout << "jetRHOfJet: " << _base->jetRecHitOfJet->size() << " jetRecHitId: " << _base->jetRecHitId->size() << endl;
+double ReducedBaseSkimmer::_MakeJetTime(int j){
+	//cout << "_MakePVTime" << endl;
+	//cout << "jet #: " << j << endl;
+	//cout << "jetRHOfJet: " << _base->jetRecHitOfJet->size() << " jetRecHitId: " << _base->jetRecHitId->size() << endl;
 	
 	vector<unsigned int> rhIDs;
 	for(int i = 0; i < (int)_base->jetRecHitOfJet->size(); i++){
 		//get all RHs for this jet
-		cout << "i: " << i << " jetRecHitOfJet[i]: " << _base->jetRecHitOfJet->at(i) << " for jet #: "<< j << endl;
+	//	cout << "i: " << i << " jetRecHitOfJet[i]: " << _base->jetRecHitOfJet->at(i) << " for jet #: "<< j << endl;
 		if(_base->jetRecHitOfJet->at(i) == j) rhIDs.push_back(_base->jetRecHitId->at(i));
 	}
-	cout << "nrhs: " << _base->nRecHits << " " << rhIDs.size() << endl;
+	//cout << "nrhs: " << _base->nRecHits << " " << rhIDs.size() << endl;
 	
 	
 //	find lead rh of jet
@@ -185,9 +192,6 @@ double ReducedBaseSkimmer::_MakePVTime(int j, double vtx_x, double vtx_y, double
 	double time = 0.;
 	int idx = -999;
 	//get positions of lead rh
-	double rhX = -999;
-	double rhY = -999;
-	double rhZ = -999;
 	for(int i = 0; i < (int)rhIDs.size(); i++){
 		for(int rh = 0; rh < _base->nRecHits; rh++){
 			//get ith rechit in jet j
@@ -202,17 +206,50 @@ double ReducedBaseSkimmer::_MakePVTime(int j, double vtx_x, double vtx_y, double
 		}
 	}
 	if(idx != -999){	
-		rhX = _base->rhPosX->at(idx);
-		rhY = _base->rhPosY->at(idx);
-		rhZ = _base->rhPosZ->at(idx);
 		time = _base->rhTime->at(idx);
 	}
 	else { return -999.; }
 	_recHitHists[9]->Fill(enr);
-cout << "filled lead rh energy hist" << endl;	
-	double len_jet = pow(((rhX-vtx_x)*(rhX-vtx_x) + (rhY-vtx_y)*(rhY-vtx_y) + (rhZ-vtx_z)*(rhZ-vtx_z)),0.5);
-	cout << "_MakePVTime - end" << endl;
-	return time - len_jet/_c;
+//cout << "filled lead rh energy hist" << endl;	
+//	cout << "_MakePVTime - end" << endl;
+	return time;
+	
+}
+
+
+
+//right now is taking time and center for jet from lead RH
+double ReducedBaseSkimmer::_MakeJetCentroid(int j){
+	vector<unsigned int> rhIDs;
+	for(int i = 0; i < (int)_base->jetRecHitOfJet->size(); i++){
+		//get all RHs for this jet
+		if(_base->jetRecHitOfJet->at(i) == j) rhIDs.push_back(_base->jetRecHitId->at(i));
+	}
+	
+	
+//	find lead rh of jet
+	double enr = 0.;
+	int idx = -999;
+	//define distance from jet to pv
+	double d_pv = -999;
+	for(int i = 0; i < (int)rhIDs.size(); i++){
+		for(int rh = 0; rh < _base->nRecHits; rh++){
+			//get ith rechit in jet j
+			if(_base->rhID->at(rh) == rhIDs[i]){
+				//update energy + idx
+				if(_base->rhEnergy->at(rh) > enr){
+					enr = _base->rhEnergy->at(rh);
+					idx = rh;
+				}
+				break;
+			}
+		}
+	}
+	if(idx != -999){	
+		d_pv = _base->rh_distToPV->at(idx);
+	}
+	else { d_pv = -999.; }
+	return d_pv;
 	
 }
 
@@ -224,7 +261,9 @@ cout << "filled lead rh energy hist" << endl;
 
 
 void ReducedBaseSkimmer::_SkimRecHits(){
+//cout << "skimrechits" << endl;
 int nRHs = _base->nRecHits;
+//cout << "nrhs: " << nRHs << endl;
 	_recHitHists[0]->Fill(nRHs);
 	for(int r = 0; r < nRHs; r++){
 		//these are vectors

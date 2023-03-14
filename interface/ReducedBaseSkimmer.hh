@@ -22,7 +22,8 @@ class ReducedBaseSkimmer{
 		void _SkimVertices();
 		//void _SkimGenJets();
 		void _MakePVTimes();
-		double _MakePVTime(int j, double vtx_x = 0., double vtx_y = 0., double vtx_z = 0.);
+		double _MakeJetTime(int j);
+		double _MakeJetCentroid(int j);
 	
 		//wraps phi around pi	
 		double _deltaPhi(double phi1, double phi2){

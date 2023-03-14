@@ -46,6 +46,7 @@ public :
    vector<float>   *rhPosEta;
    vector<float>   *rhPosPhi;
    vector<float>   *rhEnergy;
+   vector<float>   *rh_distToPV;
    vector<float>   *rhTime;
    vector<float>   *rhTimeErr;
    vector<unsigned int> *rhID;
@@ -73,6 +74,7 @@ public :
    TBranch        *b_rhPosPhi;   //!
    TBranch        *b_rhEnergy;   //!
    TBranch        *b_rhTime;   //!
+   TBranch        *b_rh_distToPV;   //!
    TBranch        *b_rhTimeErr;   //!
    TBranch        *b_rhID;   //!
 
@@ -156,6 +158,7 @@ inline void ReducedBase::Init(TTree *tree)
    rhPosPhi = 0;
    rhEnergy = 0;
    rhTime = 0;
+   rh_distToPV = 0;
    rhTimeErr = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
@@ -185,6 +188,7 @@ inline void ReducedBase::Init(TTree *tree)
    fChain->SetBranchAddress("rhPosPhi", &rhPosPhi, &b_rhPosPhi);
    fChain->SetBranchAddress("rhEnergy", &rhEnergy, &b_rhEnergy);
    fChain->SetBranchAddress("rhTime", &rhTime, &b_rhTime);
+   fChain->SetBranchAddress("rh_distToPV", &rh_distToPV, &b_rh_distToPV);
    fChain->SetBranchAddress("rhTimeErr", &rhTimeErr, &b_rhTimeErr);
    fChain->SetBranchAddress("rhID", &rhID, &b_rhID);
    Notify();
