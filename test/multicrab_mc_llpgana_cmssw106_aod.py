@@ -86,7 +86,7 @@ def docrab( dataset ):
         config.General.requestName = None
 
         config.JobType.pluginName  = 'Analysis'
-        config.JobType.psetName    = 'llpgana_mc_mini.py'
+        config.JobType.psetName    = 'llpgana_mc_aod.py'
         config.JobType.pyCfgParams = None
 
         config.Data.inputDataset   = None

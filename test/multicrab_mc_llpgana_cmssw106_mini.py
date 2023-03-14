@@ -25,7 +25,7 @@ def getOptions():
 
     parser.add_option('-w', '--workArea',
                       dest = 'workArea',
-                      default = 'myworkingArea',
+                      default = 'myWorkSpace',
                       help = "work area directory (only if CMD != 'submit')",
                       metavar = 'WAD')
 
@@ -34,6 +34,18 @@ def getOptions():
                       default = '',
                       help = "options for crab command CMD",
                       metavar = 'OPTS')
+
+
+    parser.add_option('-d','--dataset',
+                      dest = 'dataset',
+                      default ='GJets',
+                      help ='dataset to process',
+                      choices =['GJets','GMSB','QCD','data']
+                      )
+    parser.add_option('-l','--label',
+                      dest='label',
+                      default='',
+                      help='label for output directory')
 
     (options, arguments) = parser.parse_args()
 
@@ -72,7 +84,7 @@ def docrab( dataset ):
         config.General.requestName = None
 
         config.JobType.pluginName  = 'Analysis'
-        config.JobType.psetName    = 'llpgana_mc.py'
+        config.JobType.psetName    = 'llpgana_mc_mini.py'
         config.JobType.pyCfgParams = None
 
         config.Data.inputDataset   = None
@@ -86,7 +98,7 @@ def docrab( dataset ):
         config.Data.publication    = False
         #config.Site.storageSite    = 'T2_US_Nebraska'
         config.Site.storageSite    = 'T3_US_FNALLPC'
-        config.Data.outLFNDirBase  = '/store/user/jaking/LLPGamma/GMSB/'
+        config.Data.outLFNDirBase  = '/eos/uscms/store/user/malazaro/LLPGamma/crab_ntuples'+trial+'/'
         #--------------------------------------------------------
 
         # Will submit one task for each of these input datasets.
