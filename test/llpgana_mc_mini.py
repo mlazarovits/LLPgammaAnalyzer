@@ -223,8 +223,8 @@ process.source = cms.Source("PoolSource",
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))#LT
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500))#US
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(12500))#VS
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#S
-#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100000))#SM
+#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25000))#S
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000000))#SM
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(250000))#M
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2500000))#L
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#F
