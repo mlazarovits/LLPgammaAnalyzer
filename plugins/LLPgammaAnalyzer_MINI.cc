@@ -1674,9 +1674,15 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 	rhPosPhi.clear();
 	rhEnergy.clear();
 	rhTime.clear();
+	rh_distToPV.clear();
 	rhTimeErr.clear();
 	rhTOF.clear();
 	rhID.clear();
+
+
+
+if(DEBUG)std::cout << "-----------------------------------------------------------" << std::endl;
+if(DEBUG)std::cout << "Starting RecHit loop"  << std::endl; 
 	std::vector<EcalRecHit> _rechits;
 	for(const auto rechit : *recHitsEB_) _rechits.push_back(rechit);
 	nRecHits = (int)_rechits.size();
@@ -1690,6 +1696,13 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 		auto Rh_eta = Rh_pos.eta();
 		auto Rh_phi = Rh_pos.phi();
 
+		//do central time correction - add time it took to fly to detector face so all RHs are in same time frame
+		double ctc = hypo(Rh_x,Rh_y,Rh_z);
+		rhTime.push_back(rechit.time() + ctc/SOL);
+		//distance from RH to PV
+		double d_pv = hypo(Rh_x-vtxX,Rh_y-vtxY,Rh_z-vtxZ);
+		rh_distToPV.push_back(d_pv);
+
 		rhID.push_back(rhid);	
 		rhPosX.push_back(Rh_x);	
 		rhPosY.push_back(Rh_y);	
@@ -1697,7 +1710,6 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 		rhPosEta.push_back(Rh_eta);
 		rhPosPhi.push_back(Rh_phi);
 		
-		rhTime.push_back(rechit.time());
 		rhTimeErr.push_back(rechit.timeError());
 		rhEnergy.push_back(rechit.energy());
 }	
@@ -1792,8 +1804,8 @@ void LLPgammaAnalyzer_MINI::analyze(const edm::Event& iEvent, const edm::EventSe
 
 //	hist1d[18]->Fill(nJets);
 	bool goodJetEvent(false);
-std::cout << "-----------------------------------------------------------" << std::endl;
-std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl; 
+if(DEBUG)std::cout << "-----------------------------------------------------------" << std::endl;
+if(DEBUG)std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl; 
 	for ( uInt ijet(0); ijet < nJets; ijet++ ){ 
 		//std::cout << "Processing with jet " << ijet << std::endl;
 	   	const auto & jet = fjets[ijet];
@@ -1806,11 +1818,13 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
 	   	auto sumdrrhe = getRhGrpEnr( jetDrRhGroup );
 		auto dremf = sumdrrhe/jet.energy();
 		//float jetDrTime(-99.9);
+//cout << "1 ijet: " << ijet << " nJets: " << nJets << " nGoodDrJets: " << nGoodDrJets << endl;
 		if( rhCount >= minRHcnt && dremf > minEmf ){
 		// places jet info in output tree
 
 	   	// jetID in jet.h ?
-
+		nGoodDrJets++;
+	//cout << "jet #: " << ijet << " ngoodjets: " << nGoodDrJets << " out of "  << nJets << " total" << endl;
 	   	jetHt += jet.pt();
 
 	   	jetE.push_back(jet.energy());
@@ -1858,16 +1872,6 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
         // dR matched RH group  -----------------------------------------------
 		// --------------------------------------------------------------------
 //original place
-/*	   	if( DEBUG ) std::cout << "Getting jet dR rechit group" << std::endl; 
-		auto jetDrRhGroup = getRHGroup( jet.eta(), jet.phi(), deltaRminJet, minRHenr ); 
-		auto rhCount = jetDrRhGroup.size();
-
-	   	//std::cout << "rhCount is " << rhCount << std::endl;
-	   	auto sumdrrhe = getRhGrpEnr( jetDrRhGroup );
-		auto dremf = sumdrrhe/jet.energy();
-		//float jetDrTime(-99.9);
-		if( rhCount >= minRHcnt && dremf > minEmf ){
-*/
 			if( DEBUG ) std::cout << " - get jetDRtofTimes " << std::endl;
 	   		auto tofTimes = getLeadTofRhTime( jetDrRhGroup, vtxX, vtxY, vtxZ );
 	   		//auto leadJetRh = getLeadRh( jetDrRhGroup );
@@ -1889,12 +1893,12 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
 			float dist = d_rh - d_pv;
 			pvTimes.push_back(dist/SOL);
 			*/
-			 std::cout << "Starting RecHit Loop" << std::endl;
-			cout << "jet #: " << ijet <<  " of " << nJets << " has " << rhCount << " recHits" << endl;
+		if(DEBUG)std::cout << "Starting RecHit Loop" << std::endl;
+		if(DEBUG)cout << "jet #: " << ijet << " has " << rhCount << " recHits" << endl;
 			for ( uInt irhg = 0; irhg < rhCount; irhg++){
 			
 				//std::cout << " -- irhg: " << irhg << " rhCount: " << rhCount << std::endl;
-				jetRecHitOfJet.push_back(ijet);
+				jetRecHitOfJet.push_back(nGoodDrJets-1);
 				auto detid = (jetDrRhGroup[irhg]).detid();
 				//std::cout << " -- (jetDrRhGroup[irhg]).detid(): " << detid.rawId() << std::endl;
 		      	jetRecHitId.push_back(detid.rawId());	
@@ -1934,22 +1938,22 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
 	      	jetCMuTime.push_back(jcmutime);	
 	      	jetCMedTime.push_back(jcmedtime);
 
-			if( jcmutime > -28.9 ) nGoodDrJets++;			
-	} else{
+			//good dr jets are those matched to rh groups
+			//if( jcmutime > -28.9 ) nGoodDrJets++;			
+		}else{ //<<>>if( rhCount > minRHcnt && dremf > minEmf )
 			njetRecHits.push_back(0);
-	      	jetMuTime.push_back(-29.25);
-	      	jetTimeError.push_back(99.9);
-	      	jetTimeRMS.push_back(99.9);
-	      	jetMedTime.push_back(-29.25);
-	      	jetCMuTime.push_back(-29.25);
-	      	jetCMedTime.push_back(-29.25);
-			
-		}//<<>>if( rhCount > minRHcnt && dremf > minEmf ) : else
+	      		jetMuTime.push_back(-29.25);
+	      		jetTimeError.push_back(99.9);
+	      		jetTimeRMS.push_back(99.9);
+	      		jetMedTime.push_back(-29.25);
+	      		jetCMuTime.push_back(-29.25);
+	      		jetCMedTime.push_back(-29.25);
+		}	
 		
 
 		// GenJet Info for MC  -------------------------------------------------------------------
 		// ---------------------------------------------------------------------------------------
-
+/*
 
         if( DEBUG ) std::cout << "Getting jetGenParton Information" << std::endl;
         //const reco::GenParticle * jetGenParton(0);
@@ -2030,7 +2034,9 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
 			if( DEBUG ) std::cout << " ---------------------------------------------------- " << std::endl;
 
         }//<<>>if( hasGenInfo )
+*/
 	}//<<<<for ( uInt ijet(0); ijet < nJets; ijet++ )
+	/*
 	//-----------------------------------------------------------------------------------------------------
 	// ***************************** d jetTime for back-to-back high pt jets	*****************************
 	//auto dijetIdCut = 1;
@@ -2063,7 +2069,9 @@ std::cout << "Starting Jet Loop for " << nJets << " jets " << std::endl;
 		}//<<>>for ( uInt p = q+1; p < nJets; p++ )
 	}//<<>>for ( uInt q = 0; q < nJets; q++ )
 	//-------------------------------------------------------------------------------
-
+*/
+if(nJets < nGoodDrJets) cout << "2 nJets: " << nJets << " nGoodDrJets: " << nGoodDrJets << endl;
+	nJets = nGoodDrJets;
 	if( goodJetEvent ) nGoodJetEvents++;
 
 	// -- Fill output trees ------------------------------------------
@@ -2094,13 +2102,13 @@ void LLPgammaAnalyzer_MINI::beginJob(){
 	
 	//int jtdiv(400);
 	//float jtran(8);
-    int jtdiv(625);
-    float jtran(25);
-	int jdtdiv(200);
-	float jdtran(4);
-   	int jztdiv(100);
-   	float jztran(2);
-	int rhcnt(80);
+//    int jtdiv(625);
+//    float jtran(25);
+//	int jdtdiv(200);
+//	float jdtran(4);
+//   	int jztdiv(100);
+//   	float jztran(2);
+//	int rhcnt(80);
 
 	// Create output Tree branches -----------------------------
 
@@ -2133,6 +2141,7 @@ void LLPgammaAnalyzer_MINI::beginJob(){
 	outTree->Branch("rhPosPhi",&rhPosPhi);
 	outTree->Branch("rhEnergy",&rhEnergy);
 	outTree->Branch("rhTime",&rhTime);
+	outTree->Branch("rh_distToPV",&rh_distToPV);
 	outTree->Branch("rhTimeErr",&rhTimeErr);
 	outTree->Branch("rhID",&rhID);
 

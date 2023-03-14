@@ -366,7 +366,7 @@ class LLPgammaAnalyzer_MINI : public edm::one::EDAnalyzer<edm::one::SharedResour
 
         detIdMap DetIDMap;
       	int nRecHits;
-      	std::vector<float> rhPosX, rhPosY, rhPosZ, rhEnergy, rhTime, rhTimeErr, rhTOF, rhPosEta, rhPosPhi;
+      	std::vector<float> rhPosX, rhPosY, rhPosZ, rhEnergy, rhTime, rhTimeErr, rhTOF, rhPosEta, rhPosPhi, rh_distToPV;
       	std::vector<uInt> rhID;
 
       	// gedPhotons
