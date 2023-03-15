@@ -157,9 +157,9 @@ void ReducedBaseSkimmer::_MakePVTimes(){
 			if(d_pv_1 == -999. || d_pv_2 == -999.){cout << "jet centroid invalid" << endl; continue;}
 			t_pv1 = t_jet1 - d_pv_1/_c;
 			t_pv2 = t_jet2 - d_pv_2/_c;
-		cout << "t_jet1: " << t_jet1 << " t_jet2: " << t_jet2 << endl;
-		cout << "d_pv_1: " << d_pv_1 << " d_pv_2: " << d_pv_2 << endl;
-		cout << "t_pv1: " << t_pv1 << " t_pv2: " << t_pv2 << "\n" << endl;
+		//cout << "t_jet1: " << t_jet1 << " t_jet2: " << t_jet2 << endl;
+	//	cout << "d_pv_1: " << d_pv_1 << " d_pv_2: " << d_pv_2 << endl;
+	//	cout << "t_pv1: " << t_pv1 << " t_pv2: " << t_pv2 << "\n" << endl;
 			_pvTimeHists[0]->Fill(t_pv1);
 			_pvTimeHists[0]->Fill(t_pv2);
 			//calculate jet time for each jet - save in hist
