@@ -94,8 +94,8 @@ def docrab( dataset ):
         #config.Data.splitting     = 'Automatic'
         config.Data.splitting    = 'EventAwareLumiBased' # MC
         #for choosing # of files to run over
-	#config.Data.splitting    = 'FileBased' # MC
-        #config.Data.totalUnits    = '5' # MC
+	#config.Data.splitting   = 'FileBased' # MC
+        #config.Data.totalUnits  = '5' # MC
         if options.dataset == 'GMSB':
         	config.Data.unitsPerJob  =  1500 # MC GMSB
         elif options.dataset == 'GJets':
@@ -110,7 +110,6 @@ def docrab( dataset ):
         config.Data.publication    = False
         #config.Site.storageSite    = 'T2_US_Nebraska'
         config.Site.storageSite    = 'T3_US_FNALLPC'
-        #config.Data.outLFNDirBase  = '/store/user/jaking/LLPGamma/GMSB_v40/'
         #--------------------------------------------------------
 
         # Will submit one task for each of these input datasets.
@@ -132,8 +131,7 @@ def docrab( dataset ):
 	    if options.label is not '':
 		trial += "_"+options.label
 
-            #config.Data.outLFNDirBase  = "/store/user/jaking/LLPGamma/"+trial+"/"
-            config.Data.outLFNDirBase  = "/store/user/malazaro/LLPGamma/crabOutput/"+trial+"/"#"/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
+            config.Data.outLFNDirBase  = "/store/user/malazaro/LLPGamma/crab_ntuples/"+trial+"/"#"/store/group/lpcsusylep/jaking/LLPGamma/"+trial+"/"
             config.General.requestName   = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra+"_request"
             config.Data.outputDatasetTag = trial+"_"+primaryDataset+"_"+dataset+"_"+runEra
 
@@ -157,7 +155,7 @@ def docrab( dataset ):
 	    if options.dataset == 'GJets':
             	config.JobType.pyCfgParams   = ['globalTag=106X_upgrade2018_realistic_v11_L1v1','outputFileName=output.root','hasGenInfo=True']
 	    if options.dataset == 'data':
-            	config.JobType.pyCfgParams   = ['globalTag=106X_dataRun2_v28','outputFileName=output.root']
+            	config.JobType.pyCfgParams   = ['globalTag=106X_dataRun2_v33','outputFileName=output.root']
 	    else:
 		print("Error: global tag not specificed for this dataset. Check the available tags in the script and set accordingly.")
 		exit()
@@ -198,51 +196,9 @@ def docrab( dataset ):
 def run_multi( ds ):
 
 # DataSet: DATA
- 
+
+#all at MINIAOD tier - see mini aod multicrab submission crab 
         dsData = [
-
-			# Dataset: JetHT UL2018
-
-			['/JetHT/Run2018A-UL2018_MiniAODv2-v1/MINIAOD',''],
-		#	['/JetHT/Run2018B-UL2018_MiniAODv2-v1/MINIAOD',''],
-		#	['/JetHT/Run2018C-UL2018_MiniAODv2-v1/MINIAOD',''],
-		#	['/JetHT/Run2018D-UL2018_MiniAODv2-v1/MINIAOD',''],
-		#	['/JetHT/Run2018D-UL2018_MiniAODv2-v2/MINIAOD',''],
-
-			# Dataset: /EGamma/Run2018-12Nov2019_UL2018-/MINIAOD
-
-           # ['/EGamma/Run2018A-12Nov2019_UL2018-v2/MINIAOD',''],
-           # ['/EGamma/Run2018B-12Nov2019_UL2018-v2/MINIAOD',''],
-           # ['/EGamma/Run2018C-12Nov2019_UL2018-v2/MINIAOD',''],
-           # ['/EGamma/Run2018D-12Nov2019_UL2018-v4/MINIAOD',''],
-    
-			# Dataset: /DoubleEG/Run2016-21Feb2020_UL2016-/MINIAOD
-
-            #['/DoubleEG/Run2016B-21Feb2020_ver2_UL2016_HIPM-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016C-21Feb2020_UL2016_HIPM-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016D-21Feb2020_UL2016_HIPM-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016E-21Feb2020_UL2016_HIPM-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016F-21Feb2020_UL2016-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016G-21Feb2020_UL2016-v1/MINIAOD',''],
-            #['/DoubleEG/Run2016H-21Feb2020_UL2016-v1/MINIAOD',''],
-
-			# Dataset: /DoubleEG/Run2017-09Aug2019_UL2017-/MINIAOD
-
-            #['/DoubleEG/Run2017B-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/DoubleEG/Run2017C-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/DoubleEG/Run2017D-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/DoubleEG/Run2017E-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/DoubleEG/Run2017F-09Aug2019_UL2017-v1/MINIAOD',''],
-
-			# Dataset: /SingleElectron/Run2017-09Aug2019_UL2017-/MINIAOD
-
-            #['/SingleElectron/Run2017B-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/SingleElectron/Run2017C-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/SingleElectron/Run2017C-09Aug2019_UL2017_EcalRecovery-v1/MINIAOD',''],
-            #['/SingleElectron/Run2017D-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/SingleElectron/Run2017E-09Aug2019_UL2017-v1/MINIAOD',''],
-            #['/SingleElectron/Run2017F-09Aug2019_UL2017_rsb-v2/MINIAOD',''],
-            #['/SingleElectron/Run2017F-09Aug2019_UL2017_EcalRecovery-v1/MINIAOD',''],
 
         ]
 
