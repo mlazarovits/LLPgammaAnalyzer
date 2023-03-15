@@ -4,7 +4,6 @@
 // from TTree ReducedBase/ReducedBase
 // found on file: ntuples/llpgana_mc_MINIAODSIM_test_JetHT_2018A.root
 //////////////////////////////////////////////////////////
-
 #ifndef ReducedBase_h
 #define ReducedBase_h
 

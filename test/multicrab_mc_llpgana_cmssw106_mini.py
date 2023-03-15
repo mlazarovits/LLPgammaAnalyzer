@@ -101,7 +101,7 @@ def docrab( dataset ):
         else:
         	config.Data.unitsPerJob  =  2000 # MC
         if options.dataset == 'data':
-        	config.Data.unitsPerJob  =  20000 
+        	config.Data.unitsPerJob  =  20000 # for EventAwareLumiBased splitting this is ~# events analyzed by each job 
         	config.Data.RunRange  = '316241-316245'
 
         config.JobType.allowUndistributedCMSSW = True
