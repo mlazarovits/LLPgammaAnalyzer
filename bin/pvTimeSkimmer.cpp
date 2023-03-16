@@ -7,7 +7,6 @@
 #include <TSystem.h>
 
 #include "../interface/ReducedBaseSkimmer.hh"
-#include "../interface/JetAnalyzerLeadRH.hh"
 
 using std::cout;
 using std::endl;
