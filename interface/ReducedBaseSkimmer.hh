@@ -9,22 +9,19 @@ using std::vector;
 
 class ReducedBaseSkimmer{
 	public:
-		ReducedBaseSkimmer(TChain* ch);
+		ReducedBaseSkimmer(ReducedBase* base);
 		virtual ~ReducedBaseSkimmer();
 		vector<TH1D*> Skim();
 
 	private:
-		TChain* _ch;
-		ReducedBase* _base;
+		ReducedBase* _base = nullptr;
 		vector<TH1D*> _jetHists; //PF jets
-		vector<TH1D*> _genJetHists;
 		vector<TH1D*> _vertexHists; //first vertex is PV
 		vector<TH1D*> _recHitHists;		
 		vector<TH1D*> _pvTimeHists;		
 		void _SkimJets();
 		void _SkimRecHits();
 		void _SkimVertices();
-		//void _SkimGenJets();
 		void _SkimPVTimes();
 		
 		double MakeJetTime_LeadRH(vector<unsigned int> rhIDs);

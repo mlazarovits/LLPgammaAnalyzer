@@ -6,9 +6,8 @@
 using std::cout;
 using std::endl;
 
-ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){ 
-	_ch = ch;
-	_base = new ReducedBase(ch);
+ReducedBaseSkimmer::ReducedBaseSkimmer(ReducedBase* base){ 
+	_base = base;
 	
 	_jetHists.push_back(new TH1D("nJets","nJets",11, -0.5, 10.5));
 	_jetHists.push_back(new TH1D("jetE", "jetE", 125, 0, 2500)); 
@@ -40,16 +39,6 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",100,-20,20));
 	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",125,-20,20));
 	_pvTimeHists.push_back(new TH1D("pvTimeRes_jetDphi","pvTimeRes_jetDphi",50,2.98,3.17));
-/*
-	_genJetHists.push_back(new TH1D("nJetsGen","nJetsGen",21,-0.5,20.5));
-	_genJetHists.push_back(new TH1D("jetGenEnergy","jetGenEnergy",500,0,5000));	
-	_genJetHists.push_back(new TH1D("jetGenPt","jetGenPt",500,0,5000));
-	_genJetHists.push_back(new TH1D("jetGenEta","jetGenEta",700,-3.5,3.5));
-	_genJetHists.push_back(new TH1D("jetGenTOF","jetGenTOF",300,0,30));
-	_genJetHists.push_back(new TH1D("jetGenDrMatch","jetGenDrMatch",320,0,3.2));
-	_genJetHists.push_back(new TH1D("jetGenTimeVar","jetGenTimeVar",270,-2,25));
-	_genJetHists.push_back(new TH1D("jetGenNKids","jetGenNKids",100,0,100));
-*/	
 
 
 }
@@ -58,19 +47,20 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(TChain* ch){
 
 
 ReducedBaseSkimmer::~ReducedBaseSkimmer(){ 
-	delete _base;
 	_jetHists.clear();
-	_genJetHists.clear();
 	_vertexHists.clear();
 	_recHitHists.clear();
 	_pvTimeHists.clear();
+	//_genJetHists.clear();
 }
 
 
 
 
 vector<TH1D*> ReducedBaseSkimmer::Skim(){
-	int nEntries = _ch->GetEntries();
+	cout << "Skim" << endl;
+	int nEntries = _base->fChain->GetEntries();
+	cout << "nEntries: " << nEntries << " " << _base->fChain->GetEntries() << endl;
 	int SKIP = 1;
 	if(SKIP != 1) cout << "Choosing 1 out of every " << SKIP << " events" << endl;
 	for(int e = 0; e < nEntries; e+=SKIP){
@@ -79,7 +69,7 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 	 cout << "      event " << e << " | " << nEntries << endl;
 	
 		//add skimmers for quantities from ntuples
-		_SkimJets();
+		_SkimJet();
 		_SkimRecHits();
 		_SkimVertices();
 		_SkimPVTimes();
@@ -93,6 +83,7 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 	for(int h = 0; h < (int)_pvTimeHists.size(); h++) hists.push_back(_pvTimeHists[h]); 
 	return hists;
 
+	cout << "Skim - end" << endl;
 
 }
 
@@ -254,31 +245,6 @@ void ReducedBaseSkimmer::_SkimVertices(){
 
 
 
-
-
-/*
-void ReducedBaseSkimmer::_SkimGenJets(){
-	int nJets = _base->nJets;
-	_genJetHists[0]->Fill(nJets);
-	for(int j = 0; j < nJets; j++){
-		//if a jet was not dR matched within dR = 0.3, default values are stored
-		//these are vectors
-		//_genJetHists[1]->Fill(_base->jetGenEnergy->at(j));	
-		//_genJetHists[2]->Fill(_base->jetGenPt->at(j));
-		//_genJetHists[3]->Fill(_base->jetGenEta->at(j));
-		//_genJetHists[5]->Fill(_base->jetGenTOF->at(j));
-		//_genJetHists[6]->Fill(_base->jetGenDrMatch->at(j));
-		//_genJetHists[7]->Fill(_base->jetGenTimeVar->at(j));
-		//_genJetHists[8]->Fill(_base->jetGenTimeLLP->at(j));
-		//_genJetHists[9]->Fill(_base->jetGenNKids->at(j));
-		
-
-
-	}
-
-}
-
-*/
 
 
 

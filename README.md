@@ -39,8 +39,10 @@ pvTimeSkimmer
 ## To make file lists to run skimmer over
 ```
 cd macros/
-python mkEosFileList.py
+python3 mkEosFileList.py
 ```
+EOS paths are hard coded into this script.
+
 ## To run Jack's code
 ```
 cd ~/nobackup/Jack_LLPCode/CMSSW_X_X_X/src
