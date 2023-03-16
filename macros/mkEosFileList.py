@@ -127,7 +127,6 @@ for subdir2 in subdirlist2:
 	for line in lists :
 		if rootfile in line : filelist.append(subdir2+line)
 
-print("output",eospwd+sample+filelist[0])
 f = open(fileName,"x")
 for thefile in filelist:
 	f.write(eospwd+sample+thefile)	
