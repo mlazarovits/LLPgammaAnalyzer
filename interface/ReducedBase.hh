@@ -159,6 +159,7 @@ inline void ReducedBase::Init(TTree *tree)
    rhTime = 0;
    rh_distToPV = 0;
    rhTimeErr = 0;
+   rhID = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -190,6 +191,34 @@ inline void ReducedBase::Init(TTree *tree)
    fChain->SetBranchAddress("rh_distToPV", &rh_distToPV, &b_rh_distToPV);
    fChain->SetBranchAddress("rhTimeErr", &rhTimeErr, &b_rhTimeErr);
    fChain->SetBranchAddress("rhID", &rhID, &b_rhID);
+
+   fChain->SetBranchStatus("*",0);
+   fChain->SetBranchStatus("run", 1);
+   fChain->SetBranchStatus("lumi", 1);
+   fChain->SetBranchStatus("event", 1);
+   fChain->SetBranchStatus("vtxX", 1);
+   fChain->SetBranchStatus("vtxY",1 );
+   fChain->SetBranchStatus("vtxZ",1 );
+   fChain->SetBranchStatus("nJets", 1);
+   fChain->SetBranchStatus("jetE", 1);
+   fChain->SetBranchStatus("jetPt", 1);
+   fChain->SetBranchStatus("jetEta", 1);
+   fChain->SetBranchStatus("jetPhi", 1);
+   fChain->SetBranchStatus("jetID", 1);
+   fChain->SetBranchStatus("jetRecHitId", 1);
+   fChain->SetBranchStatus("jetRecHitOfJet", 1);
+   fChain->SetBranchStatus("nRecHits", 1);
+   fChain->SetBranchStatus("rhPosX", 1);
+   fChain->SetBranchStatus("rhPosY", 1);
+   fChain->SetBranchStatus("rhPosZ", 1);
+   fChain->SetBranchStatus("rhPosEta", 1);
+   fChain->SetBranchStatus("rhPosPhi", 1);
+   fChain->SetBranchStatus("rhEnergy", 1);
+   fChain->SetBranchStatus("rhTime", 1);
+   fChain->SetBranchStatus("rh_distToPV", 1);
+   fChain->SetBranchStatus("rhTimeErr", 1);
+   fChain->SetBranchStatus("rhID", 1);
+
    Notify();
 }
 
