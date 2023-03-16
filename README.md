@@ -36,7 +36,11 @@ Make sure you are running from the ```test/``` directory so the multicrab script
 cd /uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer
 pvTimeSkimmer
 ```
-
+## To make file lists to run skimmer over
+```
+cd macros/
+python mkEosFileList.py
+```
 ## To run Jack's code
 ```
 cd ~/nobackup/Jack_LLPCode/CMSSW_X_X_X/src
