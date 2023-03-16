@@ -30,13 +30,15 @@ m_user = '/store/user/malazaro/LLPGamma/crab_ntuples/'
 m_group = '/store/user/lpcsusylep/malazaro/LLPGamma/'
 
 eosll = 'eos root://cmseos.fnal.gov ls '
-
+eospwd = 'root://cmseos.fnal.gov/'
 #command = eosll+m_group+'LLPGamma/llpga_GMSB_AOD_v59/'
 command = eosll
 if args.path == 'user':
 	command += m_user
+	eospwd += m_user
 elif args.path == 'group':
 	command += m_group
+	eospwd += m_group
 else:
 	print("Please specify either user or group eos path.")
 	exit()
@@ -54,6 +56,7 @@ else:
 
 command += sample
 fileName = "/uscms/home/mlazarov/nobackup/CMSSW_10_6_5/src/PVTiming/LLPgammaAnalyzer/fileLists/"+sample[:-1]+"_"+args.path+".txt"
+
 
 #command = eosll+m_user+'ecalTiming/'
 #command = eosll+m_group+'ecalTiming/EGamma/'
@@ -90,7 +93,6 @@ theFileList = ''
 dirls = bashout( command ).splitlines()
 if debug : print( '-------------------------------------------------')
 for line in dirls:
-	#print( line )
 	if dirselect in line : targdirs.append( line )
 if debug : print( targdirs )
 if deep :
@@ -108,7 +110,7 @@ else :
 	for mydir in targdirs:
 		subdirlist1.append( mydir+'/' )
 
-if debug : print( subdirlist1 )
+if debug : print("subdirlist1", subdirlist1 )
 for thesubdir in subdirlist1 :
 	command2 = command+thesubdir+'/'
 	subdir2 = bashout( command2 ).rstrip().splitlines()
@@ -119,16 +121,16 @@ for thesubdir in subdirlist1 :
 		for subsubdir in subdir3 : 
 			subdirlist2.append(thesubdir+subdir+'/'+subsubdir+'/0000/')
 
-
-if debug : print( subdirlist2 )
+if debug : print("subdirlist2", subdirlist2 )
 for subdir2 in subdirlist2:
 	lists = bashout( command+subdir2 ).rstrip().splitlines()
 	for line in lists :
 		if rootfile in line : filelist.append(subdir2+line)
 
+print("output",eospwd+sample+filelist[0])
 f = open(fileName,"x")
 for thefile in filelist:
-	f.write(thefile)	
+	f.write(eospwd+sample+thefile)	
 	f.write("\n")
 	#print( thefile )
 print("Wrote files to:",fileName)
