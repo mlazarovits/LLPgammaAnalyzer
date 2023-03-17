@@ -16,8 +16,10 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(ReducedBase* base){
 	_jetHists.push_back(new TH1D("jetPhi", "jetPhi", 125, -3.5, 3.5)); 
 	//jet PF ID - as defined in analyzer
 	_jetHists.push_back(new TH1D("jetID", "jetID", 5, 0, 5)); 
-	_jetHists.push_back(new TH1D("jetTime","jetTime",50, -0.5, 30.));
-	_jetHists.push_back(new TH1D("jetDistToPV","jetDistToPV",100,100,350));
+	_jetHists.push_back(new TH1D("jetTime_LeadRH","jetTime_LeadRH",50, -0.5, 15.));
+	_jetHists.push_back(new TH1D("jetDistToPV_LeadRH","jetDistToPV_LeadRH",100,100,350));
+	_jetHists.push_back(new TH1D("jetTime_EnrGeo","jetTime_EnrGeo",50, -0.5, 15.));
+	_jetHists.push_back(new TH1D("jetDistToPV_Geo","jetDistToPV_Geo",100,100,350));
 
 
 	_recHitHists.push_back(new TH1D("nRHs","nRHs",100,0,600));
@@ -30,15 +32,19 @@ ReducedBaseSkimmer::ReducedBaseSkimmer(ReducedBase* base){
 	_recHitHists.push_back(new TH1D("rhTime","rhTime",250,0.,1000));
 	_recHitHists.push_back(new TH1D("rhTimeErr","rhTimeErr",125,-10,10));
 	_recHitHists.push_back(new TH1D("rhEnergy_lead","rhEnergy_lead",200,0,200));
+	_recHitHists.push_back(new TH1D("rhEnergy_avg","rhEnergy_avg",200,0,200));
+	_recHitHists.push_back(new TH1D("rhPos_distToCentroid","rhPos_distToCentroid",200,0,60));
 
 
 	_vertexHists.push_back(new TH1D("vtxX","vtxX",100,0.6,0.13));
 	_vertexHists.push_back(new TH1D("vtxY","vtxY",100,0.3,0.11));
 	_vertexHists.push_back(new TH1D("vtxZ","vtxZ",100,-16,18));
 
-	_pvTimeHists.push_back(new TH1D("pvTime","pvTime",100,-20,20));
-	_pvTimeHists.push_back(new TH1D("pvTimeRes","pvTimeRes",125,-20,20));
 	_pvTimeHists.push_back(new TH1D("pvTimeRes_jetDphi","pvTimeRes_jetDphi",50,2.98,3.17));
+	_pvTimeHists.push_back(new TH1D("pvTime_LeadRH","pvTime_LeadRH",100,-1.,1.));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes_LeadRH","pvTimeRes_LeadRH",125,-1.,1.));
+	_pvTimeHists.push_back(new TH1D("pvTime_EnrGeo","pvTime_EnrGeo",100,-1.,1.));
+	_pvTimeHists.push_back(new TH1D("pvTimeRes_EnrGeo","pvTimeRes_EnrGeo",125,-1.,1.));
 
 
 }
@@ -58,10 +64,8 @@ ReducedBaseSkimmer::~ReducedBaseSkimmer(){
 
 
 vector<TH1D*> ReducedBaseSkimmer::Skim(){
-	cout << "Skim" << endl;
 	int nEntries = _base->fChain->GetEntries();
-	cout << "nEntries: " << nEntries << " " << _base->fChain->GetEntries() << endl;
-	int SKIP = 1;
+	int SKIP = 10;
 	if(SKIP != 1) cout << "Choosing 1 out of every " << SKIP << " events" << endl;
 	for(int e = 0; e < nEntries; e+=SKIP){
 		_base->GetEntry(e);
@@ -69,7 +73,7 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 	 cout << "      event " << e << " | " << nEntries << endl;
 	
 		//add skimmers for quantities from ntuples
-		_SkimJet();
+		_SkimJets();
 		_SkimRecHits();
 		_SkimVertices();
 		_SkimPVTimes();
@@ -83,7 +87,6 @@ vector<TH1D*> ReducedBaseSkimmer::Skim(){
 	for(int h = 0; h < (int)_pvTimeHists.size(); h++) hists.push_back(_pvTimeHists[h]); 
 	return hists;
 
-	cout << "Skim - end" << endl;
 
 }
 
@@ -94,31 +97,51 @@ void ReducedBaseSkimmer::_SkimPVTimes(){
         vector<unsigned int> rhIDs2;
         double dphi_dn = 3;
         double dphi = -999;
-        double t_jet1 = -999;
-        double t_jet2 = -999;
-        double d_pv1 = -999;
-        double d_pv2 = -999;
+        double t_jet1_LeadRH = -999;
+        double t_jet2_LeadRH = -999;
+        double t_jet1_egeo = -999;
+        double t_jet2_egeo = -999;
+        double d_pv1_LeadRH = -999;
+        double d_pv2_LeadRH = -999;
+        double d_pv1_geo = -999;
+        double d_pv2_geo = -999;
         for(int j1 = 0; j1 < (int)_base->nJets; j1++){
                 for(int j2 = 0; j2 < (int)_base->nJets; j2++){
                         if(j1 <= j2) continue;
                         dphi = _deltaPhi(_base->jetPhi->at(j1), _base->jetPhi->at(j2));
                         if(fabs(dphi) < dphi_dn) continue;
-			_pvTimeHists[2]->Fill(dphi);
+			_pvTimeHists[0]->Fill(dphi);
 			rhIDs1 = GetRhIDs(j1);
                         rhIDs2 = GetRhIDs(j2);
-                        t_jet1 = MakeJetTime_LeadRH(rhIDs1);
-                        t_jet2 = MakeJetTime_LeadRH(rhIDs2);
-                        d_pv1 = MakeJetdPV_LeadRH(rhIDs1);
-                        d_pv2 = MakeJetdPV_LeadRH(rhIDs2);
-			_jetHists[6]->Fill(t_jet1); 
-			_jetHists[6]->Fill(t_jet2); 
-			_jetHists[7]->Fill(d_pv1); 
-			_jetHists[7]->Fill(d_pv2);
+                        t_jet1_LeadRH = MakeJetTime_LeadRH(rhIDs1);
+                        t_jet2_LeadRH = MakeJetTime_LeadRH(rhIDs2);
+                        d_pv1_LeadRH = MakeJetdPV_LeadRH(rhIDs1);
+                        d_pv2_LeadRH = MakeJetdPV_LeadRH(rhIDs2);
+			
+			_jetHists[6]->Fill(t_jet1_LeadRH); 
+			_jetHists[6]->Fill(t_jet2_LeadRH); 
+			_jetHists[7]->Fill(d_pv1_LeadRH); 
+			_jetHists[7]->Fill(d_pv2_LeadRH);
 
-			_pvTimeHists[0]->Fill(t_jet1 - d_pv1/_c); 
-			_pvTimeHists[0]->Fill(t_jet2 - d_pv2/_c); 
-			_pvTimeHists[1]->Fill((t_jet1 - d_pv1/_c) - (t_jet2 - d_pv2/_c)); 
-                        rhIDs1.clear();
+			_pvTimeHists[1]->Fill(t_jet1_LeadRH - d_pv1_LeadRH/_c); 
+			_pvTimeHists[1]->Fill(t_jet2_LeadRH - d_pv2_LeadRH/_c); 
+			_pvTimeHists[2]->Fill((t_jet1_LeadRH - d_pv1_LeadRH/_c) - (t_jet2_LeadRH - d_pv2_LeadRH/_c)); 
+                        
+			t_jet1_egeo = MakeJetTime_EnrGeo(rhIDs1);
+                        t_jet2_egeo = MakeJetTime_EnrGeo(rhIDs2);
+                        d_pv1_geo = MakeJetdPV_Geo(rhIDs1);
+                        d_pv2_geo = MakeJetdPV_Geo(rhIDs2);
+			
+			_jetHists[8]->Fill(t_jet1_egeo); 
+			_jetHists[8]->Fill(t_jet2_egeo); 
+			_jetHists[9]->Fill(d_pv1_geo); 
+			_jetHists[9]->Fill(d_pv2_geo);
+			
+			_pvTimeHists[3]->Fill(t_jet1_egeo - d_pv1_geo/_c); 
+			_pvTimeHists[3]->Fill(t_jet2_egeo - d_pv2_geo/_c); 
+			_pvTimeHists[4]->Fill((t_jet1_egeo - d_pv1_geo/_c) - (t_jet2_egeo - d_pv2_geo/_c)); 
+                        
+			rhIDs1.clear();
                         rhIDs2.clear();
 
                 }
@@ -126,7 +149,75 @@ void ReducedBaseSkimmer::_SkimPVTimes(){
 	}
 }
 
+//fractional energy and inverse distance to centroid weighted
+double ReducedBaseSkimmer::MakeJetTime_EnrGeo(vector<unsigned int> rhIDs){
+	double jet_time = 0.;
+	double enr_tot = 0.;
+        vector<double> rh_times;
+	vector<double> rh_enr;
+	vector<double> rh_x;
+	vector<double> rh_y;
+	vector<double> rh_z;
+	int nRHs = (int)rhIDs.size();
+	for(int i = 0; i < nRHs; i++){
+                for(int rh = 0; rh < _base->nRecHits; rh++){
+                        if(_base->rhID->at(rh) == rhIDs[i]){
+                                enr_tot += _base->rhEnergy->at(rh);
+                                rh_times.push_back(_base->rhTime->at(rh));
+				rh_enr.push_back(_base->rhEnergy->at(rh));	
+				rh_x.push_back(_base->rhPosX->at(rh));
+				rh_y.push_back(_base->rhPosY->at(rh));
+				rh_z.push_back(_base->rhPosZ->at(rh));
+				break;
+                        }
+                }
+        }
+if(rh_x.size() == 0 || rh_y.size() == 0 || rh_z.size() == 0){  return -999.;}
+	vector<double> centroid = _centroid(rh_x, rh_y, rh_z);
+	vector<double> wts;
+	double dist = -999;
+	double norm = 0;
+	double wt = 0;
+	for(int i = 0; i < nRHs; i++){
+		dist = hypo(rh_x[i] - centroid[0], rh_y[i] - centroid[1], rh_z[i] - centroid[2]);
+		if(dist < 1.1){
+			wt = 1.;
+		}
+		if(dist < 0) cout << "negative distance to centroid: " << dist << endl;
+		//fill hist with distance from rh to center
+		_recHitHists[11]->Fill(dist); 
+		//consider just doing energy (not fractional)
+		//convert distance to time
+		//dist /= _c;
+		wt = (rh_enr[i]/enr_tot)/dist;
+	//	wt = 1./dist;
+		wts.push_back(wt);
+		norm += wt;
+	}
+	for(int i = 0; i < nRHs; i++) jet_time += (rh_times[i]*wts[i])/norm;
+	return jet_time;
+}
 
+double ReducedBaseSkimmer::MakeJetdPV_Geo(vector<unsigned int> rhIDs){
+	vector<double> rh_x;
+	vector<double> rh_y;
+	vector<double> rh_z;
+	int nRHs = (int)rhIDs.size();
+	for(int i = 0; i < nRHs; i++){
+                for(int rh = 0; rh < _base->nRecHits; rh++){
+                        if(_base->rhID->at(rh) == rhIDs[i]){
+				rh_x.push_back(_base->rhPosX->at(rh));
+				rh_y.push_back(_base->rhPosY->at(rh));
+				rh_z.push_back(_base->rhPosZ->at(rh));
+				break;
+                        }
+                }
+        }
+if(rh_x.size() == 0 || rh_y.size() == 0 || rh_z.size() == 0){  return -999.;}
+	vector<double> centroid = _centroid(rh_x, rh_y, rh_z);
+        double d_pv = hypo(centroid[0] - _base->vtxX, centroid[1] - _base->vtxY, centroid[2] - _base->vtxZ);
+        return d_pv;
+}
 
 
 

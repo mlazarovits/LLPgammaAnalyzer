@@ -59,16 +59,7 @@ int main(int argc, char* argv[]){
 		string infile = indir+infileName+".root";
 		ch->Add(infile.c_str());
 	}
-ReducedBase* base = new ReducedBase(ch);
-//int nEntries = base->fChain->GetEntries();
-//int SKIP = 1;
-//cout << "total entries: " << nEntries << endl;
-//for(int i = 0; i < nEntries; i+=SKIP){
-//	base->GetEntry(i);
-//	if((i/SKIP)%(std::max(1, int(nEntries/SKIP/10))) == 0)
-//	cout << "      event " << i << " | " << nEntries << endl;
-//
-//}
+	ReducedBase* base = new ReducedBase(ch);
 
 	//initialize chain with make class
 	ReducedBaseSkimmer skim(base);

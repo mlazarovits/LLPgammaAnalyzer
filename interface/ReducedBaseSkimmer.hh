@@ -27,6 +27,10 @@ class ReducedBaseSkimmer{
 		double MakeJetTime_LeadRH(vector<unsigned int> rhIDs);
                 double MakeJetdPV_LeadRH(vector<unsigned int> rhIDs);	
 
+		//rename when i figure out wtf this does
+		double MakeJetTime_EnrGeo(vector<unsigned int> rhIDs);
+                double MakeJetdPV_Geo(vector<unsigned int> rhIDs);	
+		
 		//returns rechit ids associated with jet # j
 		vector<unsigned int> GetRhIDs(int j);
 		//wraps phi around pi
@@ -39,6 +43,24 @@ class ReducedBaseSkimmer{
                         return x - n * double(2.* _pi);
 
                 };
+	
+		double hypo(double x, double y, double z){ return pow((x*x + y*y + z*z), 0.5); }
+	
+		vector<double> _centroid(vector<double> x, vector<double> y, vector<double> z){
+			vector<double> cent;
+			cent.push_back(_mean(x));
+			cent.push_back(_mean(y));
+			cent.push_back(_mean(z));
+			return cent;
+		}
+
+		double _mean(vector<double> x){
+			double n = (double)x.size();
+			double sum = 0.;
+			for(auto i : x) sum += i;
+			return sum/n;
+		};		
+
 		double _pi = 3.14159265358979323846;
 		double _c = 29.9792458; //speed of light in cm/ns
 };
